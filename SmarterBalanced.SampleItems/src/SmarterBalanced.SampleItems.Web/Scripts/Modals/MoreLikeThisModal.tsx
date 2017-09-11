@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import { ItemCardViewModel, ItemCardCondensed } from './ItemCard'
+import { ItemCardViewModel, ItemCardCondensed } from '../ItemCard'
 
 export interface Column {
     label: string;

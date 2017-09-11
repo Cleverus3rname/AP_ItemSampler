@@ -1,6 +1,8 @@
 ﻿import * as React from 'react';
 import * as ItemsSearch from './ItemsSearch';
-import * as GradeLevels from './GradeLevels';
+import * as GradeLevels from '../GradeLevels';
+import * as Models from './ItemsSearchModels'
+
 const hideArrow = (
     <span aria-label="Hide">▼</span>
 );
@@ -22,8 +24,8 @@ function parseQueryString(url: string): { [key: string]: string[] | undefined } 
 }
 
 export interface Props {
-    interactionTypes: ItemsSearch.InteractionType[];
-    subjects: ItemsSearch.Subject[];
+    interactionTypes: Models.InteractionType[];
+    subjects: Models.Subject[];
     onChange: (params: ItemsSearch.SearchAPIParams) => void;
     selectSingleResult: () => void;
     isLoading: boolean;
@@ -187,10 +189,10 @@ export class ISPComponent extends React.Component<Props, State> {
         const newSubjects = this.props.subjects.filter(s => newSubjectCodes.indexOf(s.code) !== -1);
 
         // Remove all claims not contained by the newly selected subjects
-        const subjectClaimCodes = newSubjects.reduce((prev: string[], cur: ItemsSearch.Subject) => prev.concat(cur.claims.map(c => c.code)), []);
+        const subjectClaimCodes = newSubjects.reduce((prev: string[], cur: Models.Subject) => prev.concat(cur.claims.map(c => c.code)), []);
         const newClaimCodes = this.state.claims.filter(c => subjectClaimCodes.indexOf(c) !== -1);
 
-        const subjectInteractionCodes = newSubjects.reduce((prev: string[], cur: ItemsSearch.Subject) => prev.concat(cur.interactionTypeCodes), []);
+        const subjectInteractionCodes = newSubjects.reduce((prev: string[], cur: Models.Subject) => prev.concat(cur.interactionTypeCodes), []);
         const newInteractionCodes = this.state.interactionTypes.filter(i => subjectInteractionCodes.indexOf(i) !== -1);
 
         const subjectTargets = newSubjects.map(s => s.claims)
@@ -358,23 +360,28 @@ export class ISPComponent extends React.Component<Props, State> {
         }
     }
 
-    render() {
-        history.replaceState(null, "", this.encodeQuery());
-
+    renderSearchHeader(): JSX.Element {
         return (
-            <div className="search-params">
-                <div className="search-header">
-                    <h1 className="search-title" tabIndex={0}>Browse Items</h1>
-                    <div className="search-status">
-                        {this.props.isLoading ? <img src="images/spin.gif" className="spin" /> : undefined}
-                        <div><a onClick={() => this.resetFilters()} onKeyPress={e => this.keyPressResetFilters(e)} tabIndex={0}>Reset filters</a></div>
-                        <div onClick={() => this.toggleExpandAll()} onKeyPress={e => this.keyPressToggleExpandAll(e)} tabIndex={0}
-                            aria-label={(this.getExpandAll() ? " Hide" : " Show") + " all"}>
-                            {this.getExpandAll() ? hideArrow : showArrow}
-                            {this.getExpandAll() ? " Hide" : " Show"} all
-                        </div>
+            <div className="search-header">
+                <h1 className="search-title" tabIndex={0}>Browse Items</h1>
+                <div className="search-status">
+                    {this.props.isLoading ? <img src="images/spin.gif" className="spin" /> : undefined}
+                    <div><a onClick={() => this.resetFilters()} onKeyPress={e => this.keyPressResetFilters(e)} tabIndex={0}>Reset filters</a></div>
+                    <div onClick={() => this.toggleExpandAll()} onKeyPress={e => this.keyPressToggleExpandAll(e)} tabIndex={0}
+                        aria-label={(this.getExpandAll() ? " Hide" : " Show") + " all"}>
+                        {this.getExpandAll() ? hideArrow : showArrow}
+                        {this.getExpandAll() ? " Hide" : " Show"} all
                     </div>
                 </div>
+            </div>
+        );
+    }
+
+    render() {
+        history.replaceState(null, "", this.encodeQuery());
+        return (
+            <div className="search-params">
+                {this.renderSearchHeader()}
                 <div className="search-categories" aria-live="polite" aria-relevant="additions removals">
                     {this.renderGrades()}
                     {this.renderSubjects()}
@@ -457,7 +464,7 @@ export class ISPComponent extends React.Component<Props, State> {
         );
     }
 
-    renderSubject(subject: ItemsSearch.Subject) {
+    renderSubject(subject: Models.Subject) {
         const subjects = this.state.subjects;
         const containsSubject = subjects.indexOf(subject.code) !== -1;
         const className = (containsSubject ? "selected" : "") + " tag";
@@ -493,7 +500,7 @@ export class ISPComponent extends React.Component<Props, State> {
         );
     }
 
-    renderTarget(target: ItemsSearch.Target): JSX.Element {
+    renderTarget(target: Models.Target): JSX.Element {
         const targets = this.state.targets;
         const containsTarget = targets.indexOf(target.nameHash) !== -1;
         return (
@@ -517,7 +524,7 @@ export class ISPComponent extends React.Component<Props, State> {
         const visibleTargets = selectedClaims.length !== 0
             ? selectedClaims.map(c => c.targets).reduce((a, b) => a.concat(b))
             : [];
-        let uniqueTargets: ItemsSearch.Target[] = [];
+        let uniqueTargets: Models.Target[] = [];
         visibleTargets.forEach(t => {
             if (uniqueTargets.find(ut => ut.nameHash == t.nameHash) === undefined) {
                 uniqueTargets.push(t);
@@ -552,7 +559,7 @@ export class ISPComponent extends React.Component<Props, State> {
     renderClaims() {
         const selectedClaims = this.state.claims;
 
-        const renderClaim = (claim: ItemsSearch.Claim) => {
+        const renderClaim = (claim: Models.Claim) => {
             let containsClaim = selectedClaims.indexOf(claim.code) !== -1;
             return (
                 <button role="button" key={claim.code} className={(containsClaim ? "selected" : "") + " tag"}
@@ -574,7 +581,7 @@ export class ISPComponent extends React.Component<Props, State> {
         const tags = subjects.length === 0
             ? <p tabIndex={0}>Please first select a subject.</p>
             : subjects
-                .reduce((cs: ItemsSearch.Claim[], s: ItemsSearch.Subject) => cs.concat(s.claims), [])
+                .reduce((cs: Models.Claim[], s: Models.Subject) => cs.concat(s.claims), [])
                 .map(renderClaim);
 
         return (
@@ -597,7 +604,7 @@ export class ISPComponent extends React.Component<Props, State> {
         const selectedInteractionTypes = this.state.interactionTypes;
         const performanceOnlySelected = this.state.performanceOnly;
 
-        const renderInteractionType = (it: ItemsSearch.InteractionType) => {
+        const renderInteractionType = (it: Models.InteractionType) => {
             let containsInteractionType = selectedInteractionTypes.indexOf(it.code) !== -1;
             return (
                 <button key={it.code} className={(containsInteractionType ? "selected" : "") + " tag"}

@@ -133,9 +133,8 @@ export class ItemAccessibilityModal extends React.Component<Props, State> {
                     aria-label={ariaText}
                     onClick={() => this.toggleResourceType(type)}
                     onKeyUp={(e) => this.keyboardToggleResourceType(e, type)}>
-
                     Show all
-                    </a>;
+                </a>;
         }
 
         return (

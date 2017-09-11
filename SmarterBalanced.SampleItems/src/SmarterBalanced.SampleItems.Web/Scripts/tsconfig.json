@@ -6,6 +6,7 @@
     "removeComments": false,
     "sourceMap": true,
     "target": "es5",
+    "module": "es2015",
     "outDir": "../wwwroot/scripts",
     "jsx": "react",
     "strictNullChecks": true,

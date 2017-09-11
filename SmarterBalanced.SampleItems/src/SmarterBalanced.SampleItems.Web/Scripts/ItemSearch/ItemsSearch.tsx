@@ -1,62 +1,15 @@
 ﻿import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import * as ItemCard from './ItemCard';
+import * as ItemCard from '../ItemCard';
 import * as ItemsSearchParams from './ItemsSearchParams';
-import * as GradeLevels from './GradeLevels';
-
-interface SubjectClaims {
-    [subject: string]: { text: string; value: string }[];
-}
-
-interface Loading {
-    kind: "loading";
-}
-
-interface Success<T> {
-    kind: "success";
-    content: T;
-}
-
-interface Failure {
-    kind: "failure";
-}
-
-interface Reloading<T> {
-    kind: "reloading";
-    content: T;
-}
-
-/** Represents the state of an asynchronously obtained resource at a particular time. */
-type Resource<T> = Loading | Success<T> | Reloading<T> | Failure
-
-export interface InteractionType {
-    code: string;
-    label: string;
-}
-
-export interface Subject {
-    code: string;
-    label: string;
-    claims: Claim[];
-    interactionTypeCodes: string[];
-}
-
-export interface Claim {
-    code: string;
-    label: string;
-    targets: Target[];
-}
-
-
-export interface Target {
-    name: string;
-    nameHash: number;
-}
+import * as GradeLevels from '../GradeLevels';
+import * as Models from './ItemsSearchModels';
+import { Resource } from '../ApiModel';
 
 namespace ItemsSearch {
     export interface Props {
-        interactionTypes: InteractionType[];
-        subjects: Subject[];
+        interactionTypes: Models.InteractionType[];
+        subjects: Models.Subject[];
         apiClient: ItemsSearchClient;
     }
 
@@ -98,7 +51,7 @@ namespace ItemsSearch {
 
         selectSingleResult() {
             const searchResults = this.state.searchResults;
-            if (searchResults.kind === "success" && searchResults.content.length === 1) {
+            if (searchResults.kind === "success" && searchResults.content && searchResults.content.length === 1) {
                 const searchResult = searchResults.content[0];
                 ItemCard.itemPageLink(searchResult.bankKey, searchResult.itemKey);
             }
@@ -108,12 +61,12 @@ namespace ItemsSearch {
             return this.state.searchResults.kind === "loading" || this.state.searchResults.kind === "reloading";
         }
 
-        render() {
+        renderResultElement(): JSX.Element|JSX.Element[]|undefined {
             const searchResults = this.state.searchResults;
 
             let resultsElement: JSX.Element[] | JSX.Element | undefined;
-            if (searchResults.kind === "success" || searchResults.kind === "reloading") {
-                resultsElement = searchResults.content.length === 0
+            if ((searchResults.kind === "success" || searchResults.kind === "reloading") && searchResults.content) {
+                resultsElement = searchResults.content && searchResults.content.length === 0
                     ? <span className="placeholder-text" role="alert">No results found for the given search terms.</span>
                     : searchResults.content.map(digest =>
                         <ItemCard.ItemCard {...digest} key={digest.bankKey.toString() + "-" + digest.itemKey.toString()} />);
@@ -122,17 +75,28 @@ namespace ItemsSearch {
             } else {
                 resultsElement = undefined;
             }
+            return resultsElement;
+        }
+
+        renderISPComponent(): JSX.Element {
             const isLoading = this.isLoading();
+
+            return (
+                <ItemsSearchParams.ISPComponent
+                    interactionTypes={this.props.interactionTypes}
+                    subjects={this.props.subjects}
+                    onChange={(params) => this.beginSearch(params)}
+                    selectSingleResult={() => this.selectSingleResult()}
+                    isLoading={isLoading} />
+                );
+        }
+
+        render() {
             return (
                 <div className="search-container">
-                    <ItemsSearchParams.ISPComponent
-                        interactionTypes={this.props.interactionTypes}
-                        subjects={this.props.subjects}
-                        onChange={(params) => this.beginSearch(params)}
-                        selectSingleResult={() => this.selectSingleResult()}
-                        isLoading={isLoading} />
+                    {this.renderISPComponent()}
                     <div className="search-results" >
-                        {resultsElement}
+                        {this.renderResultElement()}
                     </div>
                 </div>
             );
@@ -170,8 +134,8 @@ export interface SearchAPIParams {
 }
 
 interface ItemsSearchViewModel {
-    interactionTypes: InteractionType[];
-    subjects: Subject[];
+    interactionTypes: Models.InteractionType[];
+    subjects: Models.Subject[];
 }
 
 export function initializeItemsSearch(viewModel: ItemsSearchViewModel) {

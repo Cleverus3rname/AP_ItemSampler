@@ -14,14 +14,15 @@
 
 @section Scripts {
     <environment names="Development">
-        <script src="~/scripts/sb.itemsampler.itempage.js"></script>
+        <script src="~/scripts/sb.itemsampler.itempagecontainer.js"></script>
     </environment>
     <environment names="Staging, Production">
-        <script src="~/scripts/sb.itemsampler.itempage.min.js"></script>
+        <script src="~/scripts/sb.itemsampler.itempagecontainer.min.js"></script>
     </environment>
 
 
     <script>
-        EntryPoint.initializeItemPage(@Json.Serialize(Model));
+        var viewModel = @Json.Serialize(Model);
+        EntryPoint.initializeItemPage(viewModel);
     </script>
 }

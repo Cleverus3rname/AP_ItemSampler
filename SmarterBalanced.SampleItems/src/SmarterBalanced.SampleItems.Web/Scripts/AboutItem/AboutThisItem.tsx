@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import * as ItemCard from './ItemCard';
+import * as ItemCard from '../ItemCard';
 import * as Collapsible from './Collapsible';
 
 interface SampleResponse {

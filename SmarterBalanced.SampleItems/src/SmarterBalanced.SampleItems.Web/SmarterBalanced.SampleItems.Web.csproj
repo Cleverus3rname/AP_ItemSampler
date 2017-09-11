@@ -9,13 +9,14 @@
     <OutputType>Exe</OutputType>
     <PackageId>SmarterBalanced.SampleItems.Web</PackageId>
     <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
+    <TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
     <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;dnxcore50;portable-net45+win8</PackageTargetFallback>
   </PropertyGroup>
+  
   <ItemGroup>
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\js\" />
     <Folder Include="wwwroot\css\" />
-    <Folder Include="wwwroot\scripts\" />
   </ItemGroup>
 
   <ItemGroup>

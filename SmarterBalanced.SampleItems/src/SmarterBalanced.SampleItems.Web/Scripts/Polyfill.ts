@@ -61,13 +61,13 @@ if (!Array.prototype.find) {
 }
 
 if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function (searchString: any) {
+    String.prototype.startsWith = function (searchString: string) {
         return this.substr(0, searchString.length) === searchString;
     };
 }
 
 if (!String.prototype.endsWith) {
-    String.prototype.endsWith = function (suffix: any) {
+    String.prototype.endsWith = function (suffix: string) {
         return this.indexOf(suffix, this.length - suffix.length) !== -1;
     };
 }
