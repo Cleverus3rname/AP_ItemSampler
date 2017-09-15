@@ -28,7 +28,7 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
         int GoodBankKey;
         int BadBankKey;
         int DuplicateItemKey, DuplicateBankKey;
-        ItemCardViewModel MathCard, ElaCard, DuplicateCard;
+        ItemCardViewModel MathCard, ElaCard, DuplicateCard, PerformanceCard;
         Rubric TestRubric;
 
         public ItemViewRepoTests()
@@ -52,6 +52,7 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
             DuplicateDigest = SampleItem.Create(bankKey: GoodBankKey, itemKey: DuplicateItemKey);
             var duplicateDigest2 = SampleItem.Create(bankKey: GoodBankKey, itemKey: DuplicateItemKey);
 
+            PerformanceCard = ItemCardViewModel.Create(bankKey: GoodBankKey, itemKey: 209);
             PerformanceDigest = SampleItem.Create(bankKey: GoodBankKey, itemKey: 209, isPerformanceItem: true, associatedStimulus: 1, fieldTestUse: fieldTestUseVar);
             PerformanceDigestDuplicate = SampleItem.Create(bankKey: DuplicateBankKey, itemKey: 210, isPerformanceItem: true, associatedStimulus: 1, fieldTestUse: fieldTestUseVar);
 
@@ -199,15 +200,6 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
         }
 
         [Fact]
-        public void TestGetItemUrlMultiple()
-        {
-            var url = ItemViewRepo.GetItemNames(PerformanceDigest);
-
-            Assert.NotNull(url);
-            Assert.Equal("1-209,5-210,1-211,5-212", url);
-        }
-
-        [Fact]
         public void TestGetItemUrlNull()
         {
             var url = ItemViewRepo.GetItemNames(null);
@@ -322,15 +314,6 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
         #endregion
 
         #region BrailleItems
-        [Fact]
-        public void TestGoodGetItemNames()
-        {
-            var item = ItemViewRepo.GetItemNames(PerformanceDigest);
-            var associatedItems = ItemViewRepo.GetItemNames(PerformanceDigest);
-
-            Assert.True(item.Contains(associatedItems.ElementAt(0)));
-            Assert.True(item.Contains(associatedItems.ElementAt(1)));
-        }
 
         [Fact]
         public void TestBadGetItemNames()
