@@ -80,7 +80,17 @@ namespace SmarterBalanced.SampleItems.Core.Repos
 
             if (item.IsPerformanceItem)
             {
-                itemNames = string.Join(",", context.GetAssociatedPerformanceItems(item).Select(d => d.ToString()));
+                var aboutItem = context.AboutAllItems
+                    .FirstOrDefault(ai => ai.ItemCardViewModel != null
+                        && ai.ItemCardViewModel.ItemKey == item.ItemKey
+                        && ai.ItemCardViewModel.BankKey == item.BankKey);
+
+                if (aboutItem == null)
+                {
+                    return String.Empty;
+                }
+
+                itemNames = aboutItem.AssociatedItems;
             }
 
             return itemNames;
