@@ -199,15 +199,6 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
         }
 
         [Fact]
-        public void TestGetItemUrlMultiple()
-        {
-            var url = ItemViewRepo.GetItemNames(PerformanceDigest);
-
-            Assert.NotNull(url);
-            Assert.Equal("1-209,5-210,1-211,5-212", url);
-        }
-
-        [Fact]
         public void TestGetItemUrlNull()
         {
             var url = ItemViewRepo.GetItemNames(null);
@@ -319,18 +310,17 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
             Assert.Null(aboutThisItemViewModel);
         }
 
+        [Fact]
+        public void TestGetItemNames()
+        {
+            string itemNames = ItemViewRepo.GetItemNames(MathDigest);
+
+            Assert.Equal("1-4", itemNames);
+        }
+
         #endregion
 
         #region BrailleItems
-        [Fact]
-        public void TestGoodGetItemNames()
-        {
-            var item = ItemViewRepo.GetItemNames(PerformanceDigest);
-            var associatedItems = ItemViewRepo.GetItemNames(PerformanceDigest);
-
-            Assert.True(item.Contains(associatedItems.ElementAt(0)));
-            Assert.True(item.Contains(associatedItems.ElementAt(1)));
-        }
 
         [Fact]
         public void TestBadGetItemNames()
