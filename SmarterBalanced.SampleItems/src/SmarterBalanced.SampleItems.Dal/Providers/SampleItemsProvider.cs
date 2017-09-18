@@ -53,7 +53,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
                 .ToImmutableArray();
 
             var aboutItems = sampleItems
-                .Select(item => AboutThisItemViewModel.FromSampleItem(
+                .Select(item => AboutThisItemViewModelTranslations.FromSampleItem(
                     sampleItem: item, 
                     itemCards: itemCards, 
                     allSampleItems: sampleItems))
