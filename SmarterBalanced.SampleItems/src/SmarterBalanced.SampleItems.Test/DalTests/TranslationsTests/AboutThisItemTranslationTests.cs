@@ -6,34 +6,33 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text;
 using Xunit;
+using System.Linq;
+using SmarterBalanced.SampleItems.Dal.Exceptions;
 
 namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
 {
     public class AboutThisItemTranslationTests
     {
-        SampleItem PerformanceDigest1, PerformanceDigest2;
-        ItemCardViewModel PerformanceCard1, PerformanceCard2;
-        int ItemKey1, ItemKey2, BankKey1, BankKey2;
         string TargetDescription, DOK, StandardsDescription, EducationalDifficulty, EvidenceStatement;
         ImmutableArray<ItemCardViewModel> AllItemCards;
         ImmutableArray<SampleItem> AllSampleItems;
         ImmutableArray<Rubric> Rubrics;
         Subject MathSubject;
         FieldTestUse TestUse;
+        int BankKey = 154;
+        List<int> AssoicatedItemKeys = new List<int> { 1, 2, 3, 4, 5 };
+        List<int> AllItemKeys = new List<int> { 1, 2, 3, 4, 5, 100, 200, 300, 400, 500 };
+
 
         public AboutThisItemTranslationTests()
         {
-            ItemKey1 = 1;
-            BankKey1 = 1;
-            ItemKey2 = 2;
-            BankKey2 = 2;
+
             TargetDescription = "Target Description";
             StandardsDescription = "Standards Description";
             EducationalDifficulty = "Educational Difficulty";
             EvidenceStatement = "Evidence Statement";
             DOK = "1";
-            PerformanceCard1 = ItemCardViewModel.Create(itemKey: ItemKey1, bankKey: BankKey1);
-            PerformanceCard2 = ItemCardViewModel.Create(itemKey: ItemKey2, bankKey: BankKey2);
+
             Rubrics = ImmutableArray.Create(BuildRubric());
             TestUse = new FieldTestUse()
             {
@@ -41,15 +40,23 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
                 Section = "hi",
                 QuestionNumber = 2
             };
+
             MathSubject = Subject.Create(
-                code: "MATH", 
-                label: "Mathematics" , 
-                shortLabel: "Math", 
-                claims: ImmutableArray<Claim>.Empty, 
+                code: "MATH",
+                label: "Mathematics",
+                shortLabel: "Math",
+                claims: ImmutableArray<Claim>.Empty,
                 interactionTypeCodes: ImmutableArray<string>.Empty);
-            PerformanceDigest1 = SampleItem.Create(
-                itemKey: ItemKey1,
-                bankKey: BankKey1,
+
+            List<SampleItem> sampleItems = new List<SampleItem>();
+            List<ItemCardViewModel> itemCards = new List<ItemCardViewModel>();
+
+            foreach (int i in AllItemKeys)
+            {
+                bool isPerformance = AssoicatedItemKeys.Contains(i);
+                var item = SampleItem.Create(
+                itemKey: i,
+                bankKey: BankKey,
                 coreStandards: CoreStandards.Create(
                     target: Target.Create(
                         desc: TargetDescription
@@ -62,19 +69,17 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
                 associatedStimulus: 1,
                 rubrics: Rubrics,
                 grade: GradeLevels.Grade6,
-                isPerformanceItem: true,
+                isPerformanceItem: isPerformance,
                 subject: MathSubject,
                 fieldTestUse: TestUse);
-            PerformanceDigest2 = SampleItem.Create(
-                itemKey: ItemKey2,
-                bankKey: BankKey2,
-                associatedStimulus: 1,
-                grade: GradeLevels.Grade6,
-                isPerformanceItem: true,
-                subject: MathSubject,
-                fieldTestUse: TestUse);
-            AllItemCards = ImmutableArray.Create(PerformanceCard1, PerformanceCard2);
-            AllSampleItems = ImmutableArray.Create(PerformanceDigest1, PerformanceDigest2);
+
+                sampleItems.Add(item);
+                itemCards.Add(item.ToItemCardViewModel());
+            }
+
+
+            AllItemCards = itemCards.ToImmutableArray();
+            AllSampleItems = sampleItems.ToImmutableArray();
         }
 
         private Rubric BuildRubric()
@@ -117,32 +122,127 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
             return rubric;
         }
 
+        #region FromSampleItem
         [Fact]
         public void TestFromSampleItem()
         {
-            var atiVM = AboutThisItemViewModelTranslations.FromSampleItem(
-                sampleItem: PerformanceDigest1,
-                itemCards: AllItemCards,
-                allSampleItems: AllSampleItems);
+            foreach (SampleItem si in AllSampleItems)
+            {
+                var itemCard = AllItemCards.FirstOrDefault(i => i.ItemKey == si.ItemKey && i.BankKey == si.BankKey);
+                var aboutThisItemVM = AboutThisItemViewModelTranslations.FromSampleItem(
+                    sampleItem: si,
+                    itemCards: AllItemCards,
+                    allSampleItems: AllSampleItems);
 
-            Assert.NotNull(atiVM);
-            Assert.Equal(StandardsDescription, atiVM.CommonCoreStandardsDescription);
-            Assert.Equal(Rubrics, atiVM.Rubrics);
-            Assert.Equal(PerformanceCard1, atiVM.ItemCardViewModel);
-            Assert.Equal(TargetDescription, atiVM.TargetDescription);
-            Assert.Equal(DOK, atiVM.DepthOfKnowledge);
-            Assert.Equal(EducationalDifficulty, atiVM.EducationalDifficulty);
-            Assert.Equal(EvidenceStatement, atiVM.EvidenceStatement);
+                Assert.NotNull(aboutThisItemVM);
+                Assert.NotNull(itemCard);
+
+                Assert.Equal(StandardsDescription, aboutThisItemVM.CommonCoreStandardsDescription);
+                Assert.Equal(Rubrics, aboutThisItemVM.Rubrics);
+                Assert.Equal(itemCard, aboutThisItemVM.ItemCardViewModel);
+                Assert.Equal(TargetDescription, aboutThisItemVM.TargetDescription);
+                Assert.Equal(DOK, aboutThisItemVM.DepthOfKnowledge);
+                Assert.Equal(EducationalDifficulty, aboutThisItemVM.EducationalDifficulty);
+                Assert.Equal(EvidenceStatement, aboutThisItemVM.EvidenceStatement);
+            }
+
         }
 
         [Fact]
-        public void TestGetAssociatedItems()
+        public void TestFromSampleItemNoItemCards()
         {
-            string associatedItems = AboutThisItemViewModelTranslations.GetAssociatedItems(
-                item: PerformanceDigest1,
-                allSampleItems: AllSampleItems);
-
-            Assert.Equal("1-1,2-2", associatedItems);
+            var sampleItem = AllSampleItems.FirstOrDefault();
+            ImmutableArray<ItemCardViewModel> itemCards = new ImmutableArray<ItemCardViewModel>();
+            Assert.Throws<SampleItemsContextException>(() => AboutThisItemViewModelTranslations.FromSampleItem(
+                         sampleItem: sampleItem,
+                         itemCards: itemCards,
+                         allSampleItems: AllSampleItems));
         }
+
+        [Fact]
+        public void TestFromSampleItemNoSampleItems()
+        {
+            var sampleItem = AllSampleItems.FirstOrDefault();
+            ImmutableArray<SampleItem> sampleItems = new ImmutableArray<SampleItem>();
+            Assert.Throws<SampleItemsContextException>(() => AboutThisItemViewModelTranslations.FromSampleItem(
+                         sampleItem: sampleItem,
+                         itemCards: AllItemCards,
+                         allSampleItems: sampleItems));
+        }
+
+        [Fact]
+        public void TestFromSampleItemNoSampleItem()
+        {
+            ImmutableArray<ItemCardViewModel> itemCards = new ImmutableArray<ItemCardViewModel>();
+            var aboutThisItemVM = AboutThisItemViewModelTranslations.FromSampleItem(
+                         sampleItem: null,
+                         itemCards: itemCards,
+                         allSampleItems: AllSampleItems);
+
+            Assert.Null(aboutThisItemVM);
+        }
+
+        [Fact]
+        public void TestFromSampleAssociatedItem()
+        {
+            var sampleItem = AllSampleItems.FirstOrDefault(si => si.ItemKey == AssoicatedItemKeys.FirstOrDefault() && si.BankKey == BankKey);
+
+            var aboutThisItemVM = AboutThisItemViewModelTranslations.FromSampleItem(
+                         sampleItem: sampleItem,
+                         itemCards: AllItemCards,
+                         allSampleItems: AllSampleItems);
+
+            Assert.NotNull(aboutThisItemVM);
+            Assert.NotNull(aboutThisItemVM.AssociatedItems);
+        }
+
+        [Fact]
+        public void TestFromSampleNonAssociatedItem()
+        {
+            var sampleItem = AllSampleItems.FirstOrDefault(si => AssoicatedItemKeys.Any(i => si.ItemKey != i) && si.BankKey == BankKey);
+            var aboutThisItemVM = AboutThisItemViewModelTranslations.FromSampleItem(
+                         sampleItem: sampleItem,
+                         itemCards: AllItemCards,
+                         allSampleItems: AllSampleItems);
+
+            Assert.NotNull(aboutThisItemVM);
+            Assert.NotNull(aboutThisItemVM.AssociatedItems);
+        }
+
+
+        #endregion
+
+        #region GetAssociatedItems
+        [Fact]
+        public void TestGetAssociatedItemsMultiple()
+        {
+            var sampleItem = AllSampleItems.FirstOrDefault(si => AssoicatedItemKeys.Any(i => si.ItemKey != i) && si.BankKey == BankKey);
+        }
+
+
+        [Fact]
+        public void TestGetAssociatedItemsSingle()
+        {
+
+        }
+
+
+
+        [Fact]
+        public void TestGetAssociatedItemsNull()
+        {
+
+        }
+
+
+
+        [Fact]
+        public void TestGetAssociatedItemsEmpty()
+        {
+
+        }
+
+        #endregion
+
     }
 }

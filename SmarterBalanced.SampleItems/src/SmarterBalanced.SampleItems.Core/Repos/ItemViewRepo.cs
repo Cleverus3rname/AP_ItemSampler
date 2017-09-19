@@ -87,7 +87,7 @@ namespace SmarterBalanced.SampleItems.Core.Repos
 
                 if (aboutItem == null)
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
 
                 itemNames = aboutItem.AssociatedItems;

@@ -1,4 +1,5 @@
-﻿using SmarterBalanced.SampleItems.Dal.Providers.Models;
+﻿using SmarterBalanced.SampleItems.Dal.Exceptions;
+using SmarterBalanced.SampleItems.Dal.Providers.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -14,10 +15,9 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             ImmutableArray<ItemCardViewModel> itemCards,
             ImmutableArray<SampleItem> allSampleItems)
         {
-            if (sampleItem == null)
-            {
-                return null;
-            }
+            if (sampleItem == null) return null;
+            if (itemCards.IsEmpty) throw new SampleItemsContextException("item cards cannot be empty");
+            if (allSampleItems.IsEmpty) throw new SampleItemsContextException("sample items cannot be empty");
 
             var itemCardViewModel = itemCards
                 .FirstOrDefault(card => card.BankKey == sampleItem.BankKey && card.ItemKey == sampleItem.ItemKey);
@@ -36,6 +36,9 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
 
         public static string GetAssociatedItems(SampleItem item, ImmutableArray<SampleItem> allSampleItems)
         {
+            if (item == null) return null;
+            if (allSampleItems.IsEmpty) throw new SampleItemsContextException("sample items cannot be empty");
+
             var associatedItems = allSampleItems
                 .Where(i => i.IsPerformanceItem &&
                     i.FieldTestUse != null &&
@@ -46,15 +49,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 .Select(i => i.ToString())
                 .ToList();
 
-            if (associatedItems.Count == 0)
-            {
-                return item.ToString();
-            }
-            else
-            {
-                var associatedItemsString = String.Join(",", associatedItems);
-                return associatedItemsString;
-            }
+            return (associatedItems.Count == 0) ? item.ToString() : String.Join(",", associatedItems);
         }
     }
 }
