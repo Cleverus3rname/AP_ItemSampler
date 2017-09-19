@@ -95,7 +95,7 @@ export class BrailleLink extends React.Component<Props, State> {
         } else {
             return (
                 <a className={"item-nav-btn"} aria-live="polite" aria-relevant="additions removals"
-                    href={this.state.displaySpinner ? "" : brailleUrl}
+                    href={brailleUrl}
                     download onClick={() => this.watchForDlStart()}>
                     <span className="glyphicon glyphicon-download-alt glyphicon-pad" />
                     Download Braille Embossing File(s)
