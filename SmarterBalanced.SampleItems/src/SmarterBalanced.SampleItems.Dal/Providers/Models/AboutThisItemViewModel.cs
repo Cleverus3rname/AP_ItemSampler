@@ -17,6 +17,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         public string CommonCoreStandardsDescription { get; }
         public string EducationalDifficulty { get; }
         public string EvidenceStatement { get; }
+        public string AssociatedItems { get; }
 
         public AboutThisItemViewModel(
             ImmutableArray<Rubric> rubrics,
@@ -25,7 +26,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             string depthOfKnowledge,
             string commonCoreStandardsDescription,
             string educationalDifficulty,
-            string evidenceStatement)
+            string evidenceStatement,
+            string associatedItems)
         {
             ItemCardViewModel = itemCard;
             Rubrics = rubrics;
@@ -34,6 +36,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             CommonCoreStandardsDescription = commonCoreStandardsDescription;
             EducationalDifficulty = educationalDifficulty;
             EvidenceStatement = evidenceStatement;
+            AssociatedItems = associatedItems;
         }
 
         public static AboutThisItemViewModel Create(
@@ -43,42 +46,20 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
           string depthOfKnowledge = "",
           string commonCoreStandardsDescription = "",
           string educationalDifficulty = "",
-          string evidenceStatement = "")
+          string evidenceStatement = "",
+          string associatedItems = "")
         {
 
-            return new AboutThisItemViewModel
-            (
+            return new AboutThisItemViewModel(
                 rubrics: rubrics,
                 itemCard: itemCard,
                 targetDescription: targetDescription,
                 depthOfKnowledge: depthOfKnowledge,
                 commonCoreStandardsDescription: commonCoreStandardsDescription,
                 educationalDifficulty: educationalDifficulty,
-                evidenceStatement: evidenceStatement
+                evidenceStatement: evidenceStatement,
+                associatedItems: associatedItems
             );
-
-
-        }
-
-        public static AboutThisItemViewModel FromSampleItem(SampleItem sampleItem, ImmutableArray<ItemCardViewModel> itemCards)
-        {
-            if (sampleItem == null)
-            {
-                return null;
-            }
-
-            var itemCardViewModel = itemCards
-                .FirstOrDefault(card => card.BankKey == sampleItem.BankKey && card.ItemKey == sampleItem.ItemKey);
-            var aboutThisItemViewModel = Create(
-                rubrics: sampleItem.Rubrics,
-                itemCard: itemCardViewModel,
-                targetDescription: sampleItem.CoreStandards?.Target.Descripton,
-                depthOfKnowledge: sampleItem.DepthOfKnowledge,
-                commonCoreStandardsDescription: sampleItem.CoreStandards?.CommonCoreStandardsDescription,
-                educationalDifficulty: sampleItem.EducationalDifficulty,
-                evidenceStatement: sampleItem.EvidenceStatement);
-
-            return aboutThisItemViewModel;
         }
     }
 }
