@@ -216,14 +216,39 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
         [Fact]
         public void TestGetAssociatedItemsMultiple()
         {
-            var sampleItem = AllSampleItems.FirstOrDefault(si => AssoicatedItemKeys.Any(i => si.ItemKey != i) && si.BankKey == BankKey);
+            var associatedSampleItems = AllSampleItems.Where(si => AssoicatedItemKeys.Contains(si.ItemKey) && si.BankKey == BankKey);
+            var associatedItemNames = associatedSampleItems.Select(asi => asi.ToString());
+            var nonAssociatedItemNames = AllSampleItems
+                .Where(si => !associatedSampleItems.Contains(si))
+                .Select(asi => asi.ToString());
+            foreach (var sampleItem in associatedSampleItems)
+            {
+                string testAssociatedItems = AboutThisItemViewModelTranslations.GetAssociatedItems(
+                    item: sampleItem,
+                    allSampleItems: AllSampleItems);
+
+                foreach (string itemName in associatedItemNames)
+                {
+                    Assert.Contains(itemName, testAssociatedItems);
+                }
+
+                foreach (string itemName in nonAssociatedItemNames)
+                {
+                    Assert.DoesNotContain(itemName, testAssociatedItems);
+                }
+            }
         }
 
 
         [Fact]
         public void TestGetAssociatedItemsSingle()
         {
+            var sampleItem = AllSampleItems.FirstOrDefault(si => !AssoicatedItemKeys.Contains(si.ItemKey) && si.BankKey == BankKey);
+            string associatedItems = AboutThisItemViewModelTranslations.GetAssociatedItems(
+                item: sampleItem,
+                allSampleItems: AllSampleItems);
 
+            Assert.Equal(sampleItem.ToString(), associatedItems);
         }
 
 
@@ -231,7 +256,11 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
         [Fact]
         public void TestGetAssociatedItemsNull()
         {
+            string associatedItems = AboutThisItemViewModelTranslations.GetAssociatedItems(
+                item: null,
+                allSampleItems: AllSampleItems);
 
+            Assert.Null(associatedItems);
         }
 
 
@@ -239,7 +268,14 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
         [Fact]
         public void TestGetAssociatedItemsEmpty()
         {
-
+            var sampleItem = AllSampleItems.FirstOrDefault(si => AssoicatedItemKeys.Contains(si.ItemKey) && si.BankKey == BankKey);
+            var emptySampleItems = new ImmutableArray<SampleItem>();
+            Assert.Throws<SampleItemsContextException>(() =>
+            {
+                AboutThisItemViewModelTranslations.GetAssociatedItems(
+                    item: sampleItem,
+                    allSampleItems: emptySampleItems);
+            });
         }
 
         #endregion

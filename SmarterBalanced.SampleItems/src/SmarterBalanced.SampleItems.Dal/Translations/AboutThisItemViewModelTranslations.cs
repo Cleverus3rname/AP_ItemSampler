@@ -1,10 +1,8 @@
 ﻿using SmarterBalanced.SampleItems.Dal.Exceptions;
 using SmarterBalanced.SampleItems.Dal.Providers.Models;
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
 
 namespace SmarterBalanced.SampleItems.Dal.Translations
 {
@@ -16,8 +14,8 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             ImmutableArray<SampleItem> allSampleItems)
         {
             if (sampleItem == null) return null;
-            if (itemCards.IsEmpty) throw new SampleItemsContextException("item cards cannot be empty");
-            if (allSampleItems.IsEmpty) throw new SampleItemsContextException("sample items cannot be empty");
+            if (itemCards == null || itemCards.IsEmpty) throw new SampleItemsContextException("item cards cannot be empty");
+            if (allSampleItems == null || allSampleItems.IsEmpty) throw new SampleItemsContextException("sample items cannot be empty");
 
             var itemCardViewModel = itemCards
                 .FirstOrDefault(card => card.BankKey == sampleItem.BankKey && card.ItemKey == sampleItem.ItemKey);
@@ -37,7 +35,8 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
         public static string GetAssociatedItems(SampleItem item, ImmutableArray<SampleItem> allSampleItems)
         {
             if (item == null) return null;
-            if (allSampleItems.IsEmpty) throw new SampleItemsContextException("sample items cannot be empty");
+            if (allSampleItems == null || allSampleItems.IsEmpty) throw new SampleItemsContextException("sample items cannot be empty");
+            if (!item.IsPerformanceItem) return item.ToString();
 
             var associatedItems = allSampleItems
                 .Where(i => i.IsPerformanceItem &&
