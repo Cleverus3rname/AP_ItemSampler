@@ -112,7 +112,7 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
                     repo.GetItemViewModel(
                         bankKey,
                         itemKey,
-                        It.Is<string[]>(ss => Enumerable.SequenceEqual(ss, iSAAP.Split(';'))),
+                        It.IsAny<string[]>(),
                         It.IsAny<Dictionary<string, string>>()))
                 .Returns(itemViewModel);
 
