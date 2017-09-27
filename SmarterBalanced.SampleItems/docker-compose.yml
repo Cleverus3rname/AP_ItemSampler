@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  smarterbalanced.sampleitems.web:
+    image: smarterbalanced.sampleitems.web
+    build:
+      context: ./src/SmarterBalanced.SampleItems.Web
+      dockerfile: Dockerfile
+    volumes: 
+      - /c/content:/app/content
+      - ./ClaimConfigurations:/app/config/claim
+      - ./AccessibilityAccommodationConfigurations:/app/config/accessibility
+      - ./InteractionTypeConfigurations:/app/config/interactions
+      - ./CoreStandardsConfigurations:/app/config/core
+    environment:
+      - SettingsConfig:ItemViewerServiceURL=http://localhost:8174
+      - SbContent:ContentRootDirectory=content
+      - SbContent:AccommodationsXMLPath=config/accessibility/AccessibilityConfig.xml
+      - SbContent:InteractionTypesXMLPath=config/interactions/InteractionTypes.xml
+      - SbContent:CoreStandardsXMLPath=config/core/CoreStandards.xml
+      - SbContent:ClaimsXMLPath=config/claim/ClaimsConfig.xml
+      - SbContent:PatchXMLPath=config/claim/ItemsPatch.xml
+    depends_on: 
+      - "ivs"
+  ivs: 
+    image: osucass/itemviewerservicecode:1.1.3
+    ports: 
+      - "8174:8080"
+    volumes: 
+      - /c/content:/home/tomcat7/content

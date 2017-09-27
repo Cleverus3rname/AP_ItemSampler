@@ -1,21 +1,15 @@
 language: csharp
 sudo: required
+dist: trusty
+dotnet: 2.0.0
+mono: none
 node_js: 
-  - "7"
+  - "8"
 python:
   - "2.7"
 services:
   - docker
-dist: trusty
-dotnet: 1.0.4
-mono: none
 
-language: csharp
-sudo: required
-node_js: 
-  - "7"
-python:
-  - "2.7"
 install: 
 #  - travis_retry pip install --upgrade pip
 #  - travis_retry pip install ecs-deploy
@@ -23,10 +17,8 @@ install:
   - export PATH=$PATH:$HOME/.local/bin
   - cd $TRAVIS_BUILD_DIR/SmarterBalanced.SampleItems/src/SmarterBalanced.SampleItems.Web
   - travis_retry npm install 
-  - travis_retry dotnet restore ../../
-
-services:
-  - docker
+  - travis_retry dotnet restore
+  - travis_retry dotnet restore ../SmarterBalanced.SampleItems.Test/
 
 before_script:
   - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
@@ -34,6 +26,7 @@ before_script:
   - echo "$TRAVIS_COMMIT"
   - export BUILD_NUMBER=$(echo $TRAVIS_BUILD_ID)
   - echo $BUILD_NUMBER
+
 script: 
   - dotnet build 
   - grunt all
@@ -50,7 +43,6 @@ after_success:
   - chmod ugo+x DeployScripts/app_docker_deploy.sh
   - chmod ugo+x DeployScripts/ecs_deploy.sh
   - chmod ugo+x DeployScripts/nuget_deploy.sh
-
 
 deploy:
   - provider: script

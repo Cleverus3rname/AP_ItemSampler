@@ -4,13 +4,13 @@
     <VersionPrefix>1.1.0</VersionPrefix>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>SmarterBalanced.SampleItems.Dal</AssemblyName>
-    <PackageId>SmarterBalanced.SampleItems.Dal</PackageId>
-    <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Authors>OSU CASS SDG</Authors>
+    <Company>Smarter Balanced</Company>
+    <Product>AP_ItemSampler DAL</Product>
+    <PackageProjectUrl>https://github.com/SmarterApp/AP_ItemSampler</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SmarterApp/AP_ItemSampler</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseUrl>https://github.com/SmarterApp/AP_ItemSampler/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
