@@ -8,8 +8,14 @@
     <AssemblyName>SmarterBalanced.SampleItems.Web</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>SmarterBalanced.SampleItems.Web</PackageId>
-    <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;dnxcore50;portable-net45+win8</PackageTargetFallback>
     <TypeScriptToolsVersion>2.4</TypeScriptToolsVersion>
+    <Authors>OSU CASS SDG</Authors>
+    <Company>Smarter Balanced</Company>
+    <Product>AP_ItemSampler</Product>
+    <PackageProjectUrl>https://github.com/SmarterApp/AP_ItemSampler</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SmarterApp/AP_ItemSampler</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseUrl>https://github.com/SmarterApp/AP_ItemSampler/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
   
   <ItemGroup>

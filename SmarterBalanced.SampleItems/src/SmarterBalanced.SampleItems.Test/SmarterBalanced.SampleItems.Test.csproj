@@ -8,8 +8,13 @@
     <AssemblyName>SmarterBalanced.SampleItems.Test</AssemblyName>
     <PackageId>SmarterBalanced.SampleItems.Test</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
-    <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;dnxcore50;portable-net45+win8</PackageTargetFallback>
+    <Authors>OSU CASS SDG</Authors>
+    <Company>Smarter Balanced</Company>
+    <Product>AP_ItemSampler Test</Product>
+    <PackageProjectUrl>https://github.com/SmarterApp/AP_ItemSampler</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SmarterApp/AP_ItemSampler</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseUrl>https://github.com/SmarterApp/AP_ItemSampler/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
