@@ -1,6 +1,7 @@
 ﻿import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import * as ItemCard from '../ItemCard';
+import * as ItemCard from '../ItemCard/ItemCard';
+import * as ItemCardModels from '../ItemCard/ItemCardModels';
 import * as ItemsSearchParams from './ItemsSearchParams';
 import * as GradeLevels from '../GradeLevels';
 import * as Models from './ItemsSearchModels';
@@ -14,7 +15,7 @@ namespace ItemsSearch {
     }
 
     export interface State {
-        searchResults: Resource<ItemCard.ItemCardViewModel[]>;
+        searchResults: Resource<ItemCardModels.ItemCardViewModel[]>;
     }
     
     export class ISComponent extends React.Component<Props, State> {
@@ -41,7 +42,7 @@ namespace ItemsSearch {
             this.props.apiClient.itemsSearch(params, this.onSearch.bind(this), this.onError.bind(this));
         }
 
-        onSearch(results: ItemCard.ItemCardViewModel[]) {
+        onSearch(results: ItemCardModels.ItemCardViewModel[]) {
             this.setState({ searchResults: { kind: "success", content: results } });
         }
 
@@ -53,7 +54,7 @@ namespace ItemsSearch {
             const searchResults = this.state.searchResults;
             if (searchResults.kind === "success" && searchResults.content && searchResults.content.length === 1) {
                 const searchResult = searchResults.content[0];
-                ItemCard.itemPageLink(searchResult.bankKey, searchResult.itemKey);
+                ItemCardModels.itemPageLink(searchResult.bankKey, searchResult.itemKey);
             }
         }
 
@@ -106,7 +107,7 @@ namespace ItemsSearch {
 
 interface ItemsSearchClient {
     itemsSearch(params: SearchAPIParams,
-        onSuccess: (data: ItemCard.ItemCardViewModel[]) => void,
+        onSuccess: (data: ItemCardModels.ItemCardViewModel[]) => void,
         onError?: (jqXHR: JQueryXHR, textStatus: string, errorThrown: string) => any): any;
 }
 

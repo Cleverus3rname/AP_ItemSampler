@@ -2,32 +2,19 @@
 import * as ReactDOM from 'react-dom';
 import * as $ from 'jquery';
 import * as AboutThisItem from './AboutThisItem';
+import * as AboutItemModels from './AboutItemModels';
 import { ItemFrame } from './ItemViewerFrame';
-
-interface InteractionType {
-    code: string;
-    label: string;
-    description: string;
-    order?: number;
-}
-
-interface AboutItemsViewModel {
-    interactionTypes: InteractionType[];
-    itemUrl: string;
-    selectedInteractionTypeCode: string;
-    aboutThisItemViewModel: AboutThisItem.Props;
-}
 
 namespace AboutItems {
 
     interface State {
         selectedCode: string;
         itemUrl: string;
-        aboutThisItemViewModel: AboutThisItem.Props;
+        aboutThisItemViewModel: AboutItemModels.AboutThisItemViewModel;
     }
 
-    export class AIComponent extends React.Component<AboutItemsViewModel, State>{
-        constructor(props: AboutItemsViewModel) {
+    export class AIComponent extends React.Component<AboutItemModels.AboutItemsViewModel, State>{
+        constructor(props: AboutItemModels.AboutItemsViewModel) {
             super(props);
 
             this.state = {
@@ -60,7 +47,7 @@ namespace AboutItems {
             });
         }
 
-        onFetchedUpdatedViewModel = (viewModel: AboutItemsViewModel) => {
+        onFetchedUpdatedViewModel = (viewModel: AboutItemModels.AboutItemsViewModel) => {
             if (!viewModel) {
                 console.log("An error occurred updating the item.");
                 return;
@@ -130,7 +117,7 @@ namespace AboutItems {
                       </div>
                     </div>
                     <ItemFrame url={this.state.itemUrl} />
-                    <AboutThisItem.ATIComponent {...this.state.aboutThisItemViewModel} />
+                    <AboutThisItem.AboutThisItemComponent {...this.state.aboutThisItemViewModel} />
                 </div>
             );
         }
@@ -158,7 +145,7 @@ namespace AboutItems {
 }
 
 
-export function initializeAboutItems(viewModel: AboutItemsViewModel) {
+export function initializeAboutItems(viewModel: AboutItemModels.AboutItemsViewModel) {
     ReactDOM.render(
         <AboutItems.AIComponent {...viewModel} />,
         document.getElementById("about-items") as HTMLElement

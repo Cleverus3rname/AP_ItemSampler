@@ -1,5 +1,6 @@
 ﻿import * as React from 'react';
-import { ItemCardViewModel, ItemCardCondensed } from '../ItemCard'
+import { ItemCardViewModel } from '../ItemCard/ItemCardModels';
+import * as ItemCardCondensed from '../ItemCard/ItemCardCondensed';
 
 export interface Column {
     label: string;
@@ -22,7 +23,7 @@ export class Modal extends React.Component<Props, {}> {
         const noneLabel = "No items found for this grade.";
 
         const items = column.itemCards.length ?
-            column.itemCards.map(c => <ItemCardCondensed key={c.bankKey + "-" + c.itemKey} {...c} />)
+            column.itemCards.map(c => <ItemCardCondensed.ItemCardCondensed key={c.bankKey + "-" + c.itemKey} {...c} />)
             : noneLabel;
 
         return (

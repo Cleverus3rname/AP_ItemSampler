@@ -11,6 +11,7 @@ import * as AboutPT from '../PerformanceType/AboutPT';
 import * as AboutPTPopup from '../PerformanceType/AboutPTPopup';
 import * as Braille from '../Accessibility/Braille';
 import * as Share from '../Modals/ShareModal';
+import * as ItemPageModels from './ItemPageModels';
 import { ItemFrame } from '../AboutItem/ItemViewerFrame';
 import * as $ from 'jquery';
 
@@ -73,31 +74,7 @@ function addDisabledPlaceholder(resource: Accessibility.AccessibilityResource): 
     }
 }
 
-export interface ItemIdentifier {
-    itemName: string;
-    bankKey: number;
-    itemKey: number;
-}
-
-export interface ViewModel {
-    itemViewerServiceUrl: string;
-    itemNames: string;
-    brailleItemNames: string;
-    brailleItem: ItemIdentifier;
-    nonBrailleItem: ItemIdentifier;
-    currentItem: ItemIdentifier;
-    accessibilityCookieName: string;
-    isPerformanceItem: boolean;
-    performanceItemDescription: string;
-    subject: string;
-    accResourceGroups: Accessibility.AccResourceGroup[];
-    moreLikeThisVM: MoreLikeThis.Props;
-    brailleItemCodes: string[];
-    braillePassageCodes: string[];
-
-}
-
-export interface Props extends ViewModel {
+export interface Props extends ItemPageModels.ItemPageViewModel {
     onSave: (selections: Accessibility.ResourceSelections) => void;
     onReset: () => void;
     aboutThisItemVM: AboutThisItem.Props;
@@ -224,7 +201,7 @@ export class Page extends React.Component<Props, State> {
         let isaap = toiSAAP(this.props.accResourceGroups);
         return (
             <div>
-                <AboutThisItem.ATIComponent {...this.props.aboutThisItemVM} />
+                <AboutThisItem.AboutThisItemComponent {...this.props.aboutThisItemVM} />
                 <AccessibilityModal.ItemAccessibilityModal
                     accResourceGroups={this.props.accResourceGroups}
                     onSave={this.props.onSave}

@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom';
 import * as Accessibility from '../Accessibility/Accessibility';
 import * as AboutThisItem from '../AboutItem/AboutThisItem';
 import * as ItemPage from './ItemPage';
+import * as ItemPageModels from './ItemPageModels';
 import * as Api from '../ApiModel';
 
 
@@ -10,12 +11,12 @@ export namespace ItemPageContainer {
 
     const AboutThisItemViewModelClient = (params:{bankKey: number, itemKey: number}) => Api.get<AboutThisItem.Props>("/Item/AboutThisItemViewModel",params);
     interface Props  {
-        itemPage: ItemPage.ViewModel;
+        itemPage: ItemPageModels.ItemPageViewModel;
     }
 
     interface State {
         aboutThisItem: Api.Resource<AboutThisItem.Props>
-        itemPageVM: ItemPage.ViewModel;
+        itemPageVM: ItemPageModels.ItemPageViewModel;
     }
 
     export class Container extends React.Component<Props, State>{
@@ -63,7 +64,7 @@ export namespace ItemPageContainer {
         }
 
         onReset = () => {
-            const itemPageVM: ItemPage.ViewModel = { ...this.props.itemPage };
+            const itemPageVM: ItemPageModels.ItemPageViewModel = { ...this.props.itemPage };
             document.cookie = itemPageVM.accessibilityCookieName.concat("=", "", "; path=/");
 
             const newAccResourceGroups = itemPageVM.accResourceGroups.map(g => {
@@ -127,7 +128,7 @@ export namespace ItemPageContainer {
     }
 }
 
-export function initializeItemPage(itemProps: ItemPage.ViewModel) {
+export function initializeItemPage(itemProps: ItemPageModels.ItemPageViewModel) {
     ReactDOM.render(<ItemPageContainer.Container itemPage={itemProps} />, document.getElementById("item-container"));
 }
 
