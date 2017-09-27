@@ -13,14 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Scripts\AboutItem\AboutItemDetail.tsx" />
-    <None Remove="Scripts\AboutItem\AboutItemModels.ts" />
-    <None Remove="Scripts\AboutItem\Rubric.tsx" />
-    <None Remove="Scripts\AboutItem\RubricEntry.tsx" />
-    <None Remove="Scripts\AboutItem\SampleResponse.tsx" />
-    <None Remove="Scripts\Models\Models.ts" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\js\" />
     <Folder Include="wwwroot\css\" />
@@ -72,15 +64,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.0.0" />
     <PackageReference Include="SimpleMvcSitemap" Version="3.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <TypeScriptCompile Include="Scripts\AboutItem\AboutItemDetail.tsx" />
-    <TypeScriptCompile Include="Scripts\AboutItem\AboutItemModels.ts" />
-    <TypeScriptCompile Include="Scripts\AboutItem\Rubric.tsx" />
-    <TypeScriptCompile Include="Scripts\AboutItem\RubricEntry.tsx" />
-    <TypeScriptCompile Include="Scripts\AboutItem\SampleResponse.tsx" />
-    <TypeScriptCompile Include="Scripts\Models\Models.ts" />
   </ItemGroup>
 
   <ItemGroup>
