@@ -53,7 +53,10 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
                 .ToImmutableArray();
 
             var aboutItems = sampleItems
-                .Select(item => AboutThisItemViewModel.FromSampleItem(item, itemCards))
+                .Select(item => AboutThisItemViewModelTranslations.FromSampleItem(
+                    sampleItem: item, 
+                    itemCards: itemCards, 
+                    allSampleItems: sampleItems))
                 .ToImmutableArray();
 
             var aboutInteractionTypes = LoadAboutInteractionTypes(interactionGroup);

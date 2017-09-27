@@ -15,7 +15,7 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
 
     public class ItemViewRepoTests
     {
-        SampleItem MathDigest, ElaDigest, DuplicateDigest, PerformanceDigest, PerformanceDigestDuplicate, BrailleItem, BrailleItemDuplicate, BrailleItemReplace;
+        SampleItem MathDigest, ElaDigest, DuplicateDigest, PerformanceDigest, PerformanceDigest2, BrailleItem, BrailleItemDuplicate, BrailleItemReplace;
 
         Subject Math, Ela, NotASubject;
         Claim Claim1, Claim2;
@@ -28,7 +28,7 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
         int GoodBankKey;
         int BadBankKey;
         int DuplicateItemKey, DuplicateBankKey;
-        ItemCardViewModel MathCard, ElaCard, DuplicateCard;
+        ItemCardViewModel MathCard, ElaCard, DuplicateCard, PerformanceCard, PerformanceCard2;
         Rubric TestRubric;
 
         public ItemViewRepoTests()
@@ -53,7 +53,9 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
             var duplicateDigest2 = SampleItem.Create(bankKey: GoodBankKey, itemKey: DuplicateItemKey);
 
             PerformanceDigest = SampleItem.Create(bankKey: GoodBankKey, itemKey: 209, isPerformanceItem: true, associatedStimulus: 1, fieldTestUse: fieldTestUseVar);
-            PerformanceDigestDuplicate = SampleItem.Create(bankKey: DuplicateBankKey, itemKey: 210, isPerformanceItem: true, associatedStimulus: 1, fieldTestUse: fieldTestUseVar);
+            PerformanceDigest2 = SampleItem.Create(bankKey: DuplicateBankKey, itemKey: 210, isPerformanceItem: true, associatedStimulus: 1, fieldTestUse: fieldTestUseVar);
+            PerformanceCard = ItemCardViewModel.Create(bankKey: GoodBankKey, itemKey: 209);
+            PerformanceCard2 = ItemCardViewModel.Create(bankKey: DuplicateBankKey, itemKey: 210);
 
             BrailleItem = SampleItem.Create(bankKey: GoodBankKey, itemKey: 211, isPerformanceItem: true, associatedStimulus: 1,
                 fieldTestUse: fieldTestUseVar,
@@ -74,8 +76,8 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
                 braillePassageCodes: ImmutableArray.Create("123"),
                 copiedFromItem: 211);
 
-            SampleItems = ImmutableArray.Create(MathDigest, ElaDigest, DuplicateDigest, DuplicateDigest, DuplicateDigest, PerformanceDigest, PerformanceDigestDuplicate, BrailleItem, BrailleItemDuplicate, BrailleItemReplace);
-            var itemCards = ImmutableArray.Create(MathCard, ElaCard, DuplicateCard, DuplicateCard, DuplicateCard);
+            SampleItems = ImmutableArray.Create(MathDigest, ElaDigest, DuplicateDigest, DuplicateDigest, DuplicateDigest, PerformanceDigest, PerformanceDigest2, BrailleItem, BrailleItemDuplicate, BrailleItemReplace);
+            var itemCards = ImmutableArray.Create(MathCard, ElaCard, DuplicateCard, DuplicateCard, DuplicateCard, PerformanceCard, PerformanceCard2);
 
             Math = new Subject("Math", "", "", new ImmutableArray<Claim>() { }, new ImmutableArray<string>() { });
             Ela = new Subject("ELA", "", "", new ImmutableArray<Claim>() { }, new ImmutableArray<string>() { });
@@ -90,8 +92,16 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
             var aboutGoodItem = AboutThisItemViewModel.Create(
                 rubrics: ImmutableArray.Create(TestRubric),
                 itemCard: MathCard,
-                depthOfKnowledge: "TestDepth");
-            var aboutItems = ImmutableArray.Create(aboutGoodItem);
+                depthOfKnowledge: "TestDepth",
+                associatedItems: "about good item associated items");
+            var aboutPerformanceItem = AboutThisItemViewModel.Create(
+                itemCard: PerformanceCard,
+                associatedItems: "performance item 1 associated items");
+            var aboutPerformanceItem2 = AboutThisItemViewModel.Create(
+                itemCard: PerformanceCard2,
+                associatedItems: "performance item 2 associated items");
+
+            var aboutItems = ImmutableArray.Create(aboutGoodItem, aboutPerformanceItem, aboutPerformanceItem2);
 
             Context = SampleItemsContext.Create(sampleItems: SampleItems, itemCards: itemCards, appSettings: settings, aboutAllItems: aboutItems);
 
@@ -159,6 +169,35 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
             return moreCards.ToImmutableArray();
         }
 
+        #region GetItemNames
+
+        public void TestGetItemNamesPerformanceItems()
+        {
+            string itemNames1 = ItemViewRepo.GetItemNames(PerformanceDigest);
+            string itemNames2 = ItemViewRepo.GetItemNames(PerformanceDigest2);
+
+            Assert.Equal("performance item 1 associated items", itemNames1);
+            Assert.Equal("performance item 2 associated items", itemNames2);
+        }
+
+        [Fact]
+        public void TestGetItemNamesNotPerformance()
+        {
+            string itemNames = ItemViewRepo.GetItemNames(MathDigest);
+
+            Assert.Equal(MathDigest.ToString(), itemNames);
+        }
+
+        [Fact]
+        public void TestGetItemNamesNullItem()
+        {
+            string itemNames = ItemViewRepo.GetItemNames(null);
+
+            Assert.Empty(itemNames);
+        }
+
+        #endregion
+
         #region GetItemDigest/Card
 
         [Fact]
@@ -196,15 +235,6 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
 
             Assert.NotNull(url);
             Assert.Equal("1-4", url);
-        }
-
-        [Fact]
-        public void TestGetItemUrlMultiple()
-        {
-            var url = ItemViewRepo.GetItemNames(PerformanceDigest);
-
-            Assert.NotNull(url);
-            Assert.Equal("1-209,5-210,1-211,5-212", url);
         }
 
         [Fact]
@@ -319,18 +349,17 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
             Assert.Null(aboutThisItemViewModel);
         }
 
+        [Fact]
+        public void TestGetItemNames()
+        {
+            string itemNames = ItemViewRepo.GetItemNames(MathDigest);
+
+            Assert.Equal("1-4", itemNames);
+        }
+
         #endregion
 
         #region BrailleItems
-        [Fact]
-        public void TestGoodGetItemNames()
-        {
-            var item = ItemViewRepo.GetItemNames(PerformanceDigest);
-            var associatedItems = ItemViewRepo.GetItemNames(PerformanceDigest);
-
-            Assert.True(item.Contains(associatedItems.ElementAt(0)));
-            Assert.True(item.Contains(associatedItems.ElementAt(1)));
-        }
 
         [Fact]
         public void TestBadGetItemNames()
