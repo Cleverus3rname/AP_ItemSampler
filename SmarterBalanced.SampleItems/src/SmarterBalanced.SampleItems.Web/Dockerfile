@@ -1,7 +1,6 @@
-FROM microsoft/aspnetcore:2.0.0
-ARG source=.
+FROM microsoft/aspnetcore:2.0
+ARG source
 WORKDIR /app
-COPY $source .
 EXPOSE 80
+COPY ${source:-.} .
 ENTRYPOINT ["dotnet", "SmarterBalanced.SampleItems.Web.dll"]
-

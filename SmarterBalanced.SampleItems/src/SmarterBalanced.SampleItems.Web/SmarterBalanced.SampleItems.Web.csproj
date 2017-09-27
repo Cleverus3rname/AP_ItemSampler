@@ -16,6 +16,7 @@
     <RepositoryUrl>https://github.com/SmarterApp/AP_ItemSampler</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseUrl>https://github.com/SmarterApp/AP_ItemSampler/blob/master/LICENSE</PackageLicenseUrl>
+    <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
   
   <ItemGroup>
@@ -79,5 +80,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-</Project>
+  </Project>
