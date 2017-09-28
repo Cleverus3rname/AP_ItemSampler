@@ -1,4 +1,4 @@
-﻿import * as Dropdown from './DropDown';
+﻿import * as Dropdown from '../DropDown/DropDown';
 
 export interface AccessibilityResource {
     resourceCode: string; // ID for this resource

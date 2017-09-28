@@ -1,8 +1,8 @@
 ﻿import * as React from 'react'
-import * as AboutItemModels from './AboutItemModels';
+import * as AboutItemModels from '../AboutItem/AboutItemModels';
 import * as RubricEntry from './RubricEntry';
-import * as Collapsible from './Collapsible';
-import * as SampleResponse from './SampleResponse';
+import * as Collapsible from '../AboutItem/Collapsible';
+import * as SampleResponse from '../SampleResponse/SampleResponse';
 
 export class RubricComponent extends React.Component<AboutItemModels.Rubric, {}> {
 

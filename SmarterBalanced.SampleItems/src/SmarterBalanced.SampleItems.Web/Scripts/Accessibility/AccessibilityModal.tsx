@@ -1,6 +1,6 @@
 ﻿import * as React from 'react';
 import * as Accessibility from './Accessibility';
-import * as Dropdown from './DropDown';
+import * as Dropdown from '../DropDown/DropDown';
 interface Props {
     accResourceGroups: Accessibility.AccResourceGroup[];
     onSave(selections: Accessibility.ResourceSelections): void;

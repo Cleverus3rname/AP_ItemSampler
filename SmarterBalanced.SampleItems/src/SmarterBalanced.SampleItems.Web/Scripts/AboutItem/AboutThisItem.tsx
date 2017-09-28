@@ -1,7 +1,7 @@
 ﻿import * as React from 'react';
 import * as Collapsible from './Collapsible';
 import * as AboutItemModels from './AboutItemModels';
-import * as Rubric from './Rubric';
+import * as Rubric from '../Rubric/Rubric';
 import * as AboutItemDetail from './AboutItemDetail';
 
 export interface Props extends AboutItemModels.AboutThisItemViewModel {

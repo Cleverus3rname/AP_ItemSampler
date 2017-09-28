@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as Accessibility from '../Accessibility/Accessibility';
 import * as AccessibilityModal from '../Accessibility/AccessibilityModal';
-import * as Dropdown from '../Accessibility/DropDown';
+import * as Dropdown from '../DropDown/DropDown';
 import * as MoreLikeThis from '../Modals/MoreLikeThisModal';
 import * as AboutThisItem from '../AboutItem/AboutThisItem';
 import * as AboutPT from '../PerformanceType/AboutPT';
