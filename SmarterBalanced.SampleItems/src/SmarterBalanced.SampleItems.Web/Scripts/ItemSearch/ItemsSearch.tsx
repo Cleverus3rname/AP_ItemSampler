@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import * as ItemCard from '../ItemCard/ItemCard';
 import * as ItemCardModels from '../ItemCard/ItemCardModels';
 import * as ItemsSearchParams from './ItemsSearchParams';
-import * as GradeLevels from '../GradeLevels';
+import * as GradeLevels from '../GradeLevels/GradeLevels';
 import * as Models from './ItemsSearchModels';
 import { Resource } from '../ApiModel';
 

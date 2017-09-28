@@ -1,4 +1,4 @@
-﻿import * as GradeLevels from '../GradeLevels';
+﻿import * as GradeLevels from '../GradeLevels/GradeLevels';
 
 export function itemPageLink(bankKey: number, itemKey: number) {
     window.location.href = "/Item/Details?bankKey=" + bankKey + "&itemKey=" + itemKey;

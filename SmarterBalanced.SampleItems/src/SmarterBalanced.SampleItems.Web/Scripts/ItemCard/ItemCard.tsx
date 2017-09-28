@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import * as GradeLevels from '../GradeLevels';
+import * as GradeLevels from '../GradeLevels/GradeLevels';
 import * as ItemCardModels from './ItemCardModels';
 
 
