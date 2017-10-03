@@ -26,7 +26,7 @@ function parseQueryString(url: string): { [key: string]: string[] | undefined } 
 export interface Props {
     interactionTypes: Models.InteractionType[];
     subjects: Models.Subject[];
-    onChange: (params: ItemsSearch.SearchAPIParams) => void;
+    onChange: (params: Models.SearchAPIParams) => void;
     selectSingleResult: () => void;
     isLoading: boolean;
 }
@@ -129,7 +129,7 @@ export class ISPComponent extends React.Component<Props, State> {
     }
 
     onChange() {
-        const params: ItemsSearch.SearchAPIParams = {
+        const params: Models.SearchAPIParams = {
             itemId: this.state.itemId || "",
             gradeLevels: this.state.gradeLevels || GradeLevels.GradeLevels.All,
             subjects: this.state.subjects || [],

@@ -1,6 +1,6 @@
 ﻿import * as React from 'react';
 import * as AboutItemModels from '../AboutItem/AboutItemModels';
-import * as Collapsible from '../AboutItem/Collapsible';
+import * as Collapsible from './Collapsible';
 
 export class RubricEntryComponent extends React.Component<AboutItemModels.RubricEntry, {}> {
     render() {

@@ -12,67 +12,8 @@ import * as AboutPTPopup from '../PerformanceType/AboutPTPopup';
 import * as Braille from '../Accessibility/Braille';
 import * as Share from '../Modals/ShareModal';
 import * as ItemPageModels from './ItemPageModels';
-import { ItemFrame } from '../AboutItem/ItemViewerFrame';
+import { ItemFrame } from '../ItemViewer/ItemViewerFrame';
 import * as $ from 'jquery';
-
-function toiSAAP(accResourceGroups: Accessibility.AccResourceGroup[]): string {
-    let isaapCodes = "TDS_ITM1;TDS_APC_SCRUBBER;"; // always enable item tools menu
-    for (let group of accResourceGroups) {
-        for (let res of group.accessibilityResources) {
-            if (res.currentSelectionCode && !res.disabled) {
-                isaapCodes += res.currentSelectionCode + ";";
-            }
-        }
-    }
-
-    return encodeURIComponent(isaapCodes);
-}
-
-export function resetResource(model: Accessibility.AccessibilityResource): Accessibility.AccessibilityResource {
-    const newModel = Object.assign({}, model);
-    newModel.currentSelectionCode = model.defaultSelection;
-    return newModel;
-}
-
-function trimAccResource(resource: Accessibility.AccessibilityResource): { label: string, selectedCode: string } {
-    return {
-        label: resource.label,
-        selectedCode: resource.currentSelectionCode,
-    };
-}
-
-export function toCookie(accGroups: Accessibility.AccResourceGroup[]): string {
-    let prefs: Accessibility.ResourceSelections = {};
-    for (const group of accGroups) {
-        for (const resource of group.accessibilityResources) {
-            prefs[resource.resourceCode] = resource.currentSelectionCode;
-        }
-    }
-
-    const json = JSON.stringify(prefs);
-    const cookie = btoa(json);
-    return cookie;
-}
-
-function addDisabledPlaceholder(resource: Accessibility.AccessibilityResource): Accessibility.AccessibilityResource {
-    if (resource.disabled) {
-        let newSelection = { ...resource };
-        let disabledOption: Dropdown.Selection = {
-            label: "Disabled for item",
-            selectionCode: "",
-            disabled: true,
-            order: 0,
-            hidden: false
-        };
-        newSelection.selections.push(disabledOption);
-        newSelection.currentSelectionCode = "";
-        return newSelection;
-    }
-    return resource; function readCookie(name: string): string | undefined {
-        var cookie = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-        return cookie ? cookie.pop() : '';
-    }
-}
 
 export interface Props extends ItemPageModels.ItemPageViewModel {
     onSave: (selections: Accessibility.ResourceSelections) => void;
@@ -80,9 +21,7 @@ export interface Props extends ItemPageModels.ItemPageViewModel {
     aboutThisItemVM: AboutThisItem.Props;
 }
 
-interface State { }
-
-export class Page extends React.Component<Props, State> {
+export class Page extends React.Component<Props, {}> {
     constructor(props: Props) {
         super(props);
     }
@@ -198,7 +137,7 @@ export class Page extends React.Component<Props, State> {
     }
 
     renderModalFrames(): JSX.Element {
-        let isaap = toiSAAP(this.props.accResourceGroups);
+        let isaap = ItemPageModels.toiSAAP(this.props.accResourceGroups);
         return (
             <div>
                 <AboutThisItem.AboutThisItemComponent {...this.props.aboutThisItemVM} />
@@ -215,7 +154,7 @@ export class Page extends React.Component<Props, State> {
     }
 
     renderIFrame(): JSX.Element {
-        let isaap = toiSAAP(this.props.accResourceGroups);
+        let isaap = ItemPageModels.toiSAAP(this.props.accResourceGroups);
         const itemNames = (Accessibility.isBrailleEnabled(this.props.accResourceGroups)) ? this.props.brailleItemNames : this.props.itemNames;
         let scrollTo: string = Accessibility.isStreamlinedEnabled(this.props.accResourceGroups) ? "" : ("&scrollToId=").concat(this.props.currentItem.itemName);
         let ivsUrl: string = this.props.itemViewerServiceUrl.concat("/items?ids=", itemNames, "&isaap=", isaap, scrollTo);

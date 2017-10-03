@@ -43,7 +43,7 @@ export class ItemCard extends React.Component<ItemCardModels.ItemCardViewModel, 
                     </p>
                     <p className="card-text target">
                         <span className="card-text-label">Target:</span>
-                        <span className="card-text-value"> {this.props.targetShortName}</span>
+                        <span className="card-text-value">{this.props.targetShortName}</span>
                     </p>
                     <p className="card-text interaction-type">
                         <span className="card-text-label">Item Type:</span>

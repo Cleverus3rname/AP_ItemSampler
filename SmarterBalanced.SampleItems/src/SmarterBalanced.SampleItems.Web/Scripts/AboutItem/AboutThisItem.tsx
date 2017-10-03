@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import * as Collapsible from './Collapsible';
+import * as Collapsible from '../Rubric/Collapsible';
 import * as AboutItemModels from './AboutItemModels';
 import * as Rubric from '../Rubric/Rubric';
 import * as AboutItemDetail from './AboutItemDetail';

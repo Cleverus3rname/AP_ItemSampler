@@ -2,9 +2,9 @@
 
 module.exports = {
   entry: {
-      "sb.itemsampler.aboutitems": "./Scripts/AboutItem/AboutItems.tsx",
-      "sb.itemsampler.itemssearch": "./Scripts/ItemSearch/ItemsSearch.tsx",
-      "sb.itemsampler.itempagecontainer": "./Scripts/App/ItemPageContainer.tsx",
+      "sb.itemsampler.aboutitems": "./Scripts/AboutItem/Index.tsx",
+      "sb.itemsampler.itemssearch": "./Scripts/ItemSearch/Index.tsx",
+      "sb.itemsampler.itempagecontainer": "./Scripts/ItemPage/Index.tsx",
       "polyfill": "./Scripts/Polyfill.ts"
   },
 

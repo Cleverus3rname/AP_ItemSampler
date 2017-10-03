@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import * as Collapsible from '../AboutItem/Collapsible';
+import * as Collapsible from '../Rubric/Collapsible';
 import * as AboutItemModels from '../AboutItem/AboutItemModels';
 
 export class SampleResponseComponent extends React.Component<AboutItemModels.SampleResponse, {}> {

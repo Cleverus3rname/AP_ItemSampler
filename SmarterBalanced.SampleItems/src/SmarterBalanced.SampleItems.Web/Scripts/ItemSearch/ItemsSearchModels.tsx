@@ -1,4 +1,7 @@
-﻿export interface SubjectClaims {
+﻿import * as GradeLevels from "../GradeLevels/GradeLevels";
+import * as ItemCardModels from '../ItemCard/ItemCardModels';
+
+export interface SubjectClaims {
     [subject: string]: { text: string; value: string }[];
 }
 
@@ -25,3 +28,21 @@ export interface Target {
     name: string;
     nameHash: number;
 }
+
+
+export interface SearchAPIParams {
+    itemId: string;
+    gradeLevels: GradeLevels.GradeLevels;
+    subjects: string[];
+    claims: string[];
+    interactionTypes: string[];
+    performanceOnly: boolean;
+    targets: number[];
+}
+
+export interface ItemsSearchViewModel {
+    interactionTypes: InteractionType[];
+    subjects: Subject[];
+}
+
+

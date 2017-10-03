@@ -3,7 +3,10 @@ import * as ReactDOM from 'react-dom';
 import * as $ from 'jquery';
 import * as AboutThisItem from './AboutThisItem';
 import * as AboutItemModels from './AboutItemModels';
-import { ItemFrame } from './ItemViewerFrame';
+import { ItemFrame } from '../ItemViewer/ItemViewerFrame';
+import * as Api from '../ApiModel';
+
+const AboutThisItemViewModelClient = (params: { interactionTypeCode: string }) => Api.get<AboutItemModels.AboutItemsViewModel>("/Item/AboutItemsViewModel", params);
 
 interface State {
     selectedCode: string;
@@ -36,13 +39,7 @@ export class AboutItemComponent extends React.Component<AboutItemModels.AboutIte
             interactionTypeCode: newCode
         };
 
-        $.ajax({
-            dataType: "JSON",
-            type: "GET",
-            url: "/AboutItems/GetItemUrl",
-            data: params,
-            success: this.onFetchedUpdatedViewModel
-        });
+        AboutThisItemViewModelClient(params).then((data) => this.onFetchedUpdatedViewModel(data)).catch();
     }
 
     onFetchedUpdatedViewModel = (viewModel: AboutItemModels.AboutItemsViewModel) => {
@@ -139,13 +136,4 @@ export class AboutItemComponent extends React.Component<AboutItemModels.AboutIte
             </div>
         );
     }
-}
-
-
-
-export function initializeAboutItems(viewModel: AboutItemModels.AboutItemsViewModel) {
-    ReactDOM.render(
-        <AboutItemComponent {...viewModel} />,
-        document.getElementById("about-items") as HTMLElement
-    );
 }
