@@ -6,16 +6,31 @@
     "removeComments": false,
     "sourceMap": true,
     "target": "es5",
-    "module": "es2015",
     "outDir": "../wwwroot/scripts",
     "jsx": "react",
     "strictNullChecks": true,
-    "lib": ["dom", "es6"]
+    "lib": [ "dom", "es6" ]
   },
   "exclude": [
     "node_modules",
     "wwwroot"
   ],
+
+  "types": [
+    "jest"
+  ],
+  "typeRoots": [
+    "../node_modules/@types"
+  ],
+
+  "jest": {
+    "moduleDirectories": [
+      "node_modules"
+    ]
+  },
+
+  "include": [ "**/__tests__/*.test.tsx", "**/__tests__/*.test.ts" ],
+
   "compileOnSave": true
 
 }

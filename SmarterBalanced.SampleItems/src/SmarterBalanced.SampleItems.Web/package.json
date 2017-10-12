@@ -19,14 +19,47 @@
     "react": "15.6.1",
     "react-dom": "15.6.1",
     "source-map-loader": "0.2.1",
-    "typescript": "2.4.2",
-    "webpack": "3.4.0"
-  },
-  "dependencies": {
+    "typescript": "2.5.3",
+    "webpack": "3.4.0",
+    "react-test-renderer": "15.6.1",
     "@types/bootstrap": "3.3.32",
     "@types/google.analytics": "0.0.29",
     "@types/jquery": "2.0.40",
     "@types/react": "15.0.39",
-    "@types/react-dom": "15.5.1"
+    "@types/react-dom": "15.5.1",
+    "jest": "20.0.4",
+    "@types/jest": "^20.0.8"
+  },
+  "dependencies": {},
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "./node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "/__tests__/.*\\.(ts|tsx?)$",
+    "collectCoverageFrom": [
+      "src/**/*.tsx",
+      "!src/**/__tests__/*",
+      "!src/index.tsx"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "./Scripts/tsconfig.json"
+      },
+      "babelConfig": {
+        "presets": [
+          "env"
+        ],
+        "plugins": [
+          "transform-es2015-modules-commonjs"
+        ]
+      }
+    },
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "json",
+      "ts",
+      "tsx"
+    ]
   }
 }

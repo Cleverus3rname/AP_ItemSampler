@@ -1,4 +1,6 @@
 ﻿import * as React from 'react';
+import * as $ from "jquery";
+import * as Boostrap from 'bootstrap';
 
 export interface Props {
     subject: string;
@@ -27,9 +29,7 @@ export class Modal extends React.Component<Props, {}> {
             document.cookie = "visitedELAPerfItem=true";
         }
         if (!visitedBefore) {
-            $(window).load(function () {
-                $('#about-performance-tasks-popup-modal-container').modal('show');
-            });
+            $('#about-performance-tasks-popup-modal-container').modal('show');
         }
     }
     getSubjectText(): string {
