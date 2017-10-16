@@ -31,6 +31,7 @@ export class AboutThisItemComponent extends React.Component<Props, {}> {
                         </div>
                         <div className="modal-body">
                             <AboutItemDetail.AboutThisItemDetailComponent {...this.props} />
+                            {rubrics}
                         </div>
                         <div className="modal-footer">
                             <button className="btn btn-primary" form="accessibility-form" data-dismiss="modal">Close</button>
