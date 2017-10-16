@@ -20,10 +20,12 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
         public string InteractionTypeLabel { get; }
         public bool IsPerformanceItem { get; set; }
         public bool AslSupported { get; }
-        public int? StimulusKey { get;}
+        public int? StimulusKey { get; }
         public string TargetDescription { get; }
         public string CcssDescription { get; }
         public string DepthOfKnowledge { get; }
+        public string Exemplar { get; }
+        public string Rubric { get; }
         public string Url { get; }
 
         public SampleItemViewModel(
@@ -44,7 +46,9 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
         string targetDescription,
         string ccssDescription,
         string url,
-        string depthOfKnowledge)
+        string depthOfKnowledge,
+        string exemplar,
+        string rubric)
         {
             BankKey = bankKey;
             ItemKey = itemKey;
@@ -64,6 +68,8 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
             CcssDescription = ccssDescription;
             DepthOfKnowledge = depthOfKnowledge;
             Url = url;
+            Rubric = rubric;
+            Exemplar = exemplar;
         }
 
         /// <summary>
@@ -87,7 +93,9 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
            string targetDesc = "",
            string ccssDesc = "",
            string depthOfKnowledge = "",
-           string url = "")
+           string url = "",
+           string exemplar = "",
+           string rubric = "")
         {
             return new SampleItemViewModel(
                 bankKey: bankKey,
@@ -107,7 +115,9 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
                 ccssDescription: ccssDesc,
                 targetDescription: targetDesc,
                 url: url,
-                depthOfKnowledge: depthOfKnowledge);
+                depthOfKnowledge: depthOfKnowledge,
+                exemplar: exemplar,
+                rubric: rubric);
         }
 
     }

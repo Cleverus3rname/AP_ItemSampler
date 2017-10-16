@@ -15,7 +15,15 @@ namespace SmarterBalanced.SampleItems.Core.Translations
             string claimTitle = (string.IsNullOrEmpty(sampleItem.Claim?.ClaimNumber)) ? string.Empty : $"Claim {sampleItem.Claim.ClaimNumber}";
             string title = $"{sampleItem.Subject?.ShortLabel} {sampleItem.Grade.ToDisplayString()} {claimTitle}";
             string url = $"{baseUrl}/Item/Details?bankKey={sampleItem.BankKey}&itemKey={sampleItem.ItemKey}";
-
+            var rubricEntries = sampleItem.Rubrics
+                .SelectMany(r => r.RubricEntries)
+                .Select(re => $"Score Point {re.Scorepoint}: {re.Value}\r\n");
+            string rubricString = String.Join("---\r\n", rubricEntries);
+            var examples = sampleItem.Rubrics
+                .SelectMany(r => r.Samples)
+                .SelectMany(r => r.SampleResponses)
+                .Select(sr => $"Score Point {sr.ScorePoint}: {sr.SampleContent}\r\n");
+            string examplesString = String.Join("---\r\n", examples);
             var vm = SampleItemViewModel.Create(
              bankKey: sampleItem.BankKey,
              itemKey: sampleItem.ItemKey,
@@ -33,8 +41,10 @@ namespace SmarterBalanced.SampleItems.Core.Translations
              stimulusKey: sampleItem.AssociatedStimulus,
              ccssDesc: sampleItem.CoreStandards?.CommonCoreStandardsDescription,
              targetDesc: sampleItem.CoreStandards?.Target.Descripton,
-             url : url,
-             depthOfKnowledge: sampleItem.DepthOfKnowledge);
+             url: url,
+             depthOfKnowledge: sampleItem.DepthOfKnowledge,
+             exemplar: examplesString,
+             rubric: rubricString);
 
             return vm;
         }
@@ -47,7 +57,7 @@ namespace SmarterBalanced.SampleItems.Core.Translations
                     bankKey: sampleItem.BankKey);
 
             return item;
-           
+
         }
     }
 }
