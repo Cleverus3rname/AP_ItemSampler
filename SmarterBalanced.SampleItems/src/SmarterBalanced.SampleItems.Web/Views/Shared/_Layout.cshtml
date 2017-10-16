@@ -60,13 +60,13 @@
     </footer>
 
     <environment names="Development">
-        <script src="~/scripts/Polyfill.js"></script>
+        <script src="~/scripts/polyfill.min.js"></script>
         <script>  window.ga = function () {console.log(arguments)} </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.js"></script>
     </environment>
     <environment names="Staging,Production">
-        <script src="~/scripts/Polyfill.min.js"></script>
+        <script src="~/scripts/polyfill.min.js"></script>
         
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.min.js"></script>
