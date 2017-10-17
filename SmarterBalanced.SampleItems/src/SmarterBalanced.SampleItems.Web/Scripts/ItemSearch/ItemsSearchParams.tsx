@@ -136,7 +136,7 @@ export class ISPComponent extends React.Component<Props, State> {
             claims: this.state.claims || [],
             interactionTypes: this.state.interactionTypes || [],
             performanceOnly: this.state.performanceOnly || false,
-            targets: this.state.targets
+            targets: this.state.targets || []
         };
         this.props.onChange(params);
     }

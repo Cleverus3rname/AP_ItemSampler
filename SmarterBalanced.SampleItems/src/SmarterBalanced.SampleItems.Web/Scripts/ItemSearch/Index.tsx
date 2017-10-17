@@ -7,7 +7,7 @@ import * as ItemCardModels from "../ItemCard/ItemCardModels"
 
 
 export function initializeItemsSearch(viewModel: ItemSearchModels.ItemsSearchViewModel) {
-    const searchClient = () => get<ItemCardModels.ItemCardViewModel[]>("/BrowseItems/search");
+    const searchClient = (params: ItemSearchModels.SearchAPIParams) => get<ItemCardModels.ItemCardViewModel[]>("/BrowseItems/search", params);
     const props = { ...viewModel, itemsSearchClient: searchClient };
 
     ReactDOM.render(
