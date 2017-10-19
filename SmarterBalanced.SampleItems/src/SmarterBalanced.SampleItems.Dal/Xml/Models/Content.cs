@@ -17,5 +17,9 @@ namespace SmarterBalanced.SampleItems.Dal.Xml.Models
         [XmlArray("attachmentlist")]
         [XmlArrayItem("attachment")]
         public List<Attachment> Attachments { get; set; }
+
+        [XmlArray("optionlist")]
+        [XmlArrayItem("option")]
+        public List<SmarterAppOption> ScoringOptions { get; set; }
     }
 }

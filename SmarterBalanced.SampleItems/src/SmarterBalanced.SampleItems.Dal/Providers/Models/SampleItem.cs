@@ -23,6 +23,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         public ImmutableArray<Rubric> Rubrics { get; }
         public InteractionType InteractionType { get; }
         public ImmutableArray<AccessibilityResourceGroup> AccessibilityResourceGroups { get; }
+        public ImmutableArray<SmarterAppOption> ScoringOptions { get; set; }
+
         public string TargetAssessmentType { get; }
         public string SufficentEvidenceOfClaim { get; }
         public int? AssociatedStimulus { get; }
@@ -67,7 +69,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             int? copiedFromitem,
             string educationalDifficulty,
             string evidenceStatement,
-            string domain
+            string domain,
+            ImmutableArray<SmarterAppOption> scoringOptions
             )
         {
             BankKey = bankKey;
@@ -96,6 +99,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             EducationalDifficulty = educationalDifficulty;
             EvidenceStatement = evidenceStatement;
             Domain = domain;
+            ScoringOptions = scoringOptions;
         }
 
         public static SampleItem Create(
@@ -124,7 +128,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             int? copiedFromItem = null,
             string educationalDifficulty = "",
             string evidenceStatement = "",
-            string domain = "")
+            string domain = "",
+            ImmutableArray<SmarterAppOption> scoringOptions = new ImmutableArray<SmarterAppOption>())
         {
             return new SampleItem(
                 bankKey,
@@ -152,7 +157,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
                 copiedFromItem,
                 educationalDifficulty,
                 evidenceStatement,
-                domain: domain);
+                domain: domain,
+                scoringOptions: scoringOptions);
         }
 
         public override string ToString()

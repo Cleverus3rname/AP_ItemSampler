@@ -126,6 +126,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
 
             string interactionTypeSubCat = "";
             settings.SbContent.InteractionTypesToItem.TryGetValue(itemDigest.ToString(), out interactionTypeSubCat);
+            var scoringOptions = GetScoringOptions(itemDigest);
 
             SampleItem sampleItem = new SampleItem(
                 itemType: itemType,
@@ -153,7 +154,8 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 copiedFromitem: copiedFromItem,
                 educationalDifficulty: itemDigest.EducationalDifficulty,
                 evidenceStatement: itemDigest.EvidenceStatement,
-                domain: identifier?.ContentDomain);
+                domain: identifier?.ContentDomain,
+                scoringOptions: scoringOptions);
 
             return sampleItem;
         }
@@ -376,6 +378,21 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             var match = Regex.Match(input: desc, pattern: @"^(?=.*\bCloned\b)(?=.*\b(\d{4,6})).*$");
 
             return match.Success && int.TryParse(match.Groups[1]?.Value, out val) ? (int?)val : null;
+        }
+
+        //TODO: Move somewhere
+        private static ImmutableArray<SmarterAppOption> GetScoringOptions(ItemDigest digest)
+        {
+            var options = digest.Contents
+                .SelectMany(c => c.ScoringOptions.Select(so => so.WithOptions(false, c.Language)));
+
+            return options.ToImmutableArray();
+        }
+
+        //TODO Move somewhere, do we need?
+        private static bool IsCorrectScoreOption(SmarterAppOption option)
+        {
+            return false; 
         }
     }
 }

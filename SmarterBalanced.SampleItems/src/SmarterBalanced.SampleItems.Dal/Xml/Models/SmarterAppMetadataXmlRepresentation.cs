@@ -35,6 +35,8 @@ namespace SmarterBalanced.SampleItems.Dal.Xml.Models
         [XmlElement("StandardPublication")]
         public List<StandardPublication> StandardPublications { get; set; }
 
+     
+
         [XmlElement("AccessibilityTagsASLLanguage")]
         public string AccessibilityTagsASLLanguage { get; set; }
 
