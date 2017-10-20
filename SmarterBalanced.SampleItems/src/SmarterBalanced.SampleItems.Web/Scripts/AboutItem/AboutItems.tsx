@@ -6,7 +6,7 @@ import * as AboutItemModels from './AboutItemModels';
 import { ItemFrame } from '../ItemViewer/ItemViewerFrame';
 import * as Api from '../ApiModel';
 
-const AboutThisItemViewModelClient = (params: { interactionTypeCode: string }) => Api.get<AboutItemModels.AboutItemsViewModel>("/Item/AboutItemsViewModel", params);
+const AboutThisItemViewModelClient = (params: { interactionTypeCode: string }) => Api.get<AboutItemModels.AboutItemsViewModel>("/AboutItems/GetItemUrl", params);
 
 interface State {
     selectedCode: string;
@@ -39,6 +39,7 @@ export class AboutItemComponent extends React.Component<AboutItemModels.AboutIte
             interactionTypeCode: newCode
         };
 
+        console.log("DEBUGING:   ",params);
         AboutThisItemViewModelClient(params).then((data) => this.onFetchedUpdatedViewModel(data)).catch();
     }
 
