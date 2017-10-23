@@ -100,16 +100,16 @@ textarea {
     cursor: pointer;
     margin: 26px;
     font-size: @font-size-base;
-    box-shadow: inset 0 0 0 transparent,0 0px 5px #959595;
+    box-shadow: @card-shadow;
 }
 
-    .card:hover {
-        box-shadow: inset 0 0 0 transparent,0 0px 15px #909090;
-    }
+.card:hover {
+    box-shadow: @card-shadow;
+}
 
-    .card:focus {
-        box-shadow: inset 0 0 0 transparent,0 0px 15px #909090;
-    }
+.card:focus {
+    box-shadow: @card-shadow;
+}
 
 .card.ela {
     border-color: @sb-blue;
@@ -138,9 +138,9 @@ textarea {
         cursor: default;
     }
 
-    .card-static:hover {
-        box-shadow: inset 0 0 0 transparent,0 0px 5px #959595;
-    }
+.card-static:hover {
+    box-shadow: @card-shadow;
+}
 
 .ela h4.card-title {
     background-color: @sb-blue;
