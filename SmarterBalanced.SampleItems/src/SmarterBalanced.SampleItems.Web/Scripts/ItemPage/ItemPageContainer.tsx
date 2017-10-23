@@ -113,7 +113,7 @@ export class ItemPageContainer extends React.Component<Props, State>{
 
         if ((aboutThisItemResult.kind === "success" || aboutThisItemResult.kind === "reloading") && aboutThisItemResult.content) {
             return <ItemPage.Page
-                {...this.props.itemPage}
+                {...this.state.itemPageVM}
                 aboutThisItemVM={aboutThisItemResult.content}
                 onSave={this.onSave}
                 onReset={this.onReset}

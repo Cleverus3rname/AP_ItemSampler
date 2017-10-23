@@ -6,7 +6,7 @@ import * as AboutItemModels from './AboutItemModels';
 import { ItemFrame } from '../ItemViewer/ItemViewerFrame';
 import * as Api from '../ApiModel';
 
-const AboutThisItemViewModelClient = (params: { interactionTypeCode: string }) => Api.get<AboutItemModels.AboutItemsViewModel>("/Item/AboutItemsViewModel", params);
+const AboutThisItemViewModelClient = (params: { interactionTypeCode: string }) => Api.get<AboutItemModels.AboutItemsViewModel>("/AboutItems/GetItemUrl", params);
 
 interface State {
     selectedCode: string;
