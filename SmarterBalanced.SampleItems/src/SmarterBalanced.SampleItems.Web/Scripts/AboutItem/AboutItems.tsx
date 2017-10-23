@@ -39,7 +39,6 @@ export class AboutItemComponent extends React.Component<AboutItemModels.AboutIte
             interactionTypeCode: newCode
         };
 
-        console.log("DEBUGING:   ",params);
         AboutThisItemViewModelClient(params).then((data) => this.onFetchedUpdatedViewModel(data)).catch();
     }
 
