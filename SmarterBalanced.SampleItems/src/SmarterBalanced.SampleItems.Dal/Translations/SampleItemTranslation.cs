@@ -66,7 +66,6 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             AppSettings settings)
         {
             var supportedPubs = settings.SbContent.SupportedPublications;
-            var rubrics = GetRubrics(itemDigest, settings);       
             var brailleItemCodes = GetBrailleItemCodes(itemDigest.ItemKey, brailleFileInfo);
             var braillePassageCodes = GetBraillePassageCodes(itemDigest, brailleFileInfo);
             var interactionType = interactionTypes.FirstOrDefault(t => t.Code == itemDigest.InteractionTypeCode);
@@ -79,6 +78,8 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
 
             var fieldTestUseAttribute = itemDigest.ItemMetadataAttributes?.FirstOrDefault(a => a.Code == "itm_FTUse");
             var fieldTestUse = FieldTestUse.Create(fieldTestUseAttribute, itemDigest.SubjectCode);
+
+            var scoring = SampleItemsScoringTranslation.ToSampleItemsScore(itemDigest, settings, interactionTypes);
 
             StandardIdentifier identifier = StandardIdentifierTranslation.ToStandardIdentifier(itemDigest, supportedPubs);
             CoreStandards coreStandards = StandardIdentifierTranslation.CoreStandardFromIdentifier(standardsXml, identifier);
@@ -106,12 +107,12 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
 
             var claim = subject?.Claims.FirstOrDefault(t => t.ClaimNumber == coreStandards.ClaimId);
             bool brailleOnly = copiedFromItem.HasValue;
-            bool isPerformance = fieldTestUse != null && itemDigest.AssociatedPassage.HasValue;
+            bool isPerformance = fieldTestUse != null && itemDigest.AssociatedStimulus.HasValue;
 
-            if (itemDigest.AssociatedPassage.HasValue)
+            if (itemDigest.AssociatedStimulus.HasValue)
             {
                 braillePassageCodes = brailleFileInfo
-                    .Where(f => f.ItemKey == itemDigest.AssociatedPassage.Value)
+                    .Where(f => f.ItemKey == itemDigest.AssociatedStimulus.Value)
                     .Select(b => b.BrailleType).ToImmutableArray();
             }
             else
@@ -126,7 +127,6 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
 
             string interactionTypeSubCat = "";
             settings.SbContent.InteractionTypesToItem.TryGetValue(itemDigest.ToString(), out interactionTypeSubCat);
-            var scoringOptions = GetScoringOptions(itemDigest);
 
             SampleItem sampleItem = new SampleItem(
                 itemType: itemType,
@@ -140,7 +140,6 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 allowCalculator: itemDigest.AllowCalculator,
                 isPerformanceItem: isPerformance,
                 accessibilityResourceGroups: groups,
-                rubrics: rubrics,
                 interactionType: interactionType,
                 subject: subject,
                 claim: claim,
@@ -155,7 +154,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 educationalDifficulty: itemDigest.EducationalDifficulty,
                 evidenceStatement: itemDigest.EvidenceStatement,
                 domain: identifier?.ContentDomain,
-                scoringOptions: scoringOptions);
+                scoring: scoring);
 
             return sampleItem;
         }
@@ -189,10 +188,10 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
         {
             ImmutableArray<string> braillePassageCodes;
 
-            if (itemDigest.AssociatedPassage.HasValue)
+            if (itemDigest.AssociatedStimulus.HasValue)
             {
                 braillePassageCodes = brailleFileInfo
-                    .Where(f => f.ItemKey == itemDigest.AssociatedPassage.Value)
+                    .Where(f => f.ItemKey == itemDigest.AssociatedStimulus.Value)
                     .Select(b => b.BrailleType).ToImmutableArray();
             }
             else
@@ -236,63 +235,6 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             return groups;
         }
 
-        public static ImmutableArray<Rubric> GetRubrics(ItemDigest digest, AppSettings settings)
-        {
-            int? maxPoints = digest.MaximumNumberOfPoints;
-            var rubrics = digest.Contents.Select(c => c.ToRubric(maxPoints, settings)).Where(r => r != null).ToImmutableArray();
-            return rubrics;
-        }
-
-        /// <summary>
-        /// Returns a Single Rubric from content and filters out any placeholder text
-        /// </summary>
-        public static Rubric ToRubric(
-            this Content content,
-            int? maxPoints,
-            AppSettings appSettings)
-        {
-            if (appSettings == null || appSettings.SbContent.RubricPlaceHolderText == null || appSettings.SbContent == null)
-            {
-                throw new ArgumentNullException(nameof(appSettings));
-            }
-
-            var placeholder = appSettings.SbContent.RubricPlaceHolderText;
-            var languageToLabel = appSettings.SbContent.LanguageToLabel;
-
-            if (content == null ||
-                content.RubricList == null ||
-                content.RubricList.Rubrics == null ||
-                content.RubricList.RubricSamples == null)
-            {
-                return null;
-            }
-
-            int scorePoint;
-            var rubricEntries = content.RubricList.Rubrics
-                .Where(r => !string.IsNullOrWhiteSpace(r.Value)
-                    && int.TryParse(r.Scorepoint, out scorePoint)
-                    && scorePoint <= maxPoints
-                    && !placeholder.RubricPlaceHolderContains.Any(s => r.Value.Contains(s))
-                    && !placeholder.RubricPlaceHolderEquals.Any(s => r.Value.Equals(s))).ToImmutableArray();
-
-            Predicate<SampleResponse> pred = (r => string.IsNullOrWhiteSpace(r.SampleContent)
-                                                     || placeholder.RubricPlaceHolderContains.Any(s => r.SampleContent.Contains(s))
-                                                     || placeholder.RubricPlaceHolderEquals.Any(s => r.SampleContent.Equals(s)));
-
-            content.RubricList.RubricSamples.ForEach(t => t.SampleResponses.RemoveAll(pred));
-
-            var samples = content.RubricList.RubricSamples.Where(t => t.SampleResponses.Count() > 0).ToImmutableArray();
-            if (rubricEntries.Length == 0 && samples.Length == 0)
-            {
-                return null;
-            }
-
-            string languangeLabel = (string.IsNullOrEmpty(content.Language)) ? string.Empty :
-                                                languageToLabel[content.Language.ToUpper()];
-
-            var rubric = new Rubric(languangeLabel, rubricEntries, samples);
-            return rubric;
-        }
 
         private static bool AslSupportedContents(List<Content> content)
         {
@@ -379,20 +321,6 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
 
             return match.Success && int.TryParse(match.Groups[1]?.Value, out val) ? (int?)val : null;
         }
-
-        //TODO: Move somewhere
-        private static ImmutableArray<SmarterAppOption> GetScoringOptions(ItemDigest digest)
-        {
-            var options = digest.Contents
-                .SelectMany(c => c.ScoringOptions.Select(so => so.WithOptions(false, c.Language)));
-
-            return options.ToImmutableArray();
-        }
-
-        //TODO Move somewhere, do we need?
-        private static bool IsCorrectScoreOption(SmarterAppOption option)
-        {
-            return false; 
-        }
+        
     }
 }

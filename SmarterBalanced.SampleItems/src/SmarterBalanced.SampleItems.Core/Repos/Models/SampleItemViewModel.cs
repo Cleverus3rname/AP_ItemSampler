@@ -26,8 +26,11 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
         public string DepthOfKnowledge { get; }
         public string Exemplar { get; }
         public string Rubric { get; }
+        public string AnswerKey { get; }
+        public bool HasMachineRubric { get; }
         public string Url { get; }
 
+        public string AnswerOption { get; }
         public SampleItemViewModel(
         int bankKey,
         int itemKey,
@@ -48,7 +51,10 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
         string url,
         string depthOfKnowledge,
         string exemplar,
-        string rubric)
+        string rubric,
+        string answerKey,
+        string answerOption,
+        bool hasMachineRubric)
         {
             BankKey = bankKey;
             ItemKey = itemKey;
@@ -70,6 +76,9 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
             Url = url;
             Rubric = rubric;
             Exemplar = exemplar;
+            AnswerKey = answerKey;
+            AnswerOption = answerOption;
+            HasMachineRubric = hasMachineRubric;
         }
 
         /// <summary>
@@ -95,7 +104,10 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
            string depthOfKnowledge = "",
            string url = "",
            string exemplar = "",
-           string rubric = "")
+           string rubric = "",
+           string answerKey = "",
+           string answerOption = "",
+           bool hasMachineRubric = false)
         {
             return new SampleItemViewModel(
                 bankKey: bankKey,
@@ -117,7 +129,10 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
                 url: url,
                 depthOfKnowledge: depthOfKnowledge,
                 exemplar: exemplar,
-                rubric: rubric);
+                rubric: rubric,
+                answerKey: answerKey,
+                answerOption: answerOption,
+                hasMachineRubric: hasMachineRubric);
         }
 
     }

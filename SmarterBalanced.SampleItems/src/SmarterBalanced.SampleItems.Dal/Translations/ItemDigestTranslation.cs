@@ -108,7 +108,8 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 DepthOfKnowledge = itemMetadata.Metadata.DepthOfKnowledge,
                 Contents = itemContents.Item.Contents,
                 InteractionTypeCode = interactionCode,
-                AssociatedPassage = itemContents.Item.AssociatedPassage,
+                AssociatedTutorial = itemMetadata.Metadata.AssociatedTutorial,
+                AssociatedWordlist = itemMetadata.Metadata.AssociatedWordList,
                 GradeCode = itemMetadata.Metadata.GradeCode,
                 MaximumNumberOfPoints = itemMetadata.Metadata.MaximumNumberOfPoints,
                 StandardPublications = itemMetadata.Metadata.StandardPublications,
@@ -117,7 +118,8 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 StimulusDigest = stimulusDigest,
                 SmarterAppItemDescriptor = itemMetadata.Metadata.SmarterAppItemDescriptor,
                 EducationalDifficulty = itemMetadata.Metadata.EducationalDifficulty,
-                EvidenceStatement = itemMetadata.Metadata.EvidenceStatement
+                EvidenceStatement = itemMetadata.Metadata.EvidenceStatement,
+                HasMachineRubric = itemContents.Item.MachineRubric != null
             };
 
             return digest;

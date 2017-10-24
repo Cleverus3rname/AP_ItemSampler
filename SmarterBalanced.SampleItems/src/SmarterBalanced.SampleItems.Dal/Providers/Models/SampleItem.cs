@@ -20,14 +20,12 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         public GradeLevels Grade { get; }
         public Subject Subject { get; }
         public Claim Claim { get; }
-        public ImmutableArray<Rubric> Rubrics { get; }
         public InteractionType InteractionType { get; }
         public ImmutableArray<AccessibilityResourceGroup> AccessibilityResourceGroups { get; }
-        public ImmutableArray<SmarterAppOption> ScoringOptions { get; set; }
-
         public string TargetAssessmentType { get; }
         public string SufficentEvidenceOfClaim { get; }
         public int? AssociatedStimulus { get; }
+        public int? AssociatedTutorial { get; }
         public bool AslSupported { get; }
         public bool AllowCalculator { get; }
         public string DepthOfKnowledge { get; }
@@ -43,6 +41,11 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         public string EducationalDifficulty { get; set; }
         public string EvidenceStatement { get; set; }
 
+        /// <summary>
+        /// Scoring information, rubric, and sample responses for sample item.
+        /// </summary>
+        public SampleItemScoring SampleItemScoring { get; }
+        
         public SampleItem(
             int bankKey,
             int itemKey,
@@ -50,7 +53,6 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             GradeLevels grade,
             Subject subject,
             Claim claim,
-            ImmutableArray<Rubric> rubrics,
             InteractionType interactionType,
             ImmutableArray<AccessibilityResourceGroup> accessibilityResourceGroups,
             string targetAssessmentType,
@@ -70,7 +72,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             string educationalDifficulty,
             string evidenceStatement,
             string domain,
-            ImmutableArray<SmarterAppOption> scoringOptions
+            SampleItemScoring scoring
             )
         {
             BankKey = bankKey;
@@ -79,7 +81,6 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             Grade = grade;
             Subject = subject;
             Claim = claim;
-            Rubrics = rubrics;
             InteractionType = interactionType;
             AccessibilityResourceGroups = accessibilityResourceGroups;
             TargetAssessmentType = targetAssessmentType;
@@ -99,7 +100,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             EducationalDifficulty = educationalDifficulty;
             EvidenceStatement = evidenceStatement;
             Domain = domain;
-            ScoringOptions = scoringOptions;
+            SampleItemScoring = scoring;
         }
 
         public static SampleItem Create(
@@ -109,7 +110,6 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             GradeLevels grade = GradeLevels.NA,
             Subject subject = null,
             Claim claim = null,
-            ImmutableArray<Rubric> rubrics = new ImmutableArray<Rubric>(),
             InteractionType interactionType = null,
             ImmutableArray<AccessibilityResourceGroup> accessibilityResourceGroups = new ImmutableArray<AccessibilityResourceGroup>(),
             string targetAssessmentType = "",
@@ -129,7 +129,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             string educationalDifficulty = "",
             string evidenceStatement = "",
             string domain = "",
-            ImmutableArray<SmarterAppOption> scoringOptions = new ImmutableArray<SmarterAppOption>())
+            SampleItemScoring scoring = null)
         {
             return new SampleItem(
                 bankKey,
@@ -138,7 +138,6 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
                 grade,
                 subject,
                 claim,
-                rubrics,
                 interactionType,
                 accessibilityResourceGroups,
                 targetAssessmentType,
@@ -158,7 +157,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
                 educationalDifficulty,
                 evidenceStatement,
                 domain: domain,
-                scoringOptions: scoringOptions);
+                scoring: scoring );
         }
 
         public override string ToString()

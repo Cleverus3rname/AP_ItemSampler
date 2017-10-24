@@ -15,15 +15,22 @@ namespace SmarterBalanced.SampleItems.Core.Translations
             string claimTitle = (string.IsNullOrEmpty(sampleItem.Claim?.ClaimNumber)) ? string.Empty : $"Claim {sampleItem.Claim.ClaimNumber}";
             string title = $"{sampleItem.Subject?.ShortLabel} {sampleItem.Grade.ToDisplayString()} {claimTitle}";
             string url = $"{baseUrl}/Item/Details?bankKey={sampleItem.BankKey}&itemKey={sampleItem.ItemKey}";
-            var rubricEntries = sampleItem.Rubrics
+
+            var rubricEntries = sampleItem.SampleItemScoring?.Rubrics
                 .SelectMany(r => r.RubricEntries)
                 .Select(re => $"Score Point {re.Scorepoint}: {re.Value}\r\n");
             string rubricString = String.Join("---\r\n", rubricEntries);
-            var examples = sampleItem.Rubrics
+
+            var examples = sampleItem.SampleItemScoring?.Rubrics
                 .SelectMany(r => r.Samples)
                 .SelectMany(r => r.SampleResponses)
                 .Select(sr => $"Score Point {sr.ScorePoint}: {sr.SampleContent}\r\n");
             string examplesString = String.Join("---\r\n", examples);
+
+            var answerFeedback = sampleItem.SampleItemScoring?.ScoringOptions
+                .Select(so => $"Answers {so.Feedback}\r\n");
+            string answerFeedbackString = String.Join("---\r\n", answerFeedback);
+
             var vm = SampleItemViewModel.Create(
              bankKey: sampleItem.BankKey,
              itemKey: sampleItem.ItemKey,
@@ -44,7 +51,10 @@ namespace SmarterBalanced.SampleItems.Core.Translations
              url: url,
              depthOfKnowledge: sampleItem.DepthOfKnowledge,
              exemplar: examplesString,
-             rubric: rubricString);
+             rubric: rubricString,
+             answerKey: sampleItem.SampleItemScoring?.AnswerKey,
+             answerOption: answerFeedbackString,
+             hasMachineRubric: sampleItem.SampleItemScoring?.HasMachineRubric ?? false);
 
             return vm;
         }

@@ -17,6 +17,12 @@ namespace SmarterBalanced.SampleItems.Dal.Xml.Models
         [XmlElement("AssociatedStimulus")]
         public int? AssociatedStimulus { get; set; }
 
+        [XmlElement("AssociatedTutorial")]
+        public int? AssociatedTutorial { get; set; }
+
+        [XmlElement("AssociatedWordlist")]
+        public int? AssociatedWordList { get; set; }
+
         [XmlElement("Subject")]
         public string SubjectCode { get; set; }
 
@@ -34,8 +40,6 @@ namespace SmarterBalanced.SampleItems.Dal.Xml.Models
 
         [XmlElement("StandardPublication")]
         public List<StandardPublication> StandardPublications { get; set; }
-
-     
 
         [XmlElement("AccessibilityTagsASLLanguage")]
         public string AccessibilityTagsASLLanguage { get; set; }
