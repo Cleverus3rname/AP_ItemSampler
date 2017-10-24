@@ -52,7 +52,7 @@ deploy:
         tags: true
   - provider: script
     skip_cleanup: true
-    script: ./DeployScripts/code_docker_deploy.sh && ./DeployScripts/app_docker_deploy.sh 
+    script: ./DeployScripts/code_docker_deploy.sh && ./DeployScripts/app_docker_deploy.sh && ./DeployScripts/nuget_deploy.sh "alpha-$BUILD_NUMBER" 
     on:
       branch: scoreguide
   - provider: script
@@ -60,8 +60,3 @@ deploy:
     script: ./DeployScripts/code_docker_deploy.sh && ./DeployScripts/nuget_deploy.sh "alpha-$BUILD_NUMBER"
     on:
       branch: dev
-  - provider: script
-    skip_cleanup: true
-    script: ./DeployScripts/nuget_deploy.sh "alpha-$BUILD_NUMBER"
-    on:
-      branch: feat/travis-nuget

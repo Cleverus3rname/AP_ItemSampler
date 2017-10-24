@@ -284,7 +284,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
                     RubricList = rubricList
                 }
             };
-            var rubrics = SampleItemTranslation.GetRubrics(digest, appSettings);
+            var rubrics = SampleItemsScoringTranslation.GetRubrics(digest, appSettings);
 
             Assert.NotNull(rubrics);
             Assert.Equal(rubrics[0].Language, "English");

@@ -16,7 +16,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
         string TargetDescription, DOK, StandardsDescription, EducationalDifficulty, EvidenceStatement;
         ImmutableArray<ItemCardViewModel> AllItemCards;
         ImmutableArray<SampleItem> AllSampleItems;
-        ImmutableArray<Rubric> Rubrics;
+        SampleItemScoring SampleItemsScoring;
         Subject MathSubject;
         FieldTestUse TestUse;
         int BankKey = 154;
@@ -33,7 +33,8 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
             EvidenceStatement = "Evidence Statement";
             DOK = "1";
 
-            Rubrics = ImmutableArray.Create(BuildRubric());
+            var rubrics  = ImmutableArray.Create(BuildRubric());
+            SampleItemsScoring = SampleItemScoring.Create(rubrics: rubrics);
             TestUse = new FieldTestUse()
             {
                 Code = "MATH",
@@ -67,7 +68,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
                 educationalDifficulty: EducationalDifficulty,
                 evidenceStatement: EvidenceStatement,
                 associatedStimulus: 1,
-                rubrics: Rubrics,
+                scoring: SampleItemsScoring,
                 grade: GradeLevels.Grade6,
                 isPerformanceItem: isPerformance,
                 subject: MathSubject,
@@ -138,7 +139,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
                 Assert.NotNull(itemCard);
 
                 Assert.Equal(StandardsDescription, aboutThisItemVM.CommonCoreStandardsDescription);
-                Assert.Equal(Rubrics, aboutThisItemVM.Rubrics);
+                Assert.Equal(SampleItemsScoring.Rubrics, aboutThisItemVM.Rubrics);
                 Assert.Equal(itemCard, aboutThisItemVM.ItemCardViewModel);
                 Assert.Equal(TargetDescription, aboutThisItemVM.TargetDescription);
                 Assert.Equal(DOK, aboutThisItemVM.DepthOfKnowledge);

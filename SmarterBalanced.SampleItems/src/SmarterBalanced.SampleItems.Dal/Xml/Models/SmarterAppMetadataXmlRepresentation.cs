@@ -17,6 +17,12 @@ namespace SmarterBalanced.SampleItems.Dal.Xml.Models
         [XmlElement("AssociatedStimulus")]
         public int? AssociatedStimulus { get; set; }
 
+        [XmlElement("AssociatedTutorial")]
+        public int? AssociatedTutorial { get; set; }
+
+        [XmlElement("AssociatedWordlist")]
+        public int? AssociatedWordList { get; set; }
+
         [XmlElement("Subject")]
         public string SubjectCode { get; set; }
 

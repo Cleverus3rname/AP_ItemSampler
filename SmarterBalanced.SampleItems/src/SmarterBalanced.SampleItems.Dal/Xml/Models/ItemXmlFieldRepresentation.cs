@@ -22,9 +22,9 @@ namespace SmarterBalanced.SampleItems.Dal.Xml.Models
 
         [XmlElement("content")]
         public List<Content> Contents { get; set; }
-
-        [XmlElement("associatedpassage")]
-        public int? AssociatedPassage { get; set; }
+        
+        [XmlElement("MachineRubric")]
+        public MachineRubric MachineRubric { get; set; }
 
         [XmlArray("attriblist")]
         [XmlArrayItem("attrib")]

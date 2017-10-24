@@ -14,7 +14,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         public string TargetAssessmentType { get; set; }
         public string SufficentEvidenceOfClaim { get; set; }
         public int? AssociatedStimulus { get; set; }
-        public int? AssociatedPassage { get; set; }
+        public int? AssociatedWordlist { get; set; }
+        public int? AssociatedTutorial { get; set; }
         public bool? AslSupported { get; set; }
         public bool AllowCalculator { get; set; }
         public string DepthOfKnowledge { get; set; }
@@ -29,6 +30,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         public string SmarterAppItemDescriptor { get; set; }
         public string EducationalDifficulty { get; set; }
         public string EvidenceStatement { get; set; }
+        public bool HasMachineRubric { get; set; }
         public override string ToString()
         {
             return $"{BankKey}-{ItemKey}";
