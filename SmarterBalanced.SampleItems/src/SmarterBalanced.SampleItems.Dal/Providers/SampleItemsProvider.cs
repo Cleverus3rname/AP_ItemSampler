@@ -76,7 +76,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             return context;
         }
 
-        private static async Task<ImmutableArray<ItemDigest>> LoadItemDigests(
+        public static async Task<ImmutableArray<ItemDigest>> LoadItemDigests(
             AppSettings appSettings)
         {
             string contentDir = appSettings.SbContent.ContentRootDirectory;
