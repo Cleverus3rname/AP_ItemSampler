@@ -56,7 +56,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
         public static string GetScoreAttribute(ItemDigest digest, IList<InteractionType> interactionTypes)
         {
             string val = digest
-                .ItemMetadataAttributes
+                .ItemMetadataAttributes?
                 .FirstOrDefault(i => i.Code.Equals("itm_att_Answer Key"))?.Value;
 
             return interactionTypes
