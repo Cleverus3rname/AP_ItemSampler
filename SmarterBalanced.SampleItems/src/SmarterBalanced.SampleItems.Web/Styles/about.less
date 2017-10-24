@@ -1,7 +1,7 @@
 ﻿@import "constants.less";
 
 h1 {
-    letter-spacing: -.02em;
+    letter-spacing: @sb-letter-spacing;
 }
 
 .container {
@@ -11,9 +11,9 @@ h1 {
 
 .aboutitems-parents {
     padding: 1.5em;
-    background-color: #ffffff; // SB
+    background-color: @sb-white; // SB
     border-radius: 6px; // SB
-    box-shadow: 0 0.15em 0.35em 0 rgba(0,0,0,0.135); // SB
+    box-shadow: @sb-shadow; // SB
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
