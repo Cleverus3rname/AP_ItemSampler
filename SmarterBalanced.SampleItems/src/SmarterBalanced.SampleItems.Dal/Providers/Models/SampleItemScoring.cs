@@ -37,6 +37,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             AnswerKey = answerKey;
             HasMachineRubric = hasMachineRubric;
             ScoringOptions = scoringOptions;
+            Rubrics = rubrics;
         }
 
         public static SampleItemScoring Create(

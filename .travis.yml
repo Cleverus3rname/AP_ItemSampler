@@ -52,11 +52,11 @@ deploy:
         tags: true
   - provider: script
     skip_cleanup: true
-    script: ./DeployScripts/code_docker_deploy.sh && ./DeployScripts/app_docker_deploy.sh && ./DeployScripts/nuget_deploy.sh "alpha-$BUILD_NUMBER" 
+    script: ./DeployScripts/nuget_deploy.sh "alpha-$BUILD_NUMBER" && ./DeployScripts/code_docker_deploy.sh
     on:
       branch: scoreguide
   - provider: script
     skip_cleanup: true
-    script: ./DeployScripts/code_docker_deploy.sh && ./DeployScripts/nuget_deploy.sh "alpha-$BUILD_NUMBER"
+    script: ./DeployScripts/nuget_deploy.sh "alpha-$BUILD_NUMBER" && ./DeployScripts/code_docker_deploy.sh 
     on:
       branch: dev
