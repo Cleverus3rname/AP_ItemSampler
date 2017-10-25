@@ -387,7 +387,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
         public void TestToStandardIdentifierGoodDigest()
         {
             
-            ItemDigest digest = ItemDigestTranslation.ToItemDigest(metadata, contents, appSettings);
+            ItemDigest digest = ItemDigestTranslation.ToItemDigest(metadata, contents);
             StandardIdentifier identifier = StandardIdentifierTranslation.ToStandardIdentifier(digest, new string[] { "SBAC-MA-v1" });
 
             Assert.NotNull(identifier);

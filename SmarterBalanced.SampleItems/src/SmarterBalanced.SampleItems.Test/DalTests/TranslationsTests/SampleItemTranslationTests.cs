@@ -179,7 +179,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
                 SbContent = settings
             };
 
-            digest = ItemDigestTranslation.ToItemDigest(metadata, contents, appSettings);
+            digest = ItemDigestTranslation.ToItemDigest(metadata, contents);
         }
 
         [Fact]

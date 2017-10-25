@@ -32,7 +32,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             ImmutableArray<Subject> subjects = LoadSubjects(contentSettings.ClaimsXMLPath, interactionGroup.InteractionFamilies);
             subjects = subjects.Select(s => s.WithClaimTargets(targetCategories)).ToImmutableArray();
 
-            var itemDigests = LoadItemDigests(appSettings).Result;
+            var itemDigests = LoadItemDigests(appSettings.SbContent.ContentRootDirectory).Result;
 
             var itemPatchPath = appSettings.SbContent.PatchXMLPath;
             var itemPatchRoot = XmlSerialization.DeserializeXml<ItemPatchRoot>(filePath: itemPatchPath);
@@ -77,10 +77,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
         }
 
         public static async Task<ImmutableArray<ItemDigest>> LoadItemDigests(
-            AppSettings appSettings)
+            string contentDir)
         {
-            string contentDir = appSettings.SbContent.ContentRootDirectory;
-
             var metaDataFiles = XmlSerialization.FindMetadataXmlFiles(contentDir);
             var contentFiles = XmlSerialization.FindContentXmlFiles(contentDir);
             
@@ -90,8 +88,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             var itemDigests = ItemDigestTranslation
                 .ToItemDigests(
                     itemMetadata,
-                    itemContents,
-                    appSettings)
+                    itemContents)
                 .Where(i => i.GradeCode != "NA" && string.IsNullOrEmpty(i.ItemType))
                 .ToImmutableArray();
 
