@@ -26,7 +26,6 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 rubrics: rubrics);
 
             return scoring;
-           
         }
 
         private static ImmutableArray<SmarterAppOption> GetScoringOptions(
@@ -35,19 +34,23 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
         {
             var options = digest.Contents
                 .SelectMany(c => c.ScoringOptions
-                    .Select(so => 
-                        so.WithOptions(IsCorrectResponse(so, scoreAttribute), c.Language)));
+                    .Select(so =>
+                        so.WithOptions(IsCorrectResponse(so, scoreAttribute), c.Language)))
+                .ToImmutableArray();
 
-            return options.ToImmutableArray();
+            return options;
         }
 
         private static bool IsCorrectResponse(SmarterAppOption option, string scoreAttribute)
         {
             bool isCorrect = false;
+            
             if (!String.IsNullOrEmpty(scoreAttribute))
             {
+                char nbsp = (char)160; 
                 string[] answers = scoreAttribute.Split(',');
-                isCorrect = answers.Any(a => option.Name.Equals($"Option {a}"));
+                isCorrect = answers.Any(a =>
+                    option.Name.Replace(nbsp, ' ').Equals($"Option {a}"));
             }
 
             return isCorrect;
@@ -68,7 +71,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
         {
             int? maxPoints = digest.MaximumNumberOfPoints;
             var rubrics = digest.Contents
-                .Select(c => 
+                .Select(c =>
                     ToRubric(c, maxPoints, settings))
                 .Where(r => r != null).ToImmutableArray();
             return rubrics;
