@@ -39,7 +39,9 @@ namespace SmarterBalanced.SampleItems.Core.Translations
              rubric: GetFormattedRubric(sampleItem),
              answerKey: sampleItem.SampleItemScoring?.AnswerKey,
              answerOption: GetFormattedScoringOptions(sampleItem),
-             hasMachineRubric: sampleItem.SampleItemScoring?.HasMachineRubric ?? false);
+             hasMachineRubric: sampleItem.SampleItemScoring?.HasMachineRubric ?? false,
+             publication: sampleItem.CoreStandards?.Publication
+             );
 
             return vm;
         }

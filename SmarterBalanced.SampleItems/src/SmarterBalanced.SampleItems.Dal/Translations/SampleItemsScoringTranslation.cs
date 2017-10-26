@@ -98,11 +98,8 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 return null;
             }
 
-            int scorePoint;
             var rubricEntries = content.RubricList.Rubrics
                 .Where(r => !string.IsNullOrWhiteSpace(r.Value)
-                    && int.TryParse(r.Scorepoint, out scorePoint)
-                    && scorePoint <= maxPoints
                     && !placeholder.RubricPlaceHolderContains.Any(s => r.Value.Contains(s))
                     && !placeholder.RubricPlaceHolderEquals.Any(s => r.Value.Equals(s))).ToImmutableArray();
 
