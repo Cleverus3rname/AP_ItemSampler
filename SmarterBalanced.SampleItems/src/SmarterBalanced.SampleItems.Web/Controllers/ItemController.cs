@@ -138,7 +138,18 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
 
             return Json(aboutThis);
         }
+        
+        public IActionResult AccessibilityResourceGroup(int? bankKey, int? itemKey)
+        {
+            if(!bankKey.HasValue || !itemKey.HasValue)
+            {
+                return BadRequest();
+            }
 
+            var accResourceGroup = repo.GetAccessibilityResourceGroup(bankKey.Value, itemKey.Value);
+
+            return Json(accResourceGroup);
+        }
     }
 
 }

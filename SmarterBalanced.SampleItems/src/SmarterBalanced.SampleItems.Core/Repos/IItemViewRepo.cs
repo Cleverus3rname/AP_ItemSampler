@@ -5,6 +5,7 @@ using SmarterBalanced.SampleItems.Dal.Providers.Models;
 using SmarterBalanced.SampleItems.Dal.Configurations.Models;
 using System.Threading.Tasks;
 using System.IO;
+using System.Collections.Immutable;
 
 namespace SmarterBalanced.SampleItems.Core.Repos
 {
@@ -19,6 +20,8 @@ namespace SmarterBalanced.SampleItems.Core.Repos
         MoreLikeThisViewModel GetMoreLikeThis(SampleItem sampleItem);
 
         AboutThisItemViewModel GetAboutThisItemViewModel(SampleItem sampleItem);
+
+        ImmutableArray<AccessibilityResourceGroup> GetAccessibilityResourceGroup(int bankKey, int itemKey);
 
         Task<Stream> GetItemBrailleZip(int itemBank, int itemKey, string brailleCode);
         string GenerateBrailleZipName(int itemId, string brailleCode);
