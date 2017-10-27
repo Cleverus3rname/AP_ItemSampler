@@ -22,8 +22,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
         /// </summary>
         public static IReadOnlyCollection<ItemDigest> ToItemDigests(
             IReadOnlyCollection<ItemMetadata> itemMetadata,
-            IReadOnlyCollection<ItemContents> itemContents,
-            AppSettings settings)
+            IReadOnlyCollection<ItemContents> itemContents)
         {
             BlockingCollection<ItemDigest> digests = new BlockingCollection<ItemDigest>();
             Parallel.ForEach(itemMetadata, metadata =>
@@ -47,7 +46,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
 
                 if (itemsCount == 1)
                 {
-                    ItemDigest itemDigest = ToItemDigest(metadata, matchingItems.First(), settings, stimDigest);
+                    ItemDigest itemDigest = ToItemDigest(metadata, matchingItems.First(), stimDigest);
 
                     digests.Add(itemDigest);
                 }
@@ -67,7 +66,6 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
         public static ItemDigest ToItemDigest(
             ItemMetadata itemMetadata,
             ItemContents itemContents,
-            AppSettings settings,
             StimulusDigest stimulusDigest = null)
         {
             if (itemMetadata == null) { throw new ArgumentNullException(nameof(itemMetadata)); }
@@ -80,24 +78,10 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 throw new SampleItemsContextException("Cannot digest items with different ItemKey values.\n"
                     + $"Content Item Key: {itemContents.Item.ItemKey} Metadata Item Key:{itemMetadata.Metadata.ItemKey}");
             }
-
-            string itemType = itemContents.Item.ItemType ?? string.Empty;
-            string interactionCode = itemMetadata.Metadata.InteractionType ?? string.Empty;
-            var oldToNewInteraction = settings?.SbContent?.OldToNewInteractionType;
-
-            if (oldToNewInteraction != null && oldToNewInteraction.ContainsKey(itemType))
-            {
-                settings.SbContent.OldToNewInteractionType.TryGetValue(itemType, out itemType);
-            }
-
-            if (oldToNewInteraction != null && oldToNewInteraction.ContainsKey(interactionCode))
-            {
-                settings.SbContent.OldToNewInteractionType.TryGetValue(interactionCode, out interactionCode);
-            }
-
+            
             ItemDigest digest = new ItemDigest()
             {
-                ItemType = itemType,
+                ItemType = itemContents.Item.ItemType,
                 ItemKey = itemContents.Item.ItemKey,
                 BankKey = itemContents.Item.ItemBank,
                 TargetAssessmentType = itemMetadata.Metadata.TargetAssessmentType,
@@ -107,7 +91,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 AllowCalculator = itemMetadata.Metadata.AllowCalculator == "Y",
                 DepthOfKnowledge = itemMetadata.Metadata.DepthOfKnowledge,
                 Contents = itemContents.Item.Contents,
-                InteractionTypeCode = interactionCode,
+                InteractionTypeCode = itemMetadata.Metadata.InteractionType,
                 AssociatedTutorial = itemMetadata.Metadata.AssociatedTutorial,
                 AssociatedWordlist = itemMetadata.Metadata.AssociatedWordList,
                 GradeCode = itemMetadata.Metadata.GradeCode,

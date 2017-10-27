@@ -65,16 +65,18 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             IList<BrailleFileInfo> brailleFileInfo,
             AppSettings settings)
         {
+            var itemTypeCode = GetUpdatedItemType(settings, itemDigest.ItemType);
+            var interactionTypeCode = GetUpdatedItemType(settings, itemDigest.InteractionTypeCode);
+
             var supportedPubs = settings.SbContent.SupportedPublications;
             var brailleItemCodes = GetBrailleItemCodes(itemDigest.ItemKey, brailleFileInfo);
             var braillePassageCodes = GetBraillePassageCodes(itemDigest, brailleFileInfo);
-            var interactionType = interactionTypes.FirstOrDefault(t => t.Code == itemDigest.InteractionTypeCode);
+            var interactionType = interactionTypes.FirstOrDefault(t => t.Code == interactionTypeCode);
             var grade = GradeLevelsUtils.FromString(itemDigest.GradeCode);
             var patch = patches.FirstOrDefault(p => p.ItemId == itemDigest.ItemKey);
             var copiedItemPatch = patches.FirstOrDefault(p => p.BrailleCopiedId == itemDigest.ItemKey.ToString());
             var subject = subjects.FirstOrDefault(s => s.Code == itemDigest.SubjectCode);
             var depthOfKnowledge = itemDigest.DepthOfKnowledge;
-            var itemType = itemDigest.ItemType;
 
             var fieldTestUseAttribute = itemDigest.ItemMetadataAttributes?.FirstOrDefault(a => a.Code == "itm_FTUse");
             var fieldTestUse = FieldTestUse.Create(fieldTestUseAttribute, itemDigest.SubjectCode);
@@ -85,12 +87,13 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             CoreStandards coreStandards = StandardIdentifierTranslation.CoreStandardFromIdentifier(standardsXml, identifier);
             int? copiedFromItem = null;
 
+
             if (patch != null)
             {
                 int tmp;
                 copiedFromItem = int.TryParse(patch.BrailleCopiedId, out tmp) ? (int?)tmp : null;
                 depthOfKnowledge = !string.IsNullOrEmpty(patch.DepthOfKnowledge) ? patch.DepthOfKnowledge : depthOfKnowledge;
-                itemType = !string.IsNullOrEmpty(patch.ItemType) ? patch.ItemType : itemType;
+                itemTypeCode = !string.IsNullOrEmpty(patch.ItemType) ? patch.ItemType : itemTypeCode;
                 coreStandards = ApplyPatchToCoreStandards(identifier, coreStandards, standardsXml, patch);
             }
 
@@ -129,7 +132,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             settings.SbContent.InteractionTypesToItem.TryGetValue(itemDigest.ToString(), out interactionTypeSubCat);
 
             SampleItem sampleItem = new SampleItem(
-                itemType: itemType,
+                itemType: itemTypeCode,
                 itemKey: itemDigest.ItemKey,
                 bankKey: itemDigest.BankKey,
                 targetAssessmentType: itemDigest.TargetAssessmentType,
@@ -159,6 +162,19 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             return sampleItem;
         }
 
+        private static string GetUpdatedItemType(AppSettings settings, string itemType)
+        {
+            if (string.IsNullOrEmpty(itemType)) return string.Empty;
+            var oldToNewInteraction = settings?.SbContent?.OldToNewInteractionType;
+
+            if (oldToNewInteraction != null && oldToNewInteraction.ContainsKey(itemType))
+            {
+                oldToNewInteraction.TryGetValue(itemType, out itemType);
+            }
+
+            return itemType;
+        }
+        
         public static AccessibilityResourceGroup GroupItemResources(
             AccessibilityType accType,
             ImmutableArray<AccessibilityResource> resources)

@@ -77,7 +77,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
                                 };
             
 
-            ItemDigest digest = ItemDigestTranslation.ToItemDigest(metadata, contents, appSettings);
+            ItemDigest digest = ItemDigestTranslation.ToItemDigest(metadata, contents);
             Assert.Equal(testItemKey, digest.ItemKey);
             Assert.Equal(testItemBank, digest.BankKey);
             Assert.Equal(GradeLevels.Grade5, GradeLevelsUtils.FromString(digest.GradeCode));
@@ -122,7 +122,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
             contents.Item.ItemKey = 2;
             contents.Item.ItemBank = 3;
             contents.Item.Contents = new List<Content>();    
-            var exception = Record.Exception(() => ItemDigestTranslation.ToItemDigest(metadata, contents, new AppSettings()));
+            var exception = Record.Exception(() => ItemDigestTranslation.ToItemDigest(metadata, contents));
 
             Assert.NotNull(exception);
             Assert.IsType<SampleItemsContextException>(exception);
@@ -207,7 +207,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
                 }
             };
 
-            digests = ItemDigestTranslation.ToItemDigests(metadataList, contentsList, settings);
+            digests = ItemDigestTranslation.ToItemDigests(metadataList, contentsList);
 
             Assert.Equal(itemKeys.Length, digests.Count());
 

@@ -21,6 +21,7 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
         public bool IsPerformanceItem { get; set; }
         public bool AslSupported { get; }
         public int? StimulusKey { get; }
+        public string CommonCorePublication { get; }
         public string TargetDescription { get; }
         public string CcssDescription { get; }
         public string DepthOfKnowledge { get; }
@@ -28,9 +29,9 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
         public string Rubric { get; }
         public string AnswerKey { get; }
         public bool HasMachineRubric { get; }
+        public string AnswerOption { get; }
         public string Url { get; }
 
-        public string AnswerOption { get; }
         public SampleItemViewModel(
         int bankKey,
         int itemKey,
@@ -54,7 +55,8 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
         string rubric,
         string answerKey,
         string answerOption,
-        bool hasMachineRubric)
+        bool hasMachineRubric,
+        string publication)
         {
             BankKey = bankKey;
             ItemKey = itemKey;
@@ -79,6 +81,7 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
             AnswerKey = answerKey;
             AnswerOption = answerOption;
             HasMachineRubric = hasMachineRubric;
+            CommonCorePublication = publication;
         }
 
         /// <summary>
@@ -107,7 +110,8 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
            string rubric = "",
            string answerKey = "",
            string answerOption = "",
-           bool hasMachineRubric = false)
+           bool hasMachineRubric = false,
+           string publication = "")
         {
             return new SampleItemViewModel(
                 bankKey: bankKey,
@@ -132,7 +136,8 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
                 rubric: rubric,
                 answerKey: answerKey,
                 answerOption: answerOption,
-                hasMachineRubric: hasMachineRubric);
+                hasMachineRubric: hasMachineRubric,
+                publication: publication);
         }
 
     }

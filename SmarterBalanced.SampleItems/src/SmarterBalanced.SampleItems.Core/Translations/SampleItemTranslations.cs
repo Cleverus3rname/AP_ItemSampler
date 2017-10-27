@@ -15,22 +15,7 @@ namespace SmarterBalanced.SampleItems.Core.Translations
             string claimTitle = (string.IsNullOrEmpty(sampleItem.Claim?.ClaimNumber)) ? string.Empty : $"Claim {sampleItem.Claim.ClaimNumber}";
             string title = $"{sampleItem.Subject?.ShortLabel} {sampleItem.Grade.ToDisplayString()} {claimTitle}";
             string url = $"{baseUrl}/Item/Details?bankKey={sampleItem.BankKey}&itemKey={sampleItem.ItemKey}";
-
-            var rubricEntries = sampleItem.SampleItemScoring?.Rubrics
-                .SelectMany(r => r.RubricEntries)
-                .Select(re => $"Score Point {re.Scorepoint}: {re.Value}\r\n");
-            string rubricString = String.Join("---\r\n", rubricEntries);
-
-            var examples = sampleItem.SampleItemScoring?.Rubrics
-                .SelectMany(r => r.Samples)
-                .SelectMany(r => r.SampleResponses)
-                .Select(sr => $"Score Point {sr.ScorePoint}: {sr.SampleContent}\r\n");
-            string examplesString = String.Join("---\r\n", examples);
-
-            var answerFeedback = sampleItem.SampleItemScoring?.ScoringOptions
-                .Select(so => $"Answers {so.Feedback}\r\n");
-            string answerFeedbackString = String.Join("---\r\n", answerFeedback);
-
+            
             var vm = SampleItemViewModel.Create(
              bankKey: sampleItem.BankKey,
              itemKey: sampleItem.ItemKey,
@@ -50,13 +35,59 @@ namespace SmarterBalanced.SampleItems.Core.Translations
              targetDesc: sampleItem.CoreStandards?.Target.Descripton,
              url: url,
              depthOfKnowledge: sampleItem.DepthOfKnowledge,
-             exemplar: examplesString,
-             rubric: rubricString,
+             exemplar: GetFormattedExamples(sampleItem),
+             rubric: GetFormattedRubric(sampleItem),
              answerKey: sampleItem.SampleItemScoring?.AnswerKey,
-             answerOption: answerFeedbackString,
-             hasMachineRubric: sampleItem.SampleItemScoring?.HasMachineRubric ?? false);
+             answerOption: GetFormattedScoringOptions(sampleItem),
+             hasMachineRubric: sampleItem.SampleItemScoring?.HasMachineRubric ?? false,
+             publication: sampleItem.CoreStandards?.Publication
+             );
 
             return vm;
+        }
+
+        private static string GetFormattedRubric(SampleItem sampleItem)
+        {
+            string rubricString = "";
+            if(sampleItem.SampleItemScoring.Rubrics.Any() == true)
+            {
+                var rubricEntries = sampleItem.SampleItemScoring?
+                    .Rubrics
+                    .SelectMany(r => r.RubricEntries)
+                    .Select(re => $"Score Point {re.Scorepoint}: {re.Value}\r\n");
+                rubricString = String.Join("---\r\n", rubricEntries);
+            }
+
+            return rubricString;
+        }
+
+        private static string GetFormattedExamples(SampleItem sampleItem)
+        {
+            string examplesString = "";
+            if (sampleItem.SampleItemScoring.Rubrics.Any() == true)
+            {
+              var examples = sampleItem.SampleItemScoring?.Rubrics
+                    .SelectMany(r => r.Samples)
+                    .SelectMany(r => r.SampleResponses)
+                    .Select(sr => $"Score Point {sr.ScorePoint}: {sr.SampleContent}\r\n");
+                examplesString = String.Join("---\r\n", examples);
+            }
+
+            return examplesString;
+        }
+
+        private static string GetFormattedScoringOptions(SampleItem sampleItem)
+        {
+            string scoringOptionString = "";
+            if (sampleItem.SampleItemScoring.ScoringOptions.Any() == true)
+            {
+                var answerFeedback = sampleItem.SampleItemScoring?
+                    .ScoringOptions
+                    .Select(so => $"Answers {so.Feedback}\r\n");
+                scoringOptionString = String.Join("---\r\n", answerFeedback);
+            }
+
+            return scoringOptionString;
         }
 
         public static ItemIdentifier ToItemIdentifier(this SampleItem sampleItem)
@@ -67,7 +98,6 @@ namespace SmarterBalanced.SampleItems.Core.Translations
                     bankKey: sampleItem.BankKey);
 
             return item;
-
         }
     }
 }
