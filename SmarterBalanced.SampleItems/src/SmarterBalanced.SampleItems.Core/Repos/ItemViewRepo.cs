@@ -228,6 +228,13 @@ namespace SmarterBalanced.SampleItems.Core.Repos
             var sampleItem = context.GetSampleItem(itemBank, itemKey);
             return sampleItem.AccessibilityResourceGroups;
         }
+
+        public ImmutableArray<AccessibilityResourceGroup> GetAccessibilityResourceGroup(int itemBank, int itemKey, string[] iSAAPCodes)
+        {
+            var sampleItem = context.GetSampleItem(itemBank, itemKey);
+
+            return sampleItem.AccessibilityResourceGroups.ApplyIsaapPreferences(iSAAPCodes);
+        }
     }
 
 }

@@ -23,7 +23,10 @@ namespace SmarterBalanced.SampleItems.Core.Repos
 
         ImmutableArray<AccessibilityResourceGroup> GetAccessibilityResourceGroup(int bankKey, int itemKey);
 
+        ImmutableArray<AccessibilityResourceGroup> GetAccessibilityResourceGroup(int bankKey, int itemKey, string[] iSAAPCodes);
+
         Task<Stream> GetItemBrailleZip(int itemBank, int itemKey, string brailleCode);
+
         string GenerateBrailleZipName(int itemId, string brailleCode);
 
         AboutThisItemViewModel GetAboutThisItemViewModel(int itemBank, int itemKey);

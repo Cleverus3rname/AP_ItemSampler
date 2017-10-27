@@ -138,15 +138,17 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
 
             return Json(aboutThis);
         }
-        
-        public IActionResult AccessibilityResourceGroup(int? bankKey, int? itemKey)
+
+   
+        [HttpGet("ItemAccessibility")]
+        public IActionResult AccessibilityResourceGroupIsaap(int? bankKey, int? itemKey, string[] isaapCodes = default(string[]))
         {
-            if(!bankKey.HasValue || !itemKey.HasValue)
+            if (!bankKey.HasValue || !itemKey.HasValue)
             {
                 return BadRequest();
             }
 
-            var accResourceGroup = repo.GetAccessibilityResourceGroup(bankKey.Value, itemKey.Value);
+            var accResourceGroup = repo.GetAccessibilityResourceGroup(bankKey.Value, itemKey.Value, isaapCodes);
 
             return Json(accResourceGroup);
         }
