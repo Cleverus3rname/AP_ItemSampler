@@ -25,10 +25,16 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
 
         // GET: /<controller>/
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Index()
+        public IActionResult Index(string interactionTypeCode = "")
         {
-            var viewModel = repo.GetAboutItemsViewModel();
-            return View(viewModel);
+            if (interactionTypeCode != "")
+            {
+                return View(repo.GetAboutItemsViewModel(interactionTypeCode));
+            }
+            else
+            {
+                return View(repo.GetAboutItemsViewModel());
+            }
         }
 
         [HttpGet("GetItemUrl")]
