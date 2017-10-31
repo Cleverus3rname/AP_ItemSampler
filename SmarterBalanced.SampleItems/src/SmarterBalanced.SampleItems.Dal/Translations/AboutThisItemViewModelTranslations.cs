@@ -20,7 +20,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             var itemCardViewModel = itemCards
                 .FirstOrDefault(card => card.BankKey == sampleItem.BankKey && card.ItemKey == sampleItem.ItemKey);
             var aboutThisItemViewModel = new AboutThisItemViewModel(
-                rubrics: sampleItem.SampleItemScoring?.Rubrics ?? new ImmutableArray<Rubric>(),
+                scoring: sampleItem.SampleItemScoring,
                 itemCard: itemCardViewModel,
                 targetDescription: sampleItem.CoreStandards?.Target.Descripton,
                 depthOfKnowledge: sampleItem.DepthOfKnowledge,
