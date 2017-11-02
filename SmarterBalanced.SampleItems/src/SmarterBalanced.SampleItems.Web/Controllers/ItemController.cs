@@ -28,15 +28,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             logger = loggerFactory.CreateLogger<ItemController>();
         }
 
-        // GET: /<controller>/
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Index()
-        {
-            logger.LogDebug($"{nameof(Index)} redirect to itemssearch");
-
-            return RedirectToActionPermanent("Index", "itemsSearch");
-        }
-
+  
         /// <summary>
         /// Converts a base64 encoded, serialized JSON string to
         /// a dictionary representing user accessibility preferences.
@@ -67,7 +59,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         /// <param name="bankKey"></param>
         /// <param name="itemKey"></param>
         /// <param name="iSAAP"></param>
-        [HttpGet("Details")]
+        [HttpGet("GetItem")]
         public IActionResult Details(int? bankKey, int? itemKey, string iSAAP)
         {
             if (!bankKey.HasValue || !itemKey.HasValue)
@@ -89,7 +81,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
                 return BadRequest();
             }
 
-            return View(itemViewModel);
+            return Json(itemViewModel);
         }
 
         [HttpGet("Braille")]

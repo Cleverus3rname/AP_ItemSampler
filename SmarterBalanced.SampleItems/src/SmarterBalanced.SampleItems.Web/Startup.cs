@@ -15,6 +15,8 @@ using SmarterBalanced.SampleItems.Dal.Providers;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
+using Microsoft.AspNetCore.SpaServices.Webpack;
+
 
 namespace SmarterBalanced.SampleItems.Web
 {
@@ -66,8 +68,6 @@ namespace SmarterBalanced.SampleItems.Web
                 throw e;
             }
 
-            services.AddApplicationInsightsTelemetry(Configuration);
-
             services.Configure<GzipCompressionProviderOptions>(options =>
                 options.Level = System.IO.Compression.CompressionLevel.Fastest);
             services.AddResponseCompression(options =>
@@ -104,23 +104,20 @@ namespace SmarterBalanced.SampleItems.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            app.UseApplicationInsightsExceptionTelemetry();
             app.UseResponseCompression();
-            app.UseStaticFiles();
 
             if (env.IsDevelopment())
             {
-                var options = new StaticFileOptions
+                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
                 {
-                    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Scripts")),
-                    RequestPath = new Microsoft.AspNetCore.Http.PathString("/Scripts"),
-                    ServeUnknownFileTypes = true
-                };
-                app.UseStaticFiles(options);
+                    HotModuleReplacement = true,
+                    ReactHotModuleReplacement = true
+                });
+           
+                app.UseStaticFiles();
 
-                app.UseDeveloperExceptionPage();
-                app.UseStatusCodePages();
-                app.UseBrowserLink();
+                //app.UseDeveloperExceptionPage();
+                //app.UseStatusCodePages();
             }
             else
             {
@@ -128,11 +125,19 @@ namespace SmarterBalanced.SampleItems.Web
                 app.UseStatusCodePagesWithRedirects("/Home/StatusCodeError?code={0}");
             }
 
+
+            app.UseStaticFiles();
+
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapSpaFallbackRoute(
+                    name: "spa-fallback",
+                    defaults: new { controller = "Home", action = "Index" });
 
                 routes.MapRoute(
                     name: "diagnostic",

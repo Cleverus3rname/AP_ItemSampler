@@ -23,9 +23,8 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             logger = loggerFactory.CreateLogger<BrowseItemsController>();
         }
 
-        // GET: /<controller>/
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Index()
+        [HttpGet("ItemsSearchViewModel")]
+        public IActionResult ItemsSearchViewModel()
         {
             var model = sampleItemsSearchRepo.GetItemsSearchViewModel();
             if(model == null)
@@ -33,7 +32,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
                 return BadRequest();
             }
 
-            return View(model);
+            return Json(model);
         }
 
         [HttpGet("Search")]
