@@ -20,6 +20,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Client\ItemSearch\filterModels.tsx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SmarterBalanced.SampleItems.Core\SmarterBalanced.SampleItems.Core.csproj" />
     <ProjectReference Include="..\SmarterBalanced.SampleItems.Dal\SmarterBalanced.SampleItems.Dal.csproj" />
   </ItemGroup>
@@ -62,6 +66,10 @@
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="Client\ItemSearch\filterModels.tsx" />
   </ItemGroup>
 
 
