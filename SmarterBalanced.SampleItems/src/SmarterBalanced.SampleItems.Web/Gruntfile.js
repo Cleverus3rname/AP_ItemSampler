@@ -2,12 +2,17 @@
 'use strict';
 
 const lessFiles = {
+    'Client/css/site.css': 'node_modules/@osu-cass/smarter-balanced-styles/styles/site.less'
+};
+
+const lessProdFiles = {
     'Client/css/about.css': 'Client/Styles/about.less',
     'Client/css/home.css': 'Client/Styles/home.less',
     'Client/css/item.css': 'Client/Styles/item.less',
     'Client/css/nav.css': 'Client/Styles/nav.less',
     'Client/css/search.css': 'Client/Styles/search.less',
-    'Client/css/site.css': 'Client/Styles/site.less'};
+    'Client/css/site.css': 'Client/Styles/site.less'
+};
 
 
 module.exports = function (grunt) {

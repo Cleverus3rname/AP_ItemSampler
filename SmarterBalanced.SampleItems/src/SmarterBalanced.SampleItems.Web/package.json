@@ -54,6 +54,7 @@
     "es6-promise": "4.1.1"
   },
   "dependencies": {
-    "@osu-cass/react-advanced-filter": "1.0.4"
+    "@osu-cass/react-advanced-filter": "1.0.5",
+    "@osu-cass/smarter-balanced-styles": "1.0.6"
   }
 }
