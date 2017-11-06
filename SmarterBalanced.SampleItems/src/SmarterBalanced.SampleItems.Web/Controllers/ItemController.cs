@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using SmarterBalanced.SampleItems.Core.Repos;
 using SmarterBalanced.SampleItems.Core.Repos.Models;
 using SmarterBalanced.SampleItems.Dal.Configurations.Models;
+using SmarterBalanced.SampleItems.Dal.Providers.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,7 +29,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             logger = loggerFactory.CreateLogger<ItemController>();
         }
 
-  
+
         /// <summary>
         /// Converts a base64 encoded, serialized JSON string to
         /// a dictionary representing user accessibility preferences.
@@ -87,7 +88,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         [HttpGet("Braille")]
         public async Task<ActionResult> Braille(int? bankKey, int? itemKey, string brailleCode)
         {
-            if(!bankKey.HasValue || !itemKey.HasValue || string.IsNullOrEmpty(brailleCode))
+            if (!bankKey.HasValue || !itemKey.HasValue || string.IsNullOrEmpty(brailleCode))
             {
                 return BadRequest();
             }
@@ -96,20 +97,22 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             try
             {
                 var ftpReadStream = await repo.GetItemBrailleZip(
-                    bankKey.Value, 
-                    itemKey.Value, 
+                    bankKey.Value,
+                    itemKey.Value,
                     brailleCode);
 
-                Response.Cookies.Append("brailleDLstarted", "1", new Microsoft.AspNetCore.Http.CookieOptions {
+                Response.Cookies.Append("brailleDLstarted", "1", new Microsoft.AspNetCore.Http.CookieOptions
+                {
                     Path = "/",
                     HttpOnly = false,
                     Secure = false,
                     Expires = DateTimeOffset.Now.AddSeconds(10)
                 }
-                    
+
                     );
                 return File(ftpReadStream, "application/zip", fileName);
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 logger.LogError($"{nameof(Braille)} failed to load braille for {itemKey.Value}, message {e.Message}");
 
@@ -121,7 +124,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         [EnableCors("AllowAllOrigins")]
         public IActionResult AboutThisItemViewModel(int? bankKey, int? itemKey)
         {
-            if(!bankKey.HasValue || !itemKey.HasValue)
+            if (!bankKey.HasValue || !itemKey.HasValue)
             {
                 return BadRequest();
             }
@@ -131,21 +134,55 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return Json(aboutThis);
         }
 
-   
+
         [HttpGet("ItemAccessibility")]
-        public IActionResult AccessibilityResourceGroupIsaap(int? bankKey, int? itemKey, string isaap = "")
+        public IActionResult AccessibilityResourceGroupIsaap(int? bankKey, int? itemKey, string isaap = "", bool applyCookie = true)
         {
             if (!bankKey.HasValue || !itemKey.HasValue)
             {
                 return BadRequest();
             }
 
+            var cookieIsaap = new Dictionary<string, string>();
+
+            if (applyCookie)
+            {
+                string cookieName = appSettings.SettingsConfig.AccessibilityCookie;
+                string cookieString = Request?.Cookies[cookieName] ?? string.Empty;
+                cookieIsaap = DecodeCookie(cookieString);
+            }
+
             string[] isaapCodes = string.IsNullOrEmpty(isaap) ? new string[0] : isaap.Split(';');
 
-            var accResourceGroup = repo.GetAccessibilityResourceGroup(bankKey.Value, itemKey.Value, isaapCodes);
+            var accResourceGroup = repo.GetAccessibilityResourceGroup(bankKey.Value, itemKey.Value, isaapCodes, cookieIsaap);
 
             return Json(accResourceGroup);
         }
+
+        /// <summary>
+        /// Provides resources for a given subjectcode and gradelevel with optional item type code
+        /// </summary>
+        /// <param name="gradeLevels">required, enum grade level</param>
+        /// <param name="subjectCode">required, subject code</param>
+        /// <param name="interactionType">optional</param>
+        /// <param name="applyCookie">optional</param>
+        [HttpGet("GetAccessibility")]
+        public IActionResult AccessibilityResourceGroupIsaap(GradeLevels gradeLevels, string subjectCode, string interactionType = "", bool applyCookie = true)
+        {
+            var cookieIsaap = new Dictionary<string, string>();
+
+            if (applyCookie)
+            {
+                string cookieName = appSettings.SettingsConfig.AccessibilityCookie;
+                string cookieString = Request?.Cookies[cookieName] ?? string.Empty;
+                cookieIsaap = DecodeCookie(cookieString);
+            }
+
+            var accResourceGroup = repo.GetAccessibilityResourceGroup(gradeLevels, subjectCode, interactionType, cookieIsaap);
+
+            return Json(accResourceGroup);
+        }
+
     }
 
 }

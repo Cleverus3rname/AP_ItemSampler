@@ -21,9 +21,9 @@ namespace SmarterBalanced.SampleItems.Core.Repos
 
         AboutThisItemViewModel GetAboutThisItemViewModel(SampleItem sampleItem);
 
-        ImmutableArray<AccessibilityResourceGroup> GetAccessibilityResourceGroup(int bankKey, int itemKey);
+        ImmutableArray<AccessibilityResourceGroup> GetAccessibilityResourceGroup(int bankKey, int itemKey, string[] iSAAPCodes = default(string[]), Dictionary<string, string> cookiePreferences = default(Dictionary<string, string>));
+        ImmutableArray<AccessibilityResourceGroup> GetAccessibilityResourceGroup(GradeLevels gradeLevels, string subjectCode, string interactionType, Dictionary<string, string> cookiePreferences = default(Dictionary<string, string>)); 
 
-        ImmutableArray<AccessibilityResourceGroup> GetAccessibilityResourceGroup(int bankKey, int itemKey, string[] iSAAPCodes);
 
         Task<Stream> GetItemBrailleZip(int itemBank, int itemKey, string brailleCode);
 

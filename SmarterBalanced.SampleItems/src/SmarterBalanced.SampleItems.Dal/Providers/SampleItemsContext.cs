@@ -86,11 +86,11 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             return associatedStimulusDigests;
 
         }
+
         public SampleItem GetSampleItem(int bankKey, int itemKey)
         {
             return SampleItems.SingleOrDefault(item => item.BankKey == bankKey && item.ItemKey == itemKey);
 
         }
-
     }
 }
