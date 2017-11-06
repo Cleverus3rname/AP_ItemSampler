@@ -11,7 +11,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
     public class AboutThisItemViewModel
     {
         public ItemCardViewModel ItemCardViewModel { get; }
-        public ImmutableArray<Rubric> Rubrics { get; }
+        public SampleItemScoring SampleItemScoring { get; }
         public string TargetDescription { get; }
         public string DepthOfKnowledge { get; }
         public string CommonCoreStandardsDescription { get; }
@@ -20,17 +20,18 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         public string AssociatedItems { get; }
 
         public AboutThisItemViewModel(
-            ImmutableArray<Rubric> rubrics,
             ItemCardViewModel itemCard,
+            SampleItemScoring scoring,
             string targetDescription,
             string depthOfKnowledge,
             string commonCoreStandardsDescription,
             string educationalDifficulty,
             string evidenceStatement,
-            string associatedItems)
+            string associatedItems
+            )
         {
             ItemCardViewModel = itemCard;
-            Rubrics = rubrics;
+            SampleItemScoring = scoring;
             TargetDescription = targetDescription;
             DepthOfKnowledge = depthOfKnowledge;
             CommonCoreStandardsDescription = commonCoreStandardsDescription;
@@ -40,8 +41,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         }
 
         public static AboutThisItemViewModel Create(
-          ImmutableArray<Rubric> rubrics = new ImmutableArray<Rubric>(),
           ItemCardViewModel itemCard = null,
+          SampleItemScoring scoring = null,
           string targetDescription = "",
           string depthOfKnowledge = "",
           string commonCoreStandardsDescription = "",
@@ -51,8 +52,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         {
 
             return new AboutThisItemViewModel(
-                rubrics: rubrics,
                 itemCard: itemCard,
+                scoring: scoring,
                 targetDescription: targetDescription,
                 depthOfKnowledge: depthOfKnowledge,
                 commonCoreStandardsDescription: commonCoreStandardsDescription,

@@ -153,11 +153,12 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 brailleItemCodes: brailleItemCodes,
                 braillePassageCodes: braillePassageCodes,
                 brailleOnlyItem: brailleOnly,
-                copiedFromitem: copiedFromItem,
+                copiedFromItem: copiedFromItem,
                 educationalDifficulty: itemDigest.EducationalDifficulty,
                 evidenceStatement: itemDigest.EvidenceStatement,
                 domain: identifier?.ContentDomain,
-                scoring: scoring);
+                scoring: scoring,
+                associatedTutorial: itemDigest.AssociatedTutorial);
 
             return sampleItem;
         }

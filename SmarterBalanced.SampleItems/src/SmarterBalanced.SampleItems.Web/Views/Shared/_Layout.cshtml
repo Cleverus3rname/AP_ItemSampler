@@ -8,83 +8,19 @@
     <link rel="shortcut icon" type="image/x-icon" href="~/images/favicon.ico">
     <link rel="apple-touch-icon-precomposed" type="image/x-icon" href="~/images/touch.png">
     <link href="https://fonts.googleapis.com/css?family=PT+Sans|PT+Serif" rel="stylesheet">
-    <environment names="Development, Staging">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
+
+    <base href="~/" />
+
+    <link rel="stylesheet" href="~/dist/vendor.css" asp-append-version="true" />
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/dist/site.css" asp-append-version="true" />
     </environment>
+    </head>
 
-    <environment names="Production">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"/>
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-    </environment>
-    @Html.Raw(JavaScriptSnippet.FullScript)
-</head>
-<body>
-    <nav role="navigation">
-        <div class="sbNav">
-            <div class="sbNav-titleGroup">
-                <div class="sbNav-titleGroup-item">
-                    <a target="_blank" href="http://www.smarterbalanced.org/">
-                        <img alt="Smarter Balanced Logo" src="~/images/SmarterBalanced_logo.png">
-                    </a>
-                </div>
-                <div class="sbNav-titleGroup-item">
-                    <h3>Sample Items</h3>
-                </div>
-            </div>
-
-            <div class="sbNav-linksGroup">
-                <a class="sbNav-linksGroup-item" href="@Url.Action(action: "Index", controller: "Home")">
-                    Home
-                </a>
-                <a class="sbNav-linksGroup-item" href="@Url.Action(action: "Index", controller: "AboutItems")">
-                    About Test Items
-                </a>
-                <a class="sbNav-linksGroup-item" href="@Url.Action(action: "Index", controller: "BrowseItems")">
-                    Browse Test Items
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <main class="container" role="main">
+    <body>
         @RenderBody()
-    </main>
 
-    <footer role="contentinfo">
-        <div>
-            <a class="footer-practiceTests" href="http://practice.smarterbalanced.org/">Practice and training tests are available here.</a>
-        </div>
-        <div class="footer-copyright">
-            <p>
-                &copy; The Regents of the University of California – Smarter Balanced Assessment Consortium
-                <br />
-                <a class="footer-sbLink" href="//www.smarterbalanced.org"> www.SmarterBalanced.org</a>
-            </p>
-        </div>
-    </footer>
-
-    <environment names="Development">
-        <script src="~/scripts/polyfill.min.js"></script>
-        <script>  window.ga = function () {console.log(arguments)} </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.js"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script src="~/scripts/polyfill.min.js"></script>
-        
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.min.js"></script>
-        <script>
-            window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-            ga('create', 'UA-27429193-4', 'auto');
-            ga('send', 'pageview');
-        </script>
-        <script async src='https://www.google-analytics.com/analytics.js'></script>
-    </environment>
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.4.min.js"></script>
-    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"></script>
-    @RenderSection("scripts", required: false)
-
-</body>
+        <script src="~/dist/vendor.js" asp-append-version="true"></script>
+        @RenderSection("scripts", required: false)
+    </body>
 </html>
