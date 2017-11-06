@@ -141,12 +141,14 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
 
    
         [HttpGet("ItemAccessibility")]
-        public IActionResult AccessibilityResourceGroupIsaap(int? bankKey, int? itemKey, string[] isaapCodes = default(string[]))
+        public IActionResult AccessibilityResourceGroupIsaap(int? bankKey, int? itemKey, string isaap = "")
         {
             if (!bankKey.HasValue || !itemKey.HasValue)
             {
                 return BadRequest();
             }
+
+            string[] isaapCodes = string.IsNullOrEmpty(isaap) ? new string[0] : isaap.Split(';');
 
             var accResourceGroup = repo.GetAccessibilityResourceGroup(bankKey.Value, itemKey.Value, isaapCodes);
 
