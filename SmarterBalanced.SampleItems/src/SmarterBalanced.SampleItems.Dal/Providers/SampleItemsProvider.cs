@@ -68,7 +68,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
                 subjects: subjects,
                 appSettings: appSettings,
                 aboutAllItems: aboutItems,
-                aboutInteractionTypes: aboutInteractionTypes);
+                aboutInteractionTypes: aboutInteractionTypes,
+                mergedAccessibilityFamilies: accessibilityResourceFamilies);
 
             logger.LogInformation($"Loaded {sampleItems.Length} sample items");
             logger.LogInformation($"Context loaded successfully");
