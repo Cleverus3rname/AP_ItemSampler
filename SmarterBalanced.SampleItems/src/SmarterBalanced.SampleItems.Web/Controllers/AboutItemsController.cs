@@ -23,14 +23,6 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             logger = loggerFactory.CreateLogger<AboutItemsController>();
         }
 
-        // GET: /<controller>/
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Index()
-        {
-            var viewModel = repo.GetAboutItemsViewModel();
-            return View(viewModel);
-        }
-
         [HttpGet("GetItemUrl")]
         public IActionResult GetItemUrl(string interactionTypeCode)
         {
