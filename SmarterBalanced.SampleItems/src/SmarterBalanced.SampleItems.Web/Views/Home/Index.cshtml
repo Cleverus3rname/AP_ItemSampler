@@ -2,44 +2,8 @@
     ViewData["Title"] = "Home Page";
 }
 
-<environment names="Development">
-    <link rel="stylesheet" href="~/css/home.css" />
-</environment>
-<environment names="Staging, Production">
-    <link rel="stylesheet" href="~/css/home.min.css" />
-</environment>
+<div id="react-app">Loading...</div>
 
-<div class="home-container">
-    <div>
-        <h1 class="home-title"><b>Welcome!</b></h1>
-
-        This site provides examples of test questions used on Smarter Balanced assessments in English language
-        arts/literacy and math. Teachers, parents, students, administrators, and policymakers can experience these test items just as students encounter them.
-
-        <br /><br />
-
-        These samples are not intended to be used as practice tests, but educators can use them to better 
-        understand how Smarter Balanced measures college- and career-ready content.
-    </div>
-
-    <br />
-
-    <div class="text-center">
-
-        <a class="btn-lg btn-primary home-container-button"
-           href="@Url.Action(action: "Index", controller: "BrowseItems")">
-
-            Browse Test Items
-        </a>
-
-        <br /><br />
-
-        <a class="btn-lg btn-success home-container-button"
-           href="@Url.Action(action: "Index", controller: "AboutItems")">
-        
-            Learn More About Items
-        </a>
-
-    </div>
-</div>
-
+@section scripts {
+    <script src="~/dist/main.js" asp-append-version="true"></script>
+}

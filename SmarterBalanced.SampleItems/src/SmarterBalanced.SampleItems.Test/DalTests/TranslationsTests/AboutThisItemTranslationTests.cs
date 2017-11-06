@@ -139,7 +139,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
                 Assert.NotNull(itemCard);
 
                 Assert.Equal(StandardsDescription, aboutThisItemVM.CommonCoreStandardsDescription);
-                Assert.Equal(SampleItemsScoring.Rubrics, aboutThisItemVM.Rubrics);
+                Assert.Equal(SampleItemsScoring.Rubrics, aboutThisItemVM.SampleItemScoring.Rubrics);
                 Assert.Equal(itemCard, aboutThisItemVM.ItemCardViewModel);
                 Assert.Equal(TargetDescription, aboutThisItemVM.TargetDescription);
                 Assert.Equal(DOK, aboutThisItemVM.DepthOfKnowledge);

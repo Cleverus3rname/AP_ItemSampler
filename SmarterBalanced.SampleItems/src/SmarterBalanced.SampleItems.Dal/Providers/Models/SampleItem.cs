@@ -16,7 +16,6 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         public int BankKey { get; }
         public int ItemKey { get; }
         public string ItemType { get; }
-
         public GradeLevels Grade { get; }
         public Subject Subject { get; }
         public Claim Claim { get; }
@@ -38,8 +37,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         public bool BrailleOnlyItem { get; }
         public int? CopiedFromItem { get; }
         public string Domain { get; }
-        public string EducationalDifficulty { get; set; }
-        public string EvidenceStatement { get; set; }
+        public string EducationalDifficulty { get; }
+        public string EvidenceStatement { get; }
 
         /// <summary>
         /// Scoring information, rubric, and sample responses for sample item.
@@ -68,11 +67,12 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             ImmutableArray<string> brailleItemCodes,
             ImmutableArray<string> braillePassageCodes,
             bool brailleOnlyItem,
-            int? copiedFromitem,
+            int? copiedFromItem,
             string educationalDifficulty,
             string evidenceStatement,
             string domain,
-            SampleItemScoring scoring
+            SampleItemScoring scoring,
+            int? associatedTutorial
             )
         {
             BankKey = bankKey;
@@ -95,12 +95,13 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             InteractionTypeSubCat = interactionTypeSubCat;
             BrailleItemCodes = brailleItemCodes;
             BraillePassageCodes = braillePassageCodes;
-            CopiedFromItem = copiedFromitem;
+            CopiedFromItem = copiedFromItem;
             BrailleOnlyItem = brailleOnlyItem;
             EducationalDifficulty = educationalDifficulty;
             EvidenceStatement = evidenceStatement;
             Domain = domain;
             SampleItemScoring = scoring;
+            AssociatedTutorial = associatedTutorial;
         }
 
         public static SampleItem Create(
@@ -129,35 +130,37 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             string educationalDifficulty = "",
             string evidenceStatement = "",
             string domain = "",
-            SampleItemScoring scoring = null)
+            SampleItemScoring scoring = null,
+            int? associatedTutorial = null)
         {
             return new SampleItem(
-                bankKey,
-                itemKey,
-                itemType,
-                grade,
-                subject,
-                claim,
-                interactionType,
-                accessibilityResourceGroups,
-                targetAssessmentType,
-                sufficentEvidenceOfClaim,
-                associatedStimulus,
-                aslSupported,
-                allowCalculator,
-                depthOfKnowledge,
-                isPerformanceItem,
-                coreStandards,
-                fieldTestUse,
-                interactionTypeSubCat,
-                brailleItemCodes,
-                braillePassageCodes,
-                brailleOnlyItem,
-                copiedFromItem,
-                educationalDifficulty,
-                evidenceStatement,
+                bankKey: bankKey,
+                itemKey: itemKey,
+                itemType: itemType,
+                grade: grade,
+                subject: subject,
+                claim: claim,
+                interactionType: interactionType,
+                accessibilityResourceGroups: accessibilityResourceGroups,
+                targetAssessmentType: targetAssessmentType,
+                sufficentEvidenceOfClaim: sufficentEvidenceOfClaim,
+                associatedStimulus: associatedStimulus,
+                aslSupported: aslSupported,
+                allowCalculator: allowCalculator,
+                depthOfKnowledge: depthOfKnowledge,
+                isPerformanceItem: isPerformanceItem,
+                coreStandards: coreStandards,
+                fieldTestUse: fieldTestUse,
+                interactionTypeSubCat: interactionTypeSubCat,
+                brailleItemCodes: brailleItemCodes,
+                braillePassageCodes: braillePassageCodes,
+                brailleOnlyItem: brailleOnlyItem,
+                copiedFromItem: copiedFromItem,
+                educationalDifficulty: educationalDifficulty,
+                evidenceStatement: evidenceStatement,
                 domain: domain,
-                scoring: scoring );
+                scoring: scoring ,
+                associatedTutorial: associatedTutorial);
         }
 
         public override string ToString()

@@ -36,9 +36,8 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
                 grade : GradeLevels.NA
             );
             ItemCardViewModel card = digest.ToItemCardViewModel();
-
             var aboutThisItemVM = AboutThisItemViewModel.Create(
-                rubrics: ImmutableArray.Create<Rubric>(),
+                scoring: SampleItemScoring.Create(),
                 itemCard: card,
                 depthOfKnowledge: "",
                 targetDescription: "",
@@ -54,7 +53,7 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
             ItemCardViewModel cardCookie = digest.ToItemCardViewModel();
 
             var aboutItemCookie = AboutThisItemViewModel.Create(
-                rubrics: ImmutableArray.Create<Rubric>(),
+                scoring: SampleItemScoring.Create(),
                 itemCard: cardCookie,
                 depthOfKnowledge: "",
                 targetDescription: "",

@@ -88,9 +88,10 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
             //generated item cards for more like this tests
             itemCards = itemCards.AddRange(MoreItemCards());
             var settings = new AppSettings() { SettingsConfig = new SettingsConfig() { NumMoreLikeThisItems = 3 } };
+            var aboutGoodScoring = SampleItemScoring.Create(rubrics: ImmutableArray.Create(TestRubric));
 
             var aboutGoodItem = AboutThisItemViewModel.Create(
-                rubrics: ImmutableArray.Create(TestRubric),
+                scoring: aboutGoodScoring,
                 itemCard: MathCard,
                 depthOfKnowledge: "TestDepth",
                 associatedItems: "about good item associated items");
@@ -336,8 +337,8 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
             var aboutThisItemViewModel = ItemViewRepo.GetAboutThisItemViewModel(MathDigest);
 
             Assert.NotNull(aboutThisItemViewModel);
-            Assert.Equal(aboutThisItemViewModel.Rubrics.Length, 1);
-            Assert.Equal(aboutThisItemViewModel.Rubrics[0], TestRubric);
+            Assert.Equal(aboutThisItemViewModel.SampleItemScoring.Rubrics.Length, 1);
+            Assert.Equal(aboutThisItemViewModel.SampleItemScoring.Rubrics[0], TestRubric);
             Assert.Equal(aboutThisItemViewModel.DepthOfKnowledge, "TestDepth");
         }
 
