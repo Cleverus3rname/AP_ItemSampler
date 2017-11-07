@@ -1,9 +1,9 @@
 ﻿import { OptionType, AdvancedFilterCategory } from '@osu-cass/react-advanced-filter'
 
 export const mockAdvancedFilterCategories: AdvancedFilterCategory[] = [
-    {
+    {//grade filter
         "disabled": false,
-        "isMultiSelect": false,
+        "isMultiSelect": true,
         "helpText": "Grade HelpText here.",
         "label": "Grades",
         "filterOptions": [
@@ -13,33 +13,8 @@ export const mockAdvancedFilterCategories: AdvancedFilterCategory[] = [
                 "isSelected": false
             },
             {
-                "label": "Grade 3",
-                "key": "1",
-                "isSelected": false
-            },
-            {
-                "label": "Grade 4",
-                "key": "2",
-                "isSelected": false
-            },
-            {
-                "label": "Grade 5",
-                "key": "4",
-                "isSelected": false
-            },
-            {
-                "label": "Grade 6",
-                "key": "8",
-                "isSelected": false
-            },
-            {
-                "label": "Grade 7",
-                "key": "16",
-                "isSelected": false
-            },
-            {
-                "label": "Grade 8",
-                "key": "32",
+                "label": "Middle",
+                "key": "56",
                 "isSelected": false
             },
             {
@@ -50,9 +25,9 @@ export const mockAdvancedFilterCategories: AdvancedFilterCategory[] = [
         ],
         "displayAllButton":true
     },
-    {
+    {//Subjects filter
         "disabled": false,
-        "isMultiSelect": false,
+        "isMultiSelect": true,
         "label": "Subjects",
         "helpText": "Subjects HelpText here.",
         "filterOptions": [
@@ -69,23 +44,32 @@ export const mockAdvancedFilterCategories: AdvancedFilterCategory[] = [
         ],
         "displayAllButton": true
     },
-    {
+    {//Claims
         "disabled": false,
-        "isMultiSelect": false,
-        "label": "TechType",
-        "helpText": "TechType HelpText here.",
+        "isMultiSelect": true,
+        "label": "Claim",
+        "helpText": "Claim HelpText here.",
         "filterOptions": [
-            {
-                "label": "CAT",
-                "key": "CAT",
-                "isSelected": false
-            },
-            {
-                "label": "Performance Items",
-                "key": "PT",
-                "isSelected": false
-            }
+        ],
+        "displayAllButton": true
+    },
+    {//Targets
+        "disabled": false,
+        "isMultiSelect": true,
+        "label": "Target",
+        "helpText": "Target HelpText here.",
+        "filterOptions": [
+        ],
+        "displayAllButton": true
+    },
+    {//Calculator on/off
+        "disabled": false,
+        "isMultiSelect": true,
+        "label": "Calculator",
+        "helpText": "Calculator HelpText here.",
+        "filterOptions": [
         ],
         "displayAllButton": true
     }
+
 ];

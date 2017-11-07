@@ -9,7 +9,7 @@ import * as Models from './ItemsSearchModels';
 import { Resource, get } from '../ApiModel';
 import * as ItemSearchModels from './ItemsSearchModels';
 import { RouteComponentProps } from 'react-router';
-import { AdvancedFilterCategory, AdvancedFilterContainer } from '@osu-cass/react-advanced-filter';
+import { AdvancedFilterCategory, AdvancedFilterContainer, AdvancedFilterOption } from '@osu-cass/react-advanced-filter';
 import { mockAdvancedFilterCategories } from './filterModels';
 
 
@@ -28,6 +28,7 @@ export interface Props extends RouteComponentProps<{}> {
 export interface State {
     searchResults: Resource<ItemCardModels.ItemCardViewModel[]>;
     itemSearch: Resource<ItemSearchModels.ItemsSearchViewModel>;
+    currentFilter: AdvancedFilterCategory[];
 }
 
 export class ItemsSearchComponent extends React.Component<Props, State> {
@@ -35,7 +36,8 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         super(props);
         this.state = {
             searchResults: { kind: "loading" },
-            itemSearch: {kind: "loading"}
+            itemSearch: { kind: "loading" },
+            currentFilter: mockAdvancedFilterCategories
         };
 
         this.props.itemsViewModelClient()
@@ -73,8 +75,25 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     }
 
     onFetchedItemSearch(itemsSearch: ItemSearchModels.ItemsSearchViewModel) {
-        this.setState({ itemSearch: { kind: "success", content: itemsSearch } });
+        const newFilters = [...this.state.currentFilter];
 
+        const newSubject = this.state.currentFilter.find(f => f.label === "Subjects");
+        if (newSubject) {
+            //if math is selected change displayed claims...
+
+            //else if english is selected change displayed  claims...
+        }
+
+
+        this.setState({
+            itemSearch: { kind: "success", content: itemsSearch },
+            currentFilter: newFilters
+        }, );
+
+    }
+
+    updateCurrentFilterOnLoad(itemsSearch: ItemSearchModels.ItemsSearchViewModel) {
+        this.setState({})
     }
 
     selectSingleResult() {
@@ -175,7 +194,39 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         return model;
     }
 
-    beginSearchFilter = (categorys: AdvancedFilterCategory[]) => {
+    renderAdvancedFilter() {
+        if (this.state.itemSearch.kind === "success") {
+            //subjects to display
+            const subjects = this.state.itemSearch.content!.subjects;
+
+            //claims to display
+            const subjectCategory = this.state.currentFilter
+                .find(f => f.label === "Subjects");
+
+            const selectedSubjectOptions = (subjectCategory ? subjectCategory.filterOptions : [])
+                .filter(fo => fo.isSelected);
+
+            const selectedSubjects = subjects.filter(s => selectedSubjectOptions.findIndex(ss => ss.key === s.code) !== -1);
+
+            const claimsToDisplay = selectedSubjects
+                .map(s => s.claims)
+                .reduce((prev, curr) => prev.concat(curr), []);
+
+            //targets to display
+            const claimCategory = this.state.currentFilter
+                .find(f => f.label === "Claims");
+            const selectedClaimOptions = (claimCategory ? claimCategory.filterOptions : [])
+                .filter(fo => fo.isSelected);
+            const selectedClaims = claimsToDisplay.filter(c => selectedClaimOptions.findIndex(sco => sco.key === c.code) !== -1);
+            const targetsToDisplay = selectedClaims.map(c => c.targets).reduce((prev, curr) => prev.concat(curr), []);
+            console.log("targetsToDisplay", targetsToDisplay);
+        }
+    }
+
+    beginSearchFilter = (categories: AdvancedFilterCategory[]) => {
+        this.setState({
+            currentFilter: categories
+        });
         const searchResults = this.state.searchResults;
         if (searchResults.kind === "success") {
             this.setState({
@@ -190,7 +241,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             });
         }
 
-        const params = this.translateAdvancedFilterCate(categorys);
+        const params = this.translateAdvancedFilterCate(categories);
 
         this.props.itemsSearchClient(params)
             .then((data) => this.onSearch(data))
@@ -205,7 +256,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         if (searchVm.kind == "success" || searchVm.kind == "reloading") {
             if (searchVm.content) {
                 return (
-                    <AdvancedFilterContainer filterOptions={...mockAdvancedFilterCategories} onClick={this.beginSearchFilter} />
+                    <AdvancedFilterContainer filterOptions={...this.state.currentFilter} onClick={this.beginSearchFilter} />
                 );
             }
             else {
