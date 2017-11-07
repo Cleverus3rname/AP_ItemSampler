@@ -97,11 +97,7 @@ namespace SmarterBalanced.SampleItems.Core.Repos
             return itemNames;
         }
 
-        public ItemViewModel GetItemViewModel(
-            int bankKey,
-            int itemKey,
-            string[] iSAAPCodes,
-            Dictionary<string, string> cookiePreferences)
+        public ItemViewModel GetItemViewModel(int bankKey, int itemKey)
         {
             var sampleItem = GetSampleItem(bankKey, itemKey);
             if (sampleItem == null)
@@ -109,7 +105,6 @@ namespace SmarterBalanced.SampleItems.Core.Repos
                 return null;
             }
 
-            var groups = sampleItem.AccessibilityResourceGroups.ApplyPreferences(iSAAPCodes, cookiePreferences);
             var associatedBraille = GetAssoicatedBrailleItem(sampleItem);
 
             ItemIdentifier nonBrailleItem = sampleItem.ToItemIdentifier();
@@ -123,12 +118,12 @@ namespace SmarterBalanced.SampleItems.Core.Repos
                 nonBrailleItem: nonBrailleItem,
                 accessibilityCookieName: context.AppSettings.SettingsConfig.AccessibilityCookie,
                 isPerformanceItem: sampleItem.IsPerformanceItem,
-                accResourceGroups: groups,
                 moreLikeThisVM: GetMoreLikeThis(sampleItem),
                 subject: sampleItem.Subject.Code,
                 brailleItemCodes: sampleItem.BrailleItemCodes,
                 braillePassageCodes: sampleItem.BraillePassageCodes,
-                performanceItemDescription: GetPerformanceDescription(sampleItem));
+                performanceItemDescription: GetPerformanceDescription(sampleItem),
+                defaultIsaapCodes: context.AppSettings.SettingsConfig.DefaultIsaapCodes);
 
             return itemViewModel;
         }
@@ -239,7 +234,7 @@ namespace SmarterBalanced.SampleItems.Core.Repos
 
         public ImmutableArray<AccessibilityResourceGroup> GetAccessibilityResourceGroup(
             GradeLevels gradeLevels,
-            string subjectCode, 
+            string subjectCode,
             string interactionType,
             Dictionary<string, string> cookiePreferences = default(Dictionary<string, string>))
 
