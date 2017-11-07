@@ -11,5 +11,6 @@ namespace SmarterBalanced.SampleItems.Dal.Configurations.Models
         public int NumMoreLikeThisItems { get; set; }
         public string ELAPerformanceDescription { get; set; }
         public string MATHPerformanceDescription { get; set; }
+        public string DefaultIsaapCodes { get; set; }
     }
 }

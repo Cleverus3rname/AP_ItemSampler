@@ -61,7 +61,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         /// <param name="itemKey"></param>
         /// <param name="isaap"></param>
         [HttpGet("GetItem")]
-        public IActionResult Details(int? bankKey, int? itemKey, string isaap)
+        public IActionResult Details(int? bankKey, int? itemKey)
         {
             if (!bankKey.HasValue || !itemKey.HasValue)
             {
@@ -69,13 +69,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
                 return BadRequest();
             }
 
-            string cookieName = appSettings.SettingsConfig.AccessibilityCookie;
-            string cookieString = Request?.Cookies[cookieName] ?? string.Empty;
-            var cookiePreferences = DecodeCookie(cookieString);
-
-            string[] isaapCodes = string.IsNullOrEmpty(isaap) ? new string[0] : isaap.Split(';');
-
-            var itemViewModel = repo.GetItemViewModel(bankKey.Value, itemKey.Value, isaapCodes, cookiePreferences);
+            var itemViewModel = repo.GetItemViewModel(bankKey.Value, itemKey.Value);
             if (itemViewModel == null)
             {
                 logger.LogWarning($"{nameof(Details)} invalid item {bankKey} {itemKey}");
