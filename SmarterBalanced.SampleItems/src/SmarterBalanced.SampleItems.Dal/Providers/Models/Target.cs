@@ -40,10 +40,9 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             string id, 
             string idLabel,
             string subjectCode,
-            string claimId,
-            string name)
+            string claimId)
         {
-            Name = NameFromDesc(description) ?? name ?? String.Empty;
+            Name = NameFromDesc(description) ?? idLabel ?? String.Empty;
             Descripton = RemoveNameFromDescription(description);
             Id = id;
             IdLabel = idLabel;
@@ -64,8 +63,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
                 id: Id,
                 idLabel: IdLabel,
                 subjectCode: Subject,
-                claimId: ClaimId,
-                name: Name);
+                claimId: ClaimId);
         }
 
         /// <summary>
@@ -91,16 +89,14 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             string id = "",
             string idLabel = "",
             string subject = "",
-            string claim = "",
-            string name = "")
+            string claim = "")
         {
             return new Target(
                 description: desc,
                 id: id,
                 idLabel: idLabel,
                 subjectCode: subject,
-                claimId: claim,
-                name: name);
+                claimId: claim);
         }
 
         /// <summary>
