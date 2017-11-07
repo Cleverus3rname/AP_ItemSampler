@@ -40,9 +40,10 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             string id, 
             string idLabel,
             string subjectCode,
-            string claimId)
+            string claimId,
+            string name)
         {
-            Name = NameFromDesc(description);
+            Name = NameFromDesc(description) ?? name ?? String.Empty;
             Descripton = RemoveNameFromDescription(description);
             Id = id;
             IdLabel = idLabel;
@@ -63,7 +64,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
                 id: Id,
                 idLabel: IdLabel,
                 subjectCode: Subject,
-                claimId: ClaimId);
+                claimId: ClaimId,
+                name: Name);
         }
 
         /// <summary>
@@ -89,14 +91,16 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             string id = "",
             string idLabel = "",
             string subject = "",
-            string claim = "")
+            string claim = "",
+            string name = "")
         {
             return new Target(
                 description: desc,
                 id: id,
                 idLabel: idLabel,
                 subjectCode: subject,
-                claimId: claim);
+                claimId: claim,
+                name: name);
         }
 
         /// <summary>
@@ -115,7 +119,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
                     .Select(word => char.ToUpper(word[0]) + word.Substring(1).ToLower()));
                 return shortName;
             }
-            return "";
+            return null;
         }
 
         /// <summary>

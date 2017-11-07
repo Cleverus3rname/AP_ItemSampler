@@ -305,7 +305,8 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 id: itemIdentifier?.Target,
                 idLabel: itemIdentifier?.ToTargetId(),
                 subject: targetRow?.SubjectCode ?? ccssRow?.SubjectCode,
-                claim: itemIdentifier?.ToClaimId());
+                claim: itemIdentifier?.ToClaimId(),
+                name: targetRow?.Name);
 
             return CoreStandards.Create(
                   target: target,
