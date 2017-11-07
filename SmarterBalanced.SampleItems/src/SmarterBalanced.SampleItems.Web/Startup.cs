@@ -135,15 +135,22 @@ namespace SmarterBalanced.SampleItems.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
 
-                routes.MapSpaFallbackRoute(
-                    name: "spa-fallback",
-                    defaults: new { controller = "Home", action = "Index" });
-
                 routes.MapRoute(
                     name: "diagnostic",
                     template: "status/{level?}",
                     defaults: new { controller = "Diagnostic", action = "Index" });
             });
+
+            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/swagger"), builder =>
+            {
+                builder.UseMvc(routes =>
+                {
+                    routes.MapSpaFallbackRoute(
+                        name: "spa-fallback",
+                        defaults: new { controller = "Home", action = "Index" });
+                });
+            });
+
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
