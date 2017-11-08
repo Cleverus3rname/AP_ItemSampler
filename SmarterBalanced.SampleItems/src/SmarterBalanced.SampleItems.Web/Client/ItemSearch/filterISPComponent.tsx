@@ -9,7 +9,6 @@ import { AdvancedFilterCategory, AdvancedFilterContainer, AdvancedFilterOption }
 export interface Props {
     defaultFilter: AdvancedFilterCategory[];
     searchFilters: (categories: AdvancedFilterCategory[]) => void;
-    isLoading: boolean;
 }
 
 export interface State {
@@ -24,7 +23,7 @@ export interface State {
     performanceOnly: boolean;
 }
 
-export class filterISPComponent extends React.Component<Props, State> {
+export class FilterISPComponent extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -86,7 +85,9 @@ export class filterISPComponent extends React.Component<Props, State> {
         return query;
     }
 
-    renderfilters() {
-        <AdvancedFilterContainer filterOptions={...this.state.currentFilter} onClick={this.props.searchFilters} />
+    render() {
+        return (
+            <AdvancedFilterContainer filterOptions={...this.state.currentFilter} onClick={this.props.searchFilters} />
+        );
     }
 }

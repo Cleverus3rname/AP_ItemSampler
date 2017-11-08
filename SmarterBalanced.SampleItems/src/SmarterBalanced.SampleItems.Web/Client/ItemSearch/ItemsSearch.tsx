@@ -11,6 +11,7 @@ import * as ItemSearchModels from './ItemsSearchModels';
 import { RouteComponentProps } from 'react-router';
 import { AdvancedFilterCategory, AdvancedFilterContainer, AdvancedFilterOption } from '@osu-cass/react-advanced-filter';
 import { mockAdvancedFilterCategories } from './filterModels';
+import { FilterISPComponent } from './filterISPComponent';
 
 
 export const ItemsSearchClient = (params: ItemSearchModels.SearchAPIParams) =>
@@ -265,7 +266,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         if (searchVm.kind == "success" || searchVm.kind == "reloading") {
             if (searchVm.content) {
                 return (
-                    <AdvancedFilterContainer filterOptions={...this.state.currentFilter} onClick={this.beginSearchFilter} />
+                    <FilterISPComponent defaultFilter={this.state.currentFilter} searchFilters={this.beginSearchFilter} />
                 );
             }
             else {
