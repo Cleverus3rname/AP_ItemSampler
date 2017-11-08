@@ -262,7 +262,6 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             .then((data) => this.onSearch(data))
             .catch((err) => this.onError(err));
 
-
         if (searchVm.kind == "success" || searchVm.kind == "reloading") {
             if (searchVm.content) {
                 return (
