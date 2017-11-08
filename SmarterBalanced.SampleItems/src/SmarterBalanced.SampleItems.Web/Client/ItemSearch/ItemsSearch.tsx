@@ -77,12 +77,17 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     onFetchedItemSearch(itemsSearch: ItemSearchModels.ItemsSearchViewModel) {
         const newFilters = [...this.state.currentFilter];
 
-        const newSubject = this.state.currentFilter.find(f => f.label === "Subjects");
-        if (newSubject) {
-            //if math is selected change displayed claims...
+        const newGrade = this.state.currentFilter.find(f => f.label.toLocaleLowerCase() === "grades")
+        const newSubject = this.state.currentFilter.find(f => f.label.toLocaleLowerCase() === "subjects");
+        if (newGrade && newSubject) {
+            // TODO: get buisness logic for displable filter options. 
+            //if math is selected change displayed claims/targets/etc...
 
-            //else if english is selected change displayed  claims...
+            //else if english is selected change displayed  claims/targets/etc...
         }
+
+
+
 
 
         this.setState({
@@ -202,12 +207,9 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             //claims to display
             const subjectCategory = this.state.currentFilter
                 .find(f => f.label === "Subjects");
-
             const selectedSubjectOptions = (subjectCategory ? subjectCategory.filterOptions : [])
                 .filter(fo => fo.isSelected);
-
             const selectedSubjects = subjects.filter(s => selectedSubjectOptions.findIndex(ss => ss.key === s.code) !== -1);
-
             const claimsToDisplay = selectedSubjects
                 .map(s => s.claims)
                 .reduce((prev, curr) => prev.concat(curr), []);
@@ -219,7 +221,6 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
                 .filter(fo => fo.isSelected);
             const selectedClaims = claimsToDisplay.filter(c => selectedClaimOptions.findIndex(sco => sco.key === c.code) !== -1);
             const targetsToDisplay = selectedClaims.map(c => c.targets).reduce((prev, curr) => prev.concat(curr), []);
-            console.log("targetsToDisplay", targetsToDisplay);
         }
     }
 
@@ -253,6 +254,14 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         const isLoading = this.isLoading();
         const searchVm = this.state.itemSearch;
 
+        const param = this.translateAdvancedFilterCate(this.state.currentFilter);
+
+        //pull item cards
+        this.props.itemsSearchClient(param)
+            .then((data) => this.onSearch(data))
+            .catch((err) => this.onError(err));
+
+
         if (searchVm.kind == "success" || searchVm.kind == "reloading") {
             if (searchVm.content) {
                 return (
@@ -270,7 +279,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
     render() {
         return (
-            <div className="search-container" style={{ "marginTop": "100px","backgroundColor":"white"}}>
+            <div className="search-container" style={{ "backgroundColor": "white", "marginTop":"50px"}}>
                 {this.renderfilters()}
                 <div className="search-results" >
                     {this.renderResultElement()}
