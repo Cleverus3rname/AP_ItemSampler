@@ -1,20 +1,22 @@
 import { AdvancedFilterOption, AdvancedFilterCategory } from "@osu-cass/react-advanced-filter";
-import { parseQueryString } from './ApiModel';
+import { parseQueryString } from "./ApiModel";
 
 export function updateUrl(filters: AdvancedFilterCategory[]) {
     let pairs: string[] = [];
 
     filters.forEach(f => {
         if (!f.disabled) {
-            let pair = f.label.toLowerCase() + "=";
-            pair += f.filterOptions.filter(o => o.isSelected).map(o => o.key).join(",");
-            pairs.push(pair);
+            const key = f.label.toLowerCase().replace(/ /g, "-");
+            const value = f.filterOptions.filter(o => o.isSelected).map(o => o.key).join(",");
+            if (value !== "") {
+                pairs.push(key + "=" + value);
+            }
         }
     });
 
     let query: string;
     if (pairs.length === 0) {
-        query = "/";
+        query = "";
     } else {
         query = "?" + pairs.join("&");
     }
@@ -23,6 +25,9 @@ export function updateUrl(filters: AdvancedFilterCategory[]) {
 
 export function readUrl(filters: AdvancedFilterCategory[]) {
     const queryObject = parseQueryString(window.location.href);
+    for (let a in queryObject) {
+        queryObject[a.replace(/-/g, " ")] = queryObject[a];
+    }
 
     const newFilters = filters.map(f => {
         if (!f.disabled) {
