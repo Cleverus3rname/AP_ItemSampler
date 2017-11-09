@@ -207,10 +207,15 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             .then((data) => this.onSearch(data))
             .catch((err) => this.onError(err));
 
-        if ((searchVm.kind == "success" || searchVm.kind == "reloading") && searchVm.content) {
-            return (
-                <FilterISPComponent defaultFilter={this.state.currentFilter} searchFilters={this.beginSearchFilter} />
-            );
+        if (searchVm.kind == "success" || searchVm.kind == "reloading") {
+            if (searchVm.content) {
+                return (
+                    <FilterISPComponent defaultFilter={this.state.currentFilter} searchFilters={this.beginSearchFilter} />
+                );
+            }
+            else {
+                return <p><em>Loading...</em></p>
+            }
         }
         else {
             return <p><em>Loading...</em></p>
