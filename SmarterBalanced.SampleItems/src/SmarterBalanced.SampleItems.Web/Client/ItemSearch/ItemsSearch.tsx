@@ -88,10 +88,6 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             //else if english is selected change displayed  claims/targets/etc...
         }
 
-
-
-
-
         this.setState({
             itemSearch: { kind: "success", content: itemsSearch },
             currentFilter: newFilters
@@ -136,28 +132,20 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         const isLoading = this.isLoading();
         const searchVm = this.state.itemSearch;
 
-        if (searchVm.kind == "success" || searchVm.kind == "reloading") {
-            if (searchVm.content) {
-                return (
-                    <ItemsSearchParams.ISPComponent
-                        interactionTypes={searchVm.content.interactionTypes}
-                        subjects={searchVm.content.subjects}
-                        onChange={(params) => this.beginSearch(params)}
-                        selectSingleResult={() => this.selectSingleResult()}
-                        isLoading={isLoading} />
-                );
-            }
-            else {
-               return <p><em>Loading...</em></p>
-            }
+        if ((searchVm.kind == "success" || searchVm.kind == "reloading") && searchVm.content) {
+            return (
+                <ItemsSearchParams.ISPComponent
+                    interactionTypes={searchVm.content.interactionTypes}
+                    subjects={searchVm.content.subjects}
+                    onChange={(params) => this.beginSearch(params)}
+                    selectSingleResult={() => this.selectSingleResult()}
+                    isLoading={isLoading} />
+            );
         }
         else {
             return <p><em>Loading...</em></p>
         }
-
-       
     }
-
 
     // TODO: Optimize this 
     translateAdvancedFilterCate(categorys: AdvancedFilterCategory[]): Models.SearchAPIParams {
@@ -201,31 +189,6 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         return model;
     }
 
-    renderAdvancedFilter() {
-        if (this.state.itemSearch.kind === "success") {
-            //subjects to display
-            const subjects = this.state.itemSearch.content!.subjects;
-
-            //claims to display
-            const subjectCategory = this.state.currentFilter
-                .find(f => f.label === "Subjects");
-            const selectedSubjectOptions = (subjectCategory ? subjectCategory.filterOptions : [])
-                .filter(fo => fo.isSelected);
-            const selectedSubjects = subjects.filter(s => selectedSubjectOptions.findIndex(ss => ss.key === s.code) !== -1);
-            const claimsToDisplay = selectedSubjects
-                .map(s => s.claims)
-                .reduce((prev, curr) => prev.concat(curr), []);
-
-            //targets to display
-            const claimCategory = this.state.currentFilter
-                .find(f => f.label === "Claims");
-            const selectedClaimOptions = (claimCategory ? claimCategory.filterOptions : [])
-                .filter(fo => fo.isSelected);
-            const selectedClaims = claimsToDisplay.filter(c => selectedClaimOptions.findIndex(sco => sco.key === c.code) !== -1);
-            const targetsToDisplay = selectedClaims.map(c => c.targets).reduce((prev, curr) => prev.concat(curr), []);
-        }
-    }
-
     beginSearchFilter = (categories: AdvancedFilterCategory[]) => {
         this.setState({
             currentFilter: categories
@@ -263,15 +226,10 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             .then((data) => this.onSearch(data))
             .catch((err) => this.onError(err));
 
-        if (searchVm.kind == "success" || searchVm.kind == "reloading") {
-            if (searchVm.content) {
-                return (
-                    <FilterISPComponent defaultFilter={this.state.currentFilter} searchFilters={this.beginSearchFilter} />
-                );
-            }
-            else {
-                return <p><em>Loading...</em></p>
-            }
+        if ((searchVm.kind == "success" || searchVm.kind == "reloading") && searchVm.content) {
+            return (
+                <FilterISPComponent defaultFilter={this.state.currentFilter} searchFilters={this.beginSearchFilter} />
+            );
         }
         else {
             return <p><em>Loading...</em></p>
