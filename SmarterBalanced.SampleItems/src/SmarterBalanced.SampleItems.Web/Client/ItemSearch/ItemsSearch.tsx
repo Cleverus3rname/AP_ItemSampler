@@ -12,8 +12,9 @@ import { RouteComponentProps } from 'react-router';
 import { AdvancedFilterCategory, AdvancedFilterContainer, AdvancedFilterOption } from '@osu-cass/react-advanced-filter';
 import { mockAdvancedFilterCategories } from './filterModels';
 import { FilterISPComponent } from './filterISPComponent';
+import { updateUrl, readUrl } from '../UrlHelper';
 
-
+// TODO: changed to accept AdvancedFilterCategory[]
 export const ItemsSearchClient = (params: ItemSearchModels.SearchAPIParams) =>
     get<ItemCardModels.ItemCardViewModel[]>("/BrowseItems/search", params);
 

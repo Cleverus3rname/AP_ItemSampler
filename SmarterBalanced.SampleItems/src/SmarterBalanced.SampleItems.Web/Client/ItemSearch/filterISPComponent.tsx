@@ -26,12 +26,12 @@ export class FilterISPComponent extends React.Component<Props, State> {
         
     }
 
-    searchHandler(filters: AdvancedFilterCategory[]) {
+    searchHandler = (filters: AdvancedFilterCategory[]) => {
         //update URL
         updateUrl(filters);
-        this.state = {
+        this.setState({
             currentFilter: filters
-        }
+        });
 
         //conduct callback search
         this.props.searchFilters(filters);

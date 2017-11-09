@@ -18,7 +18,7 @@ export function updateUrl(filters: AdvancedFilterCategory[]) {
     } else {
         query = "?" + pairs.join("&");
     }
-    history.replaceState(null, "", query);
+    history.replaceState(null, "", window.location.pathname + query);
 }
 
 export function readUrl(filters: AdvancedFilterCategory[]) {
