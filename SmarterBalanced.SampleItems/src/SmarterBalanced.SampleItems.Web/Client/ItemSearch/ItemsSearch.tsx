@@ -128,25 +128,6 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         return resultsElement;
     }
 
-    renderISPComponent(): JSX.Element {
-        const isLoading = this.isLoading();
-        const searchVm = this.state.itemSearch;
-
-        if ((searchVm.kind == "success" || searchVm.kind == "reloading") && searchVm.content) {
-            return (
-                <ItemsSearchParams.ISPComponent
-                    interactionTypes={searchVm.content.interactionTypes}
-                    subjects={searchVm.content.subjects}
-                    onChange={(params) => this.beginSearch(params)}
-                    selectSingleResult={() => this.selectSingleResult()}
-                    isLoading={isLoading} />
-            );
-        }
-        else {
-            return <p><em>Loading...</em></p>
-        }
-    }
-
     // TODO: Optimize this 
     translateAdvancedFilterCate(categorys: AdvancedFilterCategory[]): Models.SearchAPIParams {
         let model: Models.SearchAPIParams = {
