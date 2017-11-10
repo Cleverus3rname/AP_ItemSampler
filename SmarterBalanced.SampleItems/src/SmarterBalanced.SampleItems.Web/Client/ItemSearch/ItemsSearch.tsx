@@ -13,6 +13,7 @@ import { AdvancedFilterCategory, AdvancedFilterContainer, AdvancedFilterOption }
 import { mockAdvancedFilterCategories } from './filterModels';
 import { FilterISPComponent } from './filterISPComponent';
 import { updateUrl, readUrl } from '../UrlHelper';
+import { filterItems }  from './ItemSearchFilter'
 
 // TODO: changed to accept AdvancedFilterCategory[]
 export const ItemsSearchClient = (params: ItemSearchModels.SearchAPIParams) =>
@@ -158,15 +159,6 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             });
         }
 
-        //look up techtype options
-        const techTypesCategory = categorys.find(c => c.label.toLowerCase() === 'TechType');
-        if (techTypesCategory && !techTypesCategory.disabled) {
-            const selectedTechType = techTypesCategory.filterOptions.find(fo => fo.key.toLowerCase() === 'pt');
-            if (selectedTechType) {
-                model.performanceOnly = selectedTechType.isSelected;
-            }
-        }
-
         return model;
     }
 
@@ -188,11 +180,15 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             });
         }
 
+        //filterItems(categories, this.state.searchResults.content);
+
         const params = this.translateAdvancedFilterCate(categories);
 
         this.props.itemsSearchClient(params)
             .then((data) => this.onSearch(data))
             .catch((err) => this.onError(err));
+
+
     }
 
 
@@ -224,7 +220,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
     render() {
         return (
-            <div className="search-container" style={{ "backgroundColor": "white", "marginTop":"50px"}}>
+            <div className="search-container" style={{ "marginTop":"50px"}}>
                 {this.renderfilters()}
                 <div className="search-results" >
                     {this.renderResultElement()}

@@ -23,7 +23,7 @@ export class FilterISPComponent extends React.Component<Props, State> {
         this.state = {
             currentFilter: readUrl(this.props.defaultFilter)
         } 
-        
+        this.props.searchFilters(this.state.currentFilter);
     }
 
     searchHandler = (filters: AdvancedFilterCategory[]) => {
@@ -39,7 +39,12 @@ export class FilterISPComponent extends React.Component<Props, State> {
 
     render() {
         return (
-            <AdvancedFilterContainer filterOptions={...this.state.currentFilter} onClick={this.searchHandler} />
+            <div style={{ borderRadius: "5px", "backgroundColor": "white"}}>
+                <h1 style={{ padding: "10px"}}>Browse Items</h1>
+                <div>
+                    <AdvancedFilterContainer filterOptions={...this.state.currentFilter} onClick={this.searchHandler} />
+                </div>
+            </div>
         );
     }
 }
