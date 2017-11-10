@@ -1,13 +1,11 @@
-﻿import { AdvancedFilterCategory } from '@osu-cass/react-advanced-filter';
-import { ItemCardViewModel } from '../ItemCard/ItemCardModels';
-import * as GradeLevels from '../GradeLevels/GradeLevels';
+﻿import { AdvancedFilterCategoryModel, ItemCardModel, gradeLevelContains } from '@osu-cass/sb-components';
 
-export function filterItems(filter: AdvancedFilterCategory[], itemCards: ItemCardViewModel[]) {
+export function filterItems(filter: AdvancedFilterCategoryModel[], itemCards: ItemCardModel[]) {
     const gradeCategory = filter.find(c => c.label.toLowerCase() === 'grades');
     if (gradeCategory && !gradeCategory.disabled) {
         const selectedGrades = gradeCategory.filterOptions.filter(o => o.isSelected).map(o => Number(o.key)).reduce((prev, curr) => prev | curr);
         if (selectedGrades) {
-            itemCards = itemCards.filter(card => GradeLevels.contains(selectedGrades, card.grade));
+            itemCards = itemCards.filter(card => gradeLevelContains(selectedGrades, card.grade));
         }
     }
 

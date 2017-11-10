@@ -2,7 +2,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { RouteComponentProps } from 'react-router';
-import { AdvancedFilterCategory, AdvancedFilterContainer } from '@osu-cass/react-advanced-filter';
 import { mockAdvancedFilterCategories } from './filterModels';
 import { FilterISPComponent } from './filterISPComponent';
 import { updateUrl, readUrl } from '../UrlHelper';
@@ -37,9 +36,9 @@ export interface Props extends RouteComponentProps<{}> {
 }
 
 export interface State {
-    searchResults: Resource<ItemCardModels.ItemCardViewModel[]>;
-    itemSearch: Resource<ItemSearchModels.ItemsSearchViewModel>;
-    currentFilter: AdvancedFilterCategory[];
+    searchResults: Resource<ItemCardModel[]>;
+    itemSearch: Resource<ItemsSearchModel>;
+    currentFilter: AdvancedFilterCategoryModel[];
 }
 
 export class ItemsSearchComponent extends React.Component<Props, State> {
@@ -85,7 +84,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         this.setState({ searchResults: { kind: "failure" } });
     }
 
-    onFetchedItemSearch(itemsSearch: ItemSearchModels.ItemsSearchViewModel) {
+    onFetchedItemSearch(itemsSearch: ItemsSearchModel) {
         const newFilters = [...this.state.currentFilter];
 
         const newGrade = this.state.currentFilter.find(f => f.label.toLocaleLowerCase() === "grades")
@@ -104,7 +103,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
     }
 
-    updateCurrentFilterOnLoad(itemsSearch: ItemSearchModels.ItemsSearchViewModel) {
+    updateCurrentFilterOnLoad(itemsSearch: ItemsSearchModel) {
         this.setState({})
     }
 
@@ -170,7 +169,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         return model;
     }
 
-    beginSearchFilter = (categories: AdvancedFilterCategory[]) => {
+    beginSearchFilter = (categories: AdvancedFilterCategoryModel[]) => {
         this.setState({
             currentFilter: categories
         });

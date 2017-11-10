@@ -1,19 +1,16 @@
-﻿import * as Models from './ItemsSearchModels';
-import * as React from 'react';
-import * as GradeLevels from '../GradeLevels/GradeLevels';
-import { parseQueryString } from '../ApiModel';
+﻿import * as React from 'react';
 import { mockAdvancedFilterCategories } from './filterModels';
-import { AdvancedFilterCategory, AdvancedFilterContainer, AdvancedFilterOption } from '@osu-cass/react-advanced-filter';
+import { AdvancedFilterCategoryModel, AdvancedFilterContainer } from '@osu-cass/sb-components';
 import { updateUrl, readUrl } from '../UrlHelper';
 
 
 export interface Props {
-    defaultFilter: AdvancedFilterCategory[];
-    searchFilters: (categories: AdvancedFilterCategory[]) => void;
+    defaultFilter: AdvancedFilterCategoryModel[];
+    searchFilters: (categories: AdvancedFilterCategoryModel[]) => void;
 }
 
 export interface State {
-    currentFilter: AdvancedFilterCategory[];
+    currentFilter: AdvancedFilterCategoryModel[];
 }
 
 export class FilterISPComponent extends React.Component<Props, State> {
@@ -26,7 +23,7 @@ export class FilterISPComponent extends React.Component<Props, State> {
         this.props.searchFilters(this.state.currentFilter);
     }
 
-    searchHandler = (filters: AdvancedFilterCategory[]) => {
+    searchHandler = (filters: AdvancedFilterCategoryModel[]) => {
         //update URL
         updateUrl(filters);
         this.setState({

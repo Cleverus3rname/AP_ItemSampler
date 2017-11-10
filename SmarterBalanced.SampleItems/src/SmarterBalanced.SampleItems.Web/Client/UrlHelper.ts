@@ -1,7 +1,6 @@
-import { AdvancedFilterOption, AdvancedFilterCategory } from "@osu-cass/react-advanced-filter";
-import { parseQueryString } from "./ApiModel";
+import { AdvancedFilterCategoryModel, parseQueryString } from "@osu-cass/sb-components";
 
-export function updateUrl(filters: AdvancedFilterCategory[]) {
+export function updateUrl(filters: AdvancedFilterCategoryModel[]) {
     let pairs: string[] = [];
 
     filters.forEach(f => {
@@ -23,7 +22,7 @@ export function updateUrl(filters: AdvancedFilterCategory[]) {
     history.replaceState(null, "", window.location.pathname + query);
 }
 
-export function readUrl(filters: AdvancedFilterCategory[]) {
+export function readUrl(filters: AdvancedFilterCategoryModel[]) {
     const queryObject = parseQueryString(window.location.href);
     for (let a in queryObject) {
         queryObject[a.replace(/-/g, " ")] = queryObject[a];
