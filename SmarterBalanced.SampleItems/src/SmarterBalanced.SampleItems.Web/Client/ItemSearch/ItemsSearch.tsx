@@ -1,31 +1,39 @@
 ﻿import '../Styles/search.less';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import * as ItemCard from '../ItemCard/ItemCard';
-import * as ItemCardModels from '../ItemCard/ItemCardModels';
-import * as ItemsSearchParams from './ItemsSearchParams';
-import * as GradeLevels from '../GradeLevels/GradeLevels';
-import * as Models from './ItemsSearchModels';
-import { Resource, get } from '../ApiModel';
-import * as ItemSearchModels from './ItemsSearchModels';
 import { RouteComponentProps } from 'react-router';
-import { AdvancedFilterCategory, AdvancedFilterContainer, AdvancedFilterOption } from '@osu-cass/react-advanced-filter';
+import { AdvancedFilterCategory, AdvancedFilterContainer } from '@osu-cass/react-advanced-filter';
 import { mockAdvancedFilterCategories } from './filterModels';
 import { FilterISPComponent } from './filterISPComponent';
 import { updateUrl, readUrl } from '../UrlHelper';
 import { filterItems }  from './ItemSearchFilter'
 
-// TODO: changed to accept AdvancedFilterCategory[]
-export const ItemsSearchClient = (params: ItemSearchModels.SearchAPIParams) =>
-    get<ItemCardModels.ItemCardViewModel[]>("/BrowseItems/search", params);
+import {
+    Resource,
+    get,
+    ItemCard,
+    ItemCardModel,
+    GradeLevels,
+    SearchAPIParamsModel,
+    ItemsSearchModel,
+    itemPageLink,
+    FilterOptionModel,
+    AdvancedFilterContainer,
+    AdvancedFilterCategoryModel
+} from '@osu-cass/sb-components';
+
+
+
+export const ItemsSearchClient = (params: SearchAPIParamsModel) =>
+    get<ItemCardModel[]>("/BrowseItems/search", params);
 
 export const ItemsViewModelClient = () =>
-    get<ItemSearchModels.ItemsSearchViewModel>("/BrowseItems/ItemsSearchViewModel");
+    get<ItemsSearchModel>("/BrowseItems/ItemsSearchViewModel");
 
 
 export interface Props extends RouteComponentProps<{}> {
-    itemsSearchClient: (params: Models.SearchAPIParams) => Promise<ItemCardModels.ItemCardViewModel[]>;
-    itemsViewModelClient: () => Promise<ItemSearchModels.ItemsSearchViewModel>;
+    itemsSearchClient: (params: SearchAPIParamsModel) => Promise<ItemCardModel[]>;
+    itemsViewModelClient: () => Promise<ItemsSearchModel>;
 }
 
 export interface State {
@@ -49,7 +57,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         
     }
 
-    beginSearch(params: Models.SearchAPIParams) {
+    beginSearch(params: SearchAPIParamsModel) {
         const searchResults = this.state.searchResults;
         if (searchResults.kind === "success") {
             this.setState({
@@ -69,7 +77,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             .catch((err) => this.onError(err));
     }
 
-    onSearch(results: ItemCardModels.ItemCardViewModel[]) {
+    onSearch(results: ItemCardModel[]) {
         this.setState({ searchResults: { kind: "success", content: results } });
     }
 
@@ -104,7 +112,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         const searchResults = this.state.searchResults;
         if (searchResults.kind === "success" && searchResults.content && searchResults.content.length === 1) {
             const searchResult = searchResults.content[0];
-            ItemCardModels.itemPageLink(searchResult.bankKey, searchResult.itemKey);
+            itemPageLink(searchResult.bankKey, searchResult.itemKey);
         }
     }
 
@@ -120,7 +128,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             resultsElement = searchResults.content && searchResults.content.length === 0
                 ? <span className="placeholder-text" role="alert">No results found for the given search terms.</span>
                 : searchResults.content.map(digest =>
-                    <ItemCard.ItemCard {...digest} key={digest.bankKey.toString() + "-" + digest.itemKey.toString()} />);
+                    <ItemCard {...digest} key={digest.bankKey.toString() + "-" + digest.itemKey.toString()} />);
         } else if (searchResults.kind === "failure") {
             resultsElement = <div className="placeholder-text" role="alert">An error occurred. Please try again later.</div>;
         } else {
@@ -130,10 +138,10 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     }
 
     // TODO: Optimize this 
-    translateAdvancedFilterCate(categorys: AdvancedFilterCategory[]): Models.SearchAPIParams {
-        let model: Models.SearchAPIParams = {
+    translateAdvancedFilterCate(categorys: AdvancedFilterCategoryModel[]): SearchAPIParamsModel {
+        let model: SearchAPIParamsModel = {
             itemId: "",
-            gradeLevels: GradeLevels.GradeLevels.All,
+            gradeLevels: GradeLevels.All,
             subjects: [],
             claims: [],
             interactionTypes: [],
@@ -143,7 +151,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
         const gradeCategory = categorys.find(c => c.label.toLowerCase() === 'grades');
         if (gradeCategory && !gradeCategory.disabled) {
-            model.gradeLevels = GradeLevels.GradeLevels.All;
+            model.gradeLevels = GradeLevels.All;
             const selectedGrade = gradeCategory.filterOptions.find(fo => fo.isSelected);
             if (selectedGrade) {
                 model.gradeLevels = Number(selectedGrade.key);

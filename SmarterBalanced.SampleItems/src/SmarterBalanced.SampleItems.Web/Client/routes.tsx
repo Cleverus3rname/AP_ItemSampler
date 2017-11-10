@@ -1,16 +1,26 @@
 import * as React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { Layout } from './Layout';
-import { Home } from './Home/Home';
-import { AboutItemComponent, AboutThisClient } from './AboutItem/AboutItems';
-import { ItemsSearchComponent, ItemsSearchClient, ItemsViewModelClient } from './ItemSearch/ItemsSearch'
-import { ItemPageContainer, ItemPageClient, AboutThisItemViewModelClient, ItemAccessibilityClient } from './ItemPage/ItemPageContainer';
+import {
+    Layout, SbNavlinkProps, AboutTestItemsContainer, aboutTestItemsClient, aboutThisItemViewModelClient, 
+    ItemPageContainer, itemPageClient, itemAccessibilityClient} from '@osu-cass/sb-components';
 
-export const routes = <Layout>
+import { Home } from './Home/Home';
+import { ItemsSearchComponent, ItemsSearchClient, ItemsViewModelClient } from './ItemSearch/ItemsSearch'
+
+
+export const siteLinks: SbNavlinkProps[] = [
+    { name: "Home", url: "/" },
+    { name: "About Test Items", url: "/AboutItems" },
+    { name: "Browse Test Items", url: "/BrowseItems" }
+
+
+];
+
+export const routes = <Layout siteName="Sample Items" links={siteLinks}>
     <Route exact path='/' component={Home} />
 
     <Route exact path='/AboutItems' render={(props) => (
-        <AboutItemComponent {...props} aboutClient={AboutThisClient}/> 
+        <AboutTestItemsContainer {...props} aboutClient={aboutTestItemsClient} />
     )} />
 
     <Route exact path='/BrowseItems' render={(props) => (
@@ -21,10 +31,9 @@ export const routes = <Layout>
 
     <Route exact path='/Item' render={(props) => (
         <ItemPageContainer {...props}
-            aboutThisClient={AboutThisItemViewModelClient}
-            itemPageClient={ItemPageClient}
-            itemAccessibilityClient={ItemAccessibilityClient} />
+            aboutThisClient={aboutThisItemViewModelClient}
+            itemPageClient={itemPageClient}
+            itemAccessibilityClient={itemAccessibilityClient} />
     )} />
-
 
 </Layout>;

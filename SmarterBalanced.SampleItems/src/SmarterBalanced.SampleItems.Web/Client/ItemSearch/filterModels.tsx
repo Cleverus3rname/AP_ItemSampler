@@ -1,7 +1,7 @@
-﻿import { OptionType, AdvancedFilterCategory } from '@osu-cass/react-advanced-filter'
+﻿import { OptionTypeModel, AdvancedFilterCategoryModel } from '@osu-cass/sb-components'
 
-export const mockAdvancedFilterCategories: AdvancedFilterCategory[] = [
-    {//grade filter
+export const mockAdvancedFilterCategories: AdvancedFilterCategoryModel[] = [
+    {
         "disabled": false,
         "isMultiSelect": true,
         "helpText": "Grade HelpText here.",
