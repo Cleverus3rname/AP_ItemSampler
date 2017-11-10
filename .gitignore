@@ -270,4 +270,5 @@ _references.js
 #lib
 /**/wwwroot/lib/
 
-
+#sphinx
+/docs/_build
