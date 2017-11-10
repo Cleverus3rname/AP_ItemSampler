@@ -276,3 +276,5 @@ _references.js
 **/Client/**/*.map
 
 /**/wwwroot/dist/
+#sphinx
+/docs/_build
