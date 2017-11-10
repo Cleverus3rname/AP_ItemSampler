@@ -1,6 +1,6 @@
-﻿import { OptionType, AdvancedFilterCategory } from '@osu-cass/react-advanced-filter'
+﻿import { OptionTypeModel, AdvancedFilterCategoryModel } from '@osu-cass/sb-components'
 
-export const mockAdvancedFilterCategories: AdvancedFilterCategory[] = [
+export const mockAdvancedFilterCategories: AdvancedFilterCategoryModel[] = [
     {
         "disabled": false,
         "isMultiSelect": false,
