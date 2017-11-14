@@ -49,7 +49,7 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
         [Fact]
         public void TestIndex()
         {
-            var result = controller.Index();
+            var result = controller.ItemsSearchViewModel();
             Assert.NotNull(result);
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsType<ItemsSearchViewModel>(viewResult.ViewData.Model);
@@ -63,7 +63,7 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
         [Fact]
         public void TestIndexNull()
         {
-            var result = controllerBadReq.Index();
+            var result = controllerBadReq.ItemsSearchViewModel();
 
             Assert.IsType<BadRequestResult>(result);
         }
