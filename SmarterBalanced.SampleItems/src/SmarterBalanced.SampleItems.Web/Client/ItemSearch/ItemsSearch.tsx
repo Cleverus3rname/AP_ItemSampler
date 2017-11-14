@@ -26,8 +26,9 @@ import {
 export const ItemsSearchClient = (params: SearchAPIParamsModel) =>
     get<ItemCardModel[]>("/BrowseItems/search", params);
 
-export const ItemsViewModelClient = () =>
+export const ItemsViewModelClient = () => 
     get<ItemsSearchModel>("/BrowseItems/ItemsSearchViewModel");
+
 
 
 export interface Props extends RouteComponentProps<{}> {
@@ -53,29 +54,14 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         this.props.itemsViewModelClient()
             .then(data => this.onFetchedItemSearch(data))
             .catch(err => this.onError(err));
+
         
-    }
-
-    beginSearch(params: SearchAPIParamsModel) {
-        const searchResults = this.state.searchResults;
-        if (searchResults.kind === "success") {
-            this.setState({
-                searchResults: {
-                    kind: "reloading",
-                    content: searchResults.content
-                }
-            });
-        } else if (searchResults.kind === "failure") {
-            this.setState({
-                searchResults: { kind: "loading" }
-            });
-        }
-
+        const params = this.translateAdvancedFilterCate(this.state.currentFilter);
         this.props.itemsSearchClient(params)
             .then((data) => this.onSearch(data))
             .catch((err) => this.onError(err));
+        
     }
-
     onSearch(results: ItemCardModel[]) {
         this.setState({ searchResults: { kind: "success", content: results } });
     }
@@ -124,10 +110,14 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
         let resultsElement: JSX.Element[] | JSX.Element | undefined;
         if ((searchResults.kind === "success" || searchResults.kind === "reloading") && searchResults.content) {
-            resultsElement = searchResults.content && searchResults.content.length === 0
-                ? <span className="placeholder-text" role="alert">No results found for the given search terms.</span>
-                : searchResults.content.map(digest =>
-                    <ItemCard {...digest} key={digest.bankKey.toString() + "-" + digest.itemKey.toString()} />);
+
+            resultsElement = filterItems(this.state.currentFilter, searchResults.content).map(digest =>
+                <ItemCard {...digest} key={digest.bankKey.toString() + "-" + digest.itemKey.toString()} />);
+
+            if (resultsElement.length === 0) {
+                resultsElement = <span className="placeholder-text" role="alert">No results found for the given search terms.</span>
+            }
+
         } else if (searchResults.kind === "failure") {
             resultsElement = <div className="placeholder-text" role="alert">An error occurred. Please try again later.</div>;
         } else {
@@ -173,29 +163,14 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         this.setState({
             currentFilter: categories
         });
-        const searchResults = this.state.searchResults;
-        if (searchResults.kind === "success") {
-            this.setState({
-                searchResults: {
-                    kind: "reloading",
-                    content: searchResults.content
-                }
-            });
-        } else if (searchResults.kind === "failure") {
-            this.setState({
-                searchResults: { kind: "loading" }
-            });
+        const searchResults = this.state.itemSearch;
+        if (searchResults.kind !== "success") {
+
+            const params = this.translateAdvancedFilterCate(categories);
+            this.props.itemsSearchClient(params)
+                .then((data) => this.onSearch(data))
+                .catch((err) => this.onError(err));
         }
-
-        //filterItems(categories, this.state.searchResults.content);
-
-        const params = this.translateAdvancedFilterCate(categories);
-
-        this.props.itemsSearchClient(params)
-            .then((data) => this.onSearch(data))
-            .catch((err) => this.onError(err));
-
-
     }
 
 
@@ -204,11 +179,6 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         const searchVm = this.state.itemSearch;
 
         const param = this.translateAdvancedFilterCate(this.state.currentFilter);
-
-        //pull item cards
-        this.props.itemsSearchClient(param)
-            .then((data) => this.onSearch(data))
-            .catch((err) => this.onError(err));
 
         if (searchVm.kind == "success" || searchVm.kind == "reloading") {
             if (searchVm.content) {
