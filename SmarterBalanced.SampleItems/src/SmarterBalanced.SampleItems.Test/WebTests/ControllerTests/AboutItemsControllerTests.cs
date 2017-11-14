@@ -43,7 +43,7 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
         [Fact]
         public void TestIndex()
         {
-            var result = aboutItemsController.Index();
+            var result = aboutItemsController.GetItemUrl("");
             Assert.NotNull(result);
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsType<AboutItemsViewModel>(viewResult.ViewData.Model);
