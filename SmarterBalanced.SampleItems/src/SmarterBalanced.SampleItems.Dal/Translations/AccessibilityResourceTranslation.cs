@@ -139,7 +139,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
         public static AccessibilityResource ApplyFlags(
             this AccessibilityResource resource,
             string subjectCode,
-            List<string> dictionarySupportedItemTypes,
+            List<string> supportedItemTypes,
             IEnumerable<string> supportedBraille = default(IEnumerable<string>),
             Claim claim = null,
             bool? isPerformanceTask = null,
@@ -155,7 +155,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             bool isUnsupportedAsl = aslSupported.HasValue && !aslSupported.Value && resource.ResourceCode == "AmericanSignLanguage";
             bool isUnsupportedCalculator = allowCalculator.HasValue && (!allowCalculator.Value || resource.Disabled) && resource.ResourceCode == "Calculator";
             bool isUnsupportedGlobalNotes = isPerformanceTask.HasValue && !isPerformanceTask.Value && resource.ResourceCode == "GlobalNotes";
-            bool isUnsupportedDictionaryThesaurus = !string.IsNullOrEmpty(interactionType) && !dictionarySupportedItemTypes.Any(s => s == interactionType)
+            bool isUnsupportedDictionaryThesaurus = !string.IsNullOrEmpty(interactionType) && !supportedItemTypes.Any(s => s == interactionType)
                 && (resource.ResourceCode == "EnglishDictionary" || resource.ResourceCode == "Thesaurus");
             bool isUnsupportedClosedCaptioning = !(claim?.ClaimNumber == "3" && subjectCode == "ELA") && resource.ResourceCode == "ClosedCaptioning";
 

@@ -126,8 +126,8 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
         {
             var result = controller.Details(bankKey, itemKey);
 
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<ItemViewModel>(viewResult.ViewData.Model);
+            JsonResult resJson = Assert.IsType<JsonResult>(result);
+            var model = Assert.IsType<ItemViewModel>(resJson.Value);
 
             Assert.Equal(itemViewModel, model);
 

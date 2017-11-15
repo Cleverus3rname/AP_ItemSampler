@@ -40,16 +40,6 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
             aboutItemsController = new AboutItemsController(aboutItemsRepoMock.Object, appSettings, loggerFactory.Object);
         }
 
-        [Fact]
-        public void TestIndex()
-        {
-            var result = aboutItemsController.GetItemUrl("");
-            Assert.NotNull(result);
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<AboutItemsViewModel>(viewResult.ViewData.Model);
-
-            Assert.Equal(model, aboutItemsViewModel);
-        }
 
         [Fact]
         public void TestGetItemViewerUrlBad()

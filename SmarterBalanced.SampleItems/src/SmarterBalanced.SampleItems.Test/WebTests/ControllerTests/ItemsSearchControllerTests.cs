@@ -44,31 +44,6 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
         }
 
         /// <summary>
-        /// Tests that an ItemSearchViewModel is returned.
-        /// </summary>
-        [Fact]
-        public void TestIndex()
-        {
-            var result = controller.ItemsSearchViewModel();
-            Assert.NotNull(result);
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<ItemsSearchViewModel>(viewResult.ViewData.Model);
-
-            Assert.Equal(itemsSearchViewModel, model);
-        }
-
-        /// <summary>
-        /// Tests that a BadRequestResult is returned by Index
-        /// </summary>
-        [Fact]
-        public void TestIndexNull()
-        {
-            var result = controllerBadReq.ItemsSearchViewModel();
-
-            Assert.IsType<BadRequestResult>(result);
-        }
-
-        /// <summary>
         /// Tests that an empty ItemCardViewModel List is returned, given no parms.
         /// </summary>
         [Fact]

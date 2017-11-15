@@ -236,7 +236,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
              .Select(r => r.ApplyFlags( 
                  subjectCode: subjectCode,
                  interactionType: interactionType,
-                 dictionarySupportedItemTypes: settings.SbContent.DictionarySupportedItemTypes))
+                 supportedItemTypes: settings.SbContent.DictionarySupportedItemTypes))
              .ToImmutableArray() ?? ImmutableArray<AccessibilityResource>.Empty;
 
             var groups = settings.SbContent.AccessibilityTypes
@@ -265,7 +265,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             var flaggedResources = family?.Resources
              .Select(r => r.ApplyFlags(
                  subjectCode: itemDigest.SubjectCode,
-                 dictionarySupportedItemTypes: settings.SbContent.DictionarySupportedItemTypes,
+                 supportedItemTypes: settings.SbContent.DictionarySupportedItemTypes,
                  supportedBraille: brailleItemCodes,
                  claim: claim,
                  isPerformanceTask: isPerformance, 
