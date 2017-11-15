@@ -12,12 +12,13 @@ module.exports = (env) => {
         },
         module: {
             rules: [
+                { test: /\.less$/, use: isDevBuild ? ['style-loader', 'css-loader', 'less-loader'] : ExtractTextPlugin.extract({ use: ['css-loader?minimize', 'less-loader'] }) },
                 { test: /\.(png|woff|woff2|eot|ttf|svg)(\?|$)/, use: 'url-loader?limit=100000' },
-                { test: /\.css(\?|$)/, use: extractCSS.extract([ isDevBuild ? 'css-loader' : 'css-loader?modules&minimize' ]) }
+                { test: /\.css(\?|$)/, use: extractCSS.extract([ isDevBuild ? 'css-loader' : 'css-loader?minimize' ]) }
             ]
         },
         entry: {
-            vendor: ['bootstrap', 'bootstrap/dist/css/bootstrap.css', "@osu-cass/sb-components/build/styles/custom.less", 'font-awesome/css/font-awesome.css', 'event-source-polyfill', 'isomorphic-fetch', 'react', 'react-dom', 'react-router-dom', 'jquery'],
+            vendor: ['bootstrap', 'bootstrap/dist/css/bootstrap.css', "@osu-cass/sb-components/build/Styles/custom.less", 'font-awesome/css/font-awesome.css', 'event-source-polyfill', 'isomorphic-fetch', 'react', 'react-dom', 'react-router-dom', 'jquery'],
         },
         output: {
             path: path.join(__dirname, 'wwwroot', 'dist'),

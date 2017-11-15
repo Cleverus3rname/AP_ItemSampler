@@ -11,9 +11,6 @@ services:
   - docker
 
 install: 
-#  - travis_retry pip install --upgrade pip
-#  - travis_retry pip install ecs-deploy
-#  - travis_retry pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
   - cd $TRAVIS_BUILD_DIR/SmarterBalanced.SampleItems/src/SmarterBalanced.SampleItems.Web
   - travis_retry npm install 
@@ -29,7 +26,6 @@ before_script:
 
 script: 
   - dotnet build 
-  - grunt all
   - cd $TRAVIS_BUILD_DIR/SmarterBalanced.SampleItems/src/SmarterBalanced.SampleItems.Test
   - dotnet test 
   - dotnet publish $TRAVIS_BUILD_DIR/SmarterBalanced.SampleItems/src/SmarterBalanced.SampleItems.Web -o $TRAVIS_BUILD_DIR/publish/
@@ -53,10 +49,5 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: ./DeployScripts/nuget_deploy.sh "alpha-$BUILD_NUMBER" && ./DeployScripts/code_docker_deploy.sh
-    on:
-      branch: scoreguide
-  - provider: script
-    skip_cleanup: true
-    script: ./DeployScripts/nuget_deploy.sh "alpha-$BUILD_NUMBER" && ./DeployScripts/code_docker_deploy.sh 
     on:
       branch: dev
