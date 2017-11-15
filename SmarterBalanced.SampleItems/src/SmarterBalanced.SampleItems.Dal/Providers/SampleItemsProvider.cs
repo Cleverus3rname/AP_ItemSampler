@@ -21,7 +21,6 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
 
             CoreStandardsXml standardsXml = LoadCoreStandards(contentSettings.CoreStandardsXMLPath);
             var targetCategories = standardsXml.TargetRows
-                .Where(tr => tr.SubjectCode == "ELA")
                 .Select(tr => StandardIdentifierTranslation.CoreStandardFromIdentifier(standardsXml, tr.StandardIdentifier).Target)
                 .GroupBy(t => t.Name)
                 .Select(g => g.First())

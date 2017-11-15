@@ -42,7 +42,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             string subjectCode,
             string claimId)
         {
-            Name = NameFromDesc(description);
+            Name = NameFromDesc(description) ?? idLabel ?? String.Empty;
             Descripton = RemoveNameFromDescription(description);
             Id = id;
             IdLabel = idLabel;
@@ -115,7 +115,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
                     .Select(word => char.ToUpper(word[0]) + word.Substring(1).ToLower()));
                 return shortName;
             }
-            return "";
+            return null;
         }
 
         /// <summary>
