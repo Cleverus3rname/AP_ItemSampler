@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using SmarterBalanced.SampleItems.Core.Repos;
 using SmarterBalanced.SampleItems.Core.Repos.Models;
 using SmarterBalanced.SampleItems.Dal.Configurations.Models;
+using SmarterBalanced.SampleItems.Dal.Providers.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,14 +29,6 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             logger = loggerFactory.CreateLogger<ItemController>();
         }
 
-        // GET: /<controller>/
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Index()
-        {
-            logger.LogDebug($"{nameof(Index)} redirect to itemssearch");
-
-            return RedirectToActionPermanent("Index", "itemsSearch");
-        }
 
         /// <summary>
         /// Converts a base64 encoded, serialized JSON string to
@@ -66,9 +59,9 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         /// </summary>
         /// <param name="bankKey"></param>
         /// <param name="itemKey"></param>
-        /// <param name="iSAAP"></param>
-        [HttpGet("Details")]
-        public IActionResult Details(int? bankKey, int? itemKey, string iSAAP)
+        /// <param name="isaap"></param>
+        [HttpGet("GetItem")]
+        public IActionResult Details(int? bankKey, int? itemKey)
         {
             if (!bankKey.HasValue || !itemKey.HasValue)
             {
@@ -76,26 +69,20 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
                 return BadRequest();
             }
 
-            string cookieName = appSettings.SettingsConfig.AccessibilityCookie;
-            string cookieString = Request?.Cookies[cookieName] ?? string.Empty;
-            var cookiePreferences = DecodeCookie(cookieString);
-
-            string[] isaapCodes = string.IsNullOrEmpty(iSAAP) ? new string[0] : iSAAP.Split(';');
-
-            var itemViewModel = repo.GetItemViewModel(bankKey.Value, itemKey.Value, isaapCodes, cookiePreferences);
+            var itemViewModel = repo.GetItemViewModel(bankKey.Value, itemKey.Value);
             if (itemViewModel == null)
             {
                 logger.LogWarning($"{nameof(Details)} invalid item {bankKey} {itemKey}");
                 return BadRequest();
             }
 
-            return View(itemViewModel);
+            return Json(itemViewModel);
         }
 
         [HttpGet("Braille")]
         public async Task<ActionResult> Braille(int? bankKey, int? itemKey, string brailleCode)
         {
-            if(!bankKey.HasValue || !itemKey.HasValue || string.IsNullOrEmpty(brailleCode))
+            if (!bankKey.HasValue || !itemKey.HasValue || string.IsNullOrEmpty(brailleCode))
             {
                 return BadRequest();
             }
@@ -104,20 +91,22 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             try
             {
                 var ftpReadStream = await repo.GetItemBrailleZip(
-                    bankKey.Value, 
-                    itemKey.Value, 
+                    bankKey.Value,
+                    itemKey.Value,
                     brailleCode);
 
-                Response.Cookies.Append("brailleDLstarted", "1", new Microsoft.AspNetCore.Http.CookieOptions {
+                Response.Cookies.Append("brailleDLstarted", "1", new Microsoft.AspNetCore.Http.CookieOptions
+                {
                     Path = "/",
                     HttpOnly = false,
                     Secure = false,
                     Expires = DateTimeOffset.Now.AddSeconds(10)
                 }
-                    
+
                     );
                 return File(ftpReadStream, "application/zip", fileName);
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 logger.LogError($"{nameof(Braille)} failed to load braille for {itemKey.Value}, message {e.Message}");
 
@@ -129,7 +118,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         [EnableCors("AllowAllOrigins")]
         public IActionResult AboutThisItemViewModel(int? bankKey, int? itemKey)
         {
-            if(!bankKey.HasValue || !itemKey.HasValue)
+            if (!bankKey.HasValue || !itemKey.HasValue)
             {
                 return BadRequest();
             }
@@ -137,6 +126,55 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             var aboutThis = repo.GetAboutThisItemViewModel(bankKey.Value, itemKey.Value);
 
             return Json(aboutThis);
+        }
+
+
+        [HttpGet("ItemAccessibility")]
+        public IActionResult AccessibilityResourceGroupIsaap(int? bankKey, int? itemKey, string isaap = "", bool applyCookie = true)
+        {
+            if (!bankKey.HasValue || !itemKey.HasValue)
+            {
+                return BadRequest();
+            }
+
+            var cookieIsaap = new Dictionary<string, string>();
+
+            if (applyCookie)
+            {
+                string cookieName = appSettings.SettingsConfig.AccessibilityCookie;
+                string cookieString = Request?.Cookies[cookieName] ?? string.Empty;
+                cookieIsaap = DecodeCookie(cookieString);
+            }
+
+            string[] isaapCodes = string.IsNullOrEmpty(isaap) ? new string[0] : isaap.Split(';');
+
+            var accResourceGroup = repo.GetAccessibilityResourceGroup(bankKey.Value, itemKey.Value, isaapCodes, cookieIsaap);
+
+            return Json(accResourceGroup);
+        }
+
+        /// <summary>
+        /// Provides resources for a given subjectcode and gradelevel with optional item type code
+        /// </summary>
+        /// <param name="gradeLevels">required, enum grade level</param>
+        /// <param name="subjectCode">required, subject code</param>
+        /// <param name="interactionType">optional</param>
+        /// <param name="applyCookie">optional</param>
+        [HttpGet("GetAccessibility")]
+        public IActionResult AccessibilityResourceGroupIsaap(GradeLevels gradeLevels, string subjectCode, string interactionType = "", bool applyCookie = true)
+        {
+            var cookieIsaap = new Dictionary<string, string>();
+
+            if (applyCookie)
+            {
+                string cookieName = appSettings.SettingsConfig.AccessibilityCookie;
+                string cookieString = Request?.Cookies[cookieName] ?? string.Empty;
+                cookieIsaap = DecodeCookie(cookieString);
+            }
+
+            var accResourceGroup = repo.GetAccessibilityResourceGroup(gradeLevels, subjectCode, interactionType, cookieIsaap);
+
+            return Json(accResourceGroup);
         }
 
     }

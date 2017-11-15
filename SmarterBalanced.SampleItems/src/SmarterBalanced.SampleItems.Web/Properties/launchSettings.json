@@ -3,29 +3,25 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:20529/",
+      "applicationUrl": "http://localhost:4854/",
       "sslPort": 0
     }
   },
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
+      "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "SmarterBalanced.SampleItems.Web": {
+    "SampleItemsWebsite": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://0.0.0.0:5000"
-    },
-    "Docker": {
-      "launchBrowser": true,
-      "launchUrl": "http://localhost:{ServicePort}"
+      "applicationUrl": "http://localhost:4855/"
     }
   }
 }

@@ -43,7 +43,8 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                            settings: settings
                            );
 
-                    } catch (Exception e)
+                    }
+                    catch (Exception e)
                     {
                         throw new Exception($"Item {d.BankKey}-{d.ItemKey}", innerException: e);
                     }
@@ -97,7 +98,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 coreStandards = ApplyPatchToCoreStandards(identifier, coreStandards, standardsXml, patch);
             }
 
-            if(copiedItemPatch != null)
+            if (copiedItemPatch != null)
             {
                 var copyBrailleItemCodes = GetBrailleItemCodes(copiedItemPatch.ItemId, brailleFileInfo);
                 brailleItemCodes = brailleItemCodes.Concat(copyBrailleItemCodes).Distinct().ToImmutableArray();
@@ -125,7 +126,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
 
             bool aslSupported = AslSupported(itemDigest);
 
-            var groups = GetAccessibilityResourceGroups(itemDigest, resourceFamilies, grade, 
+            var groups = GetAccessibilityResourceGroups(itemDigest, resourceFamilies, grade,
                 isPerformance, aslSupported, claim, interactionType, brailleItemCodes, settings);
 
             string interactionTypeSubCat = "";
@@ -175,7 +176,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
 
             return itemType;
         }
-        
+
         public static AccessibilityResourceGroup GroupItemResources(
             AccessibilityType accType,
             ImmutableArray<AccessibilityResource> resources)
@@ -220,6 +221,33 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
         }
 
         public static ImmutableArray<AccessibilityResourceGroup> GetAccessibilityResourceGroups(
+            IList<MergedAccessibilityFamily> resourceFamilies,
+            GradeLevels grade,
+            string subjectCode,
+            AppSettings settings,
+            string interactionType
+            )
+        {
+            var family = resourceFamilies.FirstOrDefault(f =>
+               f.Grades.Contains(grade) &&
+               f.Subjects.Contains(subjectCode));
+
+            var flaggedResources = family?.Resources
+             .Select(r => r.ApplyFlags( 
+                 subjectCode: subjectCode,
+                 interactionType: interactionType,
+                 supportedItemTypes: settings.SbContent.DictionarySupportedItemTypes))
+             .ToImmutableArray() ?? ImmutableArray<AccessibilityResource>.Empty;
+
+            var groups = settings.SbContent.AccessibilityTypes
+               .Select(accType => GroupItemResources(accType, family.Resources))
+               .OrderBy(g => g.Order)
+               .ToImmutableArray();
+
+            return groups;
+        }
+
+        public static ImmutableArray<AccessibilityResourceGroup> GetAccessibilityResourceGroups(
             ItemDigest itemDigest,
             IList<MergedAccessibilityFamily> resourceFamilies,
             GradeLevels grade,
@@ -236,12 +264,14 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
 
             var flaggedResources = family?.Resources
              .Select(r => r.ApplyFlags(
-                 itemDigest,
-                 interactionType?.Code, isPerformance,
-                 settings.SbContent.DictionarySupportedItemTypes,
-                 brailleItemCodes,
-                 claim,
-                 aslSupported))
+                 subjectCode: itemDigest.SubjectCode,
+                 supportedItemTypes: settings.SbContent.DictionarySupportedItemTypes,
+                 supportedBraille: brailleItemCodes,
+                 claim: claim,
+                 isPerformanceTask: isPerformance, 
+                 interactionType: interactionType?.Code,
+                 aslSupported: aslSupported,
+                 allowCalculator: itemDigest.AllowCalculator))
              .ToImmutableArray() ?? ImmutableArray<AccessibilityResource>.Empty;
 
             var groups = settings.SbContent.AccessibilityTypes
@@ -255,7 +285,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
 
         private static bool AslSupportedContents(List<Content> content)
         {
-            if(content == null)
+            if (content == null)
             {
                 return false;
             }
@@ -284,9 +314,9 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             return aslSupported;
         }
 
-        private static CoreStandards ApplyPatchToCoreStandards(StandardIdentifier identifier, 
-            CoreStandards coreStandards, 
-            CoreStandardsXml standardsXml, 
+        private static CoreStandards ApplyPatchToCoreStandards(StandardIdentifier identifier,
+            CoreStandards coreStandards,
+            CoreStandardsXml standardsXml,
             ItemPatch patch)
         {
             string claimNumber = Regex.Match(input: patch.Claim, pattern: @"\d+").Value;
@@ -338,6 +368,6 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
 
             return match.Success && int.TryParse(match.Groups[1]?.Value, out val) ? (int?)val : null;
         }
-        
+
     }
 }

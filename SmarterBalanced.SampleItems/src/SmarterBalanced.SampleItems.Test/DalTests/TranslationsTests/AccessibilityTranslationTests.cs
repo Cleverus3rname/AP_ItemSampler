@@ -17,6 +17,10 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
         public AccessibilityFamilyResource familyResource;
         public AccessibilityResource globalResource;
 
+        private string elaCode = "ELA";
+        private string mathCode = "Math";
+        private string[] subjectCodes = new string[] { "ELA", "Math" };
+
         public AccessibilityTranslationTests()
         {
             Resources = new List<AccessibilityResource>
@@ -99,7 +103,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
                 disabled: false,
                 resourceType: "globalResource Type");
         }
-      
+
         /// <summary>
         /// Helper test method to build a single resource with the given code
         /// </summary>
@@ -119,7 +123,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
                           hidden: false)));
 
             return resource;
-    }
+        }
 
 
         #region ToAccessibilityResourceTests
@@ -128,7 +132,8 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
         /// from the original given a partial accessibility resource that 
         /// contains all of the select elements
         /// </summary>
-        [Fact] public void TestToAccessibilityResourceNoChanges()
+        [Fact]
+        public void TestToAccessibilityResourceNoChanges()
         {
             AccessibilityResource globalResource = Resources[1];
             AccessibilityFamilyResource partialResource = new AccessibilityFamilyResource(
@@ -234,7 +239,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
             Assert.Equal(globalResource.Label, outputResource.Label);
 
             // Check that default selection was also updated
-            Assert.Equal("ACC2_SEL1", outputResource.DefaultSelection); 
+            Assert.Equal("ACC2_SEL1", outputResource.DefaultSelection);
 
             Assert.Equal(globalResource.Selections.Length, outputResource.Selections.Length);
             Assert.Equal(false, outputResource.Selections[0].Disabled);
@@ -330,185 +335,213 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
         [Fact]
         public void TestApplyAslFlag()
         {
-            var itemDigest = new ItemDigest()
-            {
-                AslSupported = false,
-                AllowCalculator = false
-            };
+            string itemType = "";
+            bool aslSupported = false;
+            bool allowCalculator = false;
 
             var resource = getResourceWithCode("AmericanSignLanguage", false);
 
-            var resModified = resource.ApplyFlags(itemDigest, "", false, new List<string>(), new List<string>(), null, false);
-
-            Assert.NotNull(resModified);
-            Assert.Equal(resModified.Disabled, true);
+            foreach (string subj in subjectCodes)
+            {
+                var resModified = resource.ApplyFlags(subj, new List<string>(), new List<string>(),
+                    null, false, itemType, aslSupported, allowCalculator);
+                Assert.NotNull(resModified);
+                Assert.Equal(resModified.Disabled, true);
+            }
         }
 
         [Fact]
         public void TestDoNotDisableAslFlag()
         {
-            var itemDigest = new ItemDigest()
-            {
-                AslSupported = true,
-                AllowCalculator = false
-            };
+            string itemType = "";
+            bool aslSupported = true;
+            bool allowCalculator = false;
 
             var resource = getResourceWithCode("AmericanSignLanguage", false);
 
-            var resModified = resource.ApplyFlags(itemDigest, "", false, new List<string>(), new List<string>(), null, true);
+            foreach (string subj in subjectCodes)
+            {
+                var resModified = resource.ApplyFlags(subj, new List<string>(), new List<string>(),
+                    null, false, itemType, aslSupported, allowCalculator);
 
-            Assert.NotNull(resModified);
-            Assert.Equal(resModified.Disabled, false);
+                Assert.NotNull(resModified);
+                Assert.Equal(resModified.Disabled, false);
+            }
         }
 
         [Fact]
         public void TestEnableCalculator()
         {
-            var itemDigest = new ItemDigest()
-            {
-                AslSupported = false,
-                AllowCalculator = true
-            };
+            string itemType = "";
+            bool aslSupported = false;
+            bool allowCalculator = true;
 
             var resource = getResourceWithCode("Calculator", false);
 
-            var resModified = resource.ApplyFlags(itemDigest, "", false, new List<string>(), new List<string>(), null, false);
+            foreach (string subj in subjectCodes)
+            {
+                var resModified = resource.ApplyFlags(subj, new List<string>(), new List<string>(),
+                    null, false, itemType, aslSupported, allowCalculator);
 
-            Assert.NotNull(resModified);
-            Assert.Equal(resModified.Disabled, false);
+                Assert.NotNull(resModified);
+                Assert.Equal(resModified.Disabled, false); ;
+            }
+
         }
 
         [Fact]
         public void TestDisableCalculatorWithMetadataFlag()
         {
-            var itemDigest = new ItemDigest()
-            {
-                AslSupported = true,
-                AllowCalculator = false
-            };
+            string itemType = "";
+            bool aslSupported = true;
+            bool allowCalculator = false;
+
             var resource = getResourceWithCode("Calculator", false);
-
-            var resModified = resource.ApplyFlags(itemDigest, "", false, new List<string>(), new List<string>(), null, false);
-
-            Assert.NotNull(resModified);
-            Assert.Equal(resModified.Disabled, true);
+            foreach (string subj in subjectCodes)
+            {
+                var resModified = resource.ApplyFlags(subj, new List<string>(), new List<string>(),
+                    null, false, itemType, aslSupported, allowCalculator);
+                Assert.NotNull(resModified);
+                Assert.Equal(resModified.Disabled, true);
+            }
         }
 
         [Fact]
         public void TestDisableCalculatorWithDisabledResource()
         {
-            var itemDigest = new ItemDigest()
-            {
-                AslSupported = true,
-                AllowCalculator = true
-            };
+            string itemType = "";
+            bool aslSupported = true;
+            bool allowCalculator = true;
+
             var resource = getResourceWithCode("Calculator", true);
 
-            var resModified = resource.ApplyFlags(itemDigest, "", false, new List<string>(), new List<string>(), null, false);
+            foreach (string subj in subjectCodes)
+            {
+                var resModified = resource.ApplyFlags(subj, new List<string>(), new List<string>(),
+                    null, false, itemType, aslSupported, allowCalculator);
+                Assert.NotNull(resModified);
+                Assert.Equal(resModified.Disabled, true);
+            }
 
-            Assert.NotNull(resModified);
-            Assert.Equal(resModified.Disabled, true);
         }
 
         [Fact]
         public void TestDisableCalculatorWithMetadataAndResource()
         {
-            var itemDigest = new ItemDigest()
-            {
-                AslSupported = true,
-                AllowCalculator = false
-            };
+            string itemType = "";
+            bool aslSupported = true;
+            bool allowCalculator = false;
+
             var resource = getResourceWithCode("Calculator", true);
 
-            var resModified = resource.ApplyFlags(itemDigest, "", false, new List<string>(), new List<string>(), null, false);
+            foreach (string subj in subjectCodes)
+            {
+                var resModified = resource.ApplyFlags(subj, new List<string>(), new List<string>(),
+                    null, false, itemType, aslSupported, allowCalculator);
+                Assert.NotNull(resModified);
+                Assert.Equal(resModified.Disabled, true);
 
-            Assert.NotNull(resModified);
-            Assert.Equal(resModified.Disabled, true);
+            }
+
         }
 
         [Fact]
         public void TestDoNotDisableDictionary()
         {
-            var itemDigest = new ItemDigest()
-            {
-                ItemType = "WER",
-                AslSupported = true,
-                AllowCalculator = false
-            };
+            string itemType = "WER";
+            bool aslSupported = true;
+            bool allowCalculator = false;
+
             var resource = getResourceWithCode("EnglishDictionary", false);
 
-            var resModified = resource.ApplyFlags(itemDigest, "WER", false, new List<string> { "WER" }, new List<string>(), null, false);
+            foreach (string subj in subjectCodes)
+            {
+                var resModified = resource.ApplyFlags(subj, new List<string> { "WER" },
+                    new List<string>(), null, false, itemType, aslSupported, allowCalculator);
+                Assert.NotNull(resModified);
+                Assert.Equal(resModified.Disabled, false);
 
-            Assert.NotNull(resModified);
-            Assert.Equal(resModified.Disabled, false);
+            }
+
         }
 
         [Fact]
         public void TestDisableDictionary()
         {
             string itemType = "ER";
-            var itemDigest = new ItemDigest()
+            bool aslSupported = true;
+            bool allowCalculator = false;
+
+            foreach (string subj in subjectCodes)
             {
-                AslSupported = true,
-                AllowCalculator = false
-            };
-            var resource = getResourceWithCode("EnglishDictionary", false);
+                var resource = getResourceWithCode("EnglishDictionary", false);
+                var resModified = resource.ApplyFlags(subj, new List<string> { "WER" },
+                    new List<string>(), null, false, itemType, aslSupported, allowCalculator);
 
-            var resModified = resource.ApplyFlags(itemDigest, itemType, false, new List<string> { "WER" }, new List<string>(), null, false);
+                Assert.NotNull(resModified);
+                Assert.Equal(resModified.Disabled, true);
 
-            Assert.NotNull(resModified);
-            Assert.Equal(resModified.Disabled, true);
+            }
         }
 
         [Fact]
         public void TestDisableThesaurus()
         {
             string itemType = "SA";
-            var itemDigest = new ItemDigest()
-            {
-                AslSupported = true,
-                AllowCalculator = false
-            };
+            bool aslSupported = true;
+            bool allowCalculator = false;
+
             var resource = getResourceWithCode("Thesaurus", false);
 
-            var resModified = resource.ApplyFlags(itemDigest, itemType, false, new List<string> { "WER" }, new List<string>(), null, false);
+            foreach (string subj in subjectCodes)
+            {
+                var resModified = resource.ApplyFlags(subj, new List<string> { "WER" },
+                    new List<string>(), null, false, itemType, aslSupported, allowCalculator);
+                Assert.NotNull(resModified);
+                Assert.Equal(resModified.Disabled, true);
 
-            Assert.NotNull(resModified);
-            Assert.Equal(resModified.Disabled, true);
+            }
+
         }
 
         [Fact]
         public void TestDisableGlobalNotes()
         {
             string itemType = "SA";
-            var itemDigest = new ItemDigest()
-            {
-                AslSupported = false,
-                AllowCalculator = false
-            };
+            bool aslSupported = false;
+            bool allowCalculator = false;
+            bool isPerformance = false;
+
             var resource = getResourceWithCode("GlobalNotes", false);
 
-            var resModified = resource.ApplyFlags(itemDigest, itemType, false, new List<string> { "MC" }, new List<string>(), null, false);
+            foreach (string subj in subjectCodes)
+            {
+                var resModified = resource.ApplyFlags(subj, new List<string> { "MC" },
+                    new List<string>(), null, isPerformance, itemType, aslSupported, allowCalculator);
 
-            Assert.NotNull(resModified);
-            Assert.Equal(resModified.Disabled, true);
+                Assert.NotNull(resModified);
+                Assert.Equal(resModified.Disabled, true);
+            }
         }
 
         [Fact]
         public void TestEnableGlobalNotes()
         {
             string itemType = "SA";
-            var itemDigest = new ItemDigest()
-            {
-                AslSupported = false,
-                AllowCalculator = false
-            };
+            bool aslSupported = false;
+            bool allowCalculator = false;
+            bool isPerformance = true;
+
             var resource = getResourceWithCode("GlobalNotes", false);
+            foreach (string subj in subjectCodes)
+            {
+                var resModified = resource.ApplyFlags(subj, new List<string> { "MC" },
+                    new List<string>(), null, isPerformance, itemType, aslSupported, allowCalculator);
 
-            var resModified = resource.ApplyFlags(itemDigest, itemType, true, new List<string> { "MC" }, new List<string>(), null, false);
+                Assert.NotNull(resModified);
+                Assert.Equal(resModified.Disabled, false);
 
-            Assert.NotNull(resModified);
-            Assert.Equal(resModified.Disabled, false);
+            }
         }
 
 

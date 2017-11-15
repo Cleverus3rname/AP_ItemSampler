@@ -13,6 +13,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 using SmarterBalanced.SampleItems.Core.Braille;
+using SmarterBalanced.SampleItems.Dal.Translations;
 
 namespace SmarterBalanced.SampleItems.Core.Repos
 {
@@ -29,7 +30,7 @@ namespace SmarterBalanced.SampleItems.Core.Repos
 
         public SampleItem GetSampleItem(int bankKey, int itemKey)
         {
-            return context.SampleItems.SingleOrDefault(item => item.BankKey == bankKey && item.ItemKey == itemKey);
+            return context.GetSampleItem(bankKey, itemKey);
         }
 
         public ItemCardViewModel GetItemCardViewModel(int bankKey, int itemKey)
@@ -96,11 +97,7 @@ namespace SmarterBalanced.SampleItems.Core.Repos
             return itemNames;
         }
 
-        public ItemViewModel GetItemViewModel(
-            int bankKey,
-            int itemKey,
-            string[] iSAAPCodes,
-            Dictionary<string, string> cookiePreferences)
+        public ItemViewModel GetItemViewModel(int bankKey, int itemKey)
         {
             var sampleItem = GetSampleItem(bankKey, itemKey);
             if (sampleItem == null)
@@ -108,7 +105,6 @@ namespace SmarterBalanced.SampleItems.Core.Repos
                 return null;
             }
 
-            var groups = sampleItem.AccessibilityResourceGroups.ApplyPreferences(iSAAPCodes, cookiePreferences);
             var associatedBraille = GetAssoicatedBrailleItem(sampleItem);
 
             ItemIdentifier nonBrailleItem = sampleItem.ToItemIdentifier();
@@ -122,12 +118,12 @@ namespace SmarterBalanced.SampleItems.Core.Repos
                 nonBrailleItem: nonBrailleItem,
                 accessibilityCookieName: context.AppSettings.SettingsConfig.AccessibilityCookie,
                 isPerformanceItem: sampleItem.IsPerformanceItem,
-                accResourceGroups: groups,
                 moreLikeThisVM: GetMoreLikeThis(sampleItem),
                 subject: sampleItem.Subject.Code,
                 brailleItemCodes: sampleItem.BrailleItemCodes,
                 braillePassageCodes: sampleItem.BraillePassageCodes,
-                performanceItemDescription: GetPerformanceDescription(sampleItem));
+                performanceItemDescription: GetPerformanceDescription(sampleItem),
+                defaultIsaapCodes: context.AppSettings.SettingsConfig.DefaultIsaapCodes);
 
             return itemViewModel;
         }
@@ -142,7 +138,7 @@ namespace SmarterBalanced.SampleItems.Core.Repos
             var aboutThisItemViewModel = context.AboutAllItems.FirstOrDefault(item =>
                 item.ItemCardViewModel?.BankKey == sampleItem.BankKey
                 && item.ItemCardViewModel?.ItemKey == sampleItem.ItemKey);
-            
+
             return aboutThisItemViewModel;
         }
 
@@ -217,15 +213,43 @@ namespace SmarterBalanced.SampleItems.Core.Repos
 
         public AboutThisItemViewModel GetAboutThisItemViewModel(int itemBank, int itemKey)
         {
-            var sampleItem = context.SampleItems.FirstOrDefault(s => s.ItemKey == itemKey && s.BankKey == itemBank);
-            if (sampleItem == null)
-            {
-                throw new Exception($"invalid request for {itemBank}-{itemKey}");
-            }
-
+            var sampleItem = context.GetSampleItem(itemBank, itemKey);
             var aboutThis = GetAboutThisItemViewModel(sampleItem);
 
             return aboutThis;
+        }
+
+
+
+        public ImmutableArray<AccessibilityResourceGroup> GetAccessibilityResourceGroup(
+            int itemBank,
+            int itemKey,
+            string[] iSAAPCodes = default(string[]),
+            Dictionary<string, string> cookiePreferences = default(Dictionary<string, string>))
+        {
+            var sampleItem = context.GetSampleItem(itemBank, itemKey);
+            return sampleItem.AccessibilityResourceGroups.ApplyPreferences(iSAAPCodes, cookiePreferences);
+
+        }
+
+        public ImmutableArray<AccessibilityResourceGroup> GetAccessibilityResourceGroup(
+            GradeLevels gradeLevels,
+            string subjectCode,
+            string interactionType,
+            Dictionary<string, string> cookiePreferences = default(Dictionary<string, string>))
+
+        {
+            var accessibility = context.MergedAccessibilityFamilies;
+
+            var resourceGroups = SampleItemTranslation.GetAccessibilityResourceGroups(
+                    resourceFamilies: accessibility,
+                    grade: gradeLevels,
+                    subjectCode: subjectCode,
+                    interactionType: interactionType,
+                    settings: context.AppSettings
+                );
+
+            return resourceGroups.ApplyCookiePreferences(cookiePreferences);
         }
 
     }

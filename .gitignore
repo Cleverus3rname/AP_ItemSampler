@@ -270,4 +270,11 @@ _references.js
 #lib
 /**/wwwroot/lib/
 
+#exclude js and css
+**/Client/**/*.js
+**/Client/**/*.css
+**/Client/**/*.map
 
+/**/wwwroot/dist/
+#sphinx
+/docs/_build

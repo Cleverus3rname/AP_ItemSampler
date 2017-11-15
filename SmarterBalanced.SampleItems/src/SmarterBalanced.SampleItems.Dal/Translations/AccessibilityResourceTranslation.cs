@@ -135,33 +135,35 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
         ///     - GlobalNotes is only enabled for performance task items
         ///     - EnglishDictionary and Thesaurus are only enabled for WER items
         /// </summary>
+
         public static AccessibilityResource ApplyFlags(
             this AccessibilityResource resource,
-            ItemDigest itemDigest,
-            string interactionType,
-            bool isPerformanceTask,
-            List<string> dictionarySupportedItemTypes,
-            IEnumerable<string> supportedBraille,
-            Claim claim,
-            bool aslSupported)
+            string subjectCode,
+            List<string> supportedItemTypes,
+            IEnumerable<string> supportedBraille = default(IEnumerable<string>),
+            Claim claim = null,
+            bool? isPerformanceTask = null,
+            string interactionType = default(string),
+            bool? aslSupported = null,
+            bool? allowCalculator = null)
         {
-            if (itemDigest == null || resource.Disabled)
+            if (string.IsNullOrEmpty(subjectCode) || resource.Disabled)
             {
                 return resource;
             }
 
-            bool isUnsupportedAsl = !aslSupported && resource.ResourceCode == "AmericanSignLanguage";
-            bool isUnsupportedCalculator = (!itemDigest.AllowCalculator || resource.Disabled) && resource.ResourceCode == "Calculator";
-            bool isUnsupportedGlobalNotes = !isPerformanceTask && resource.ResourceCode == "GlobalNotes";
-            bool isUnsupportedDictionaryThesaurus = !dictionarySupportedItemTypes.Any(s => s == interactionType)
+            bool isUnsupportedAsl = aslSupported.HasValue && !aslSupported.Value && resource.ResourceCode == "AmericanSignLanguage";
+            bool isUnsupportedCalculator = allowCalculator.HasValue && (!allowCalculator.Value || resource.Disabled) && resource.ResourceCode == "Calculator";
+            bool isUnsupportedGlobalNotes = isPerformanceTask.HasValue && !isPerformanceTask.Value && resource.ResourceCode == "GlobalNotes";
+            bool isUnsupportedDictionaryThesaurus = !string.IsNullOrEmpty(interactionType) && !supportedItemTypes.Any(s => s == interactionType)
                 && (resource.ResourceCode == "EnglishDictionary" || resource.ResourceCode == "Thesaurus");
-            bool isUnsupportedClosedCaptioning = !(claim?.ClaimNumber == "3" && itemDigest.SubjectCode == "ELA") && resource.ResourceCode == "ClosedCaptioning";
+            bool isUnsupportedClosedCaptioning = !(claim?.ClaimNumber == "3" && subjectCode == "ELA") && resource.ResourceCode == "ClosedCaptioning";
 
             if (isUnsupportedAsl || isUnsupportedCalculator || isUnsupportedGlobalNotes || isUnsupportedDictionaryThesaurus || isUnsupportedClosedCaptioning) 
             {
                 var newResource = resource.ToDisabled();
                 return newResource;
-            } else if(resource.ResourceCode == "BrailleType")
+            } else if(supportedBraille != null && resource.ResourceCode == "BrailleType")
             {
                 return resource.DisableUnsupportedBraille(supportedBraille);
             }

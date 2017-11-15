@@ -79,7 +79,6 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
                 itemViewerServiceUrl: $"http://itemviewerservice.cass.oregonstate.edu/item/{bankKey}-{itemKey}",
                 accessibilityCookieName: accCookieName,
                 isPerformanceItem: false,
-                accResourceGroups: default(ImmutableArray<AccessibilityResourceGroup>),
                 subject: "MATH",
                 moreLikeThisVM: default(MoreLikeThisViewModel),
                 brailleItemCodes: new ImmutableArray<string>(),
@@ -92,7 +91,6 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
                 accessibilityCookieName: string.Empty,
                 isPerformanceItem: false,
                 subject: "MATH",
-                accResourceGroups: accessibilityResourceGroups.ToImmutableArray(),
                 moreLikeThisVM: default(MoreLikeThisViewModel),
                 brailleItemCodes: new ImmutableArray<string>(),
                 braillePassageCodes: new ImmutableArray<string>(),
@@ -103,16 +101,14 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
 
             itemViewRepoMock
                 .Setup(repo =>
-                    repo.GetItemViewModel(bankKey, itemKey, It.Is<string[]>(strings => strings.Length == 0), It.IsAny<Dictionary<string, string>>()))
+                    repo.GetItemViewModel(bankKey, itemKey))
                 .Returns(itemViewModel);
 
             itemViewRepoMock
                 .Setup(repo =>
                     repo.GetItemViewModel(
                         bankKey,
-                        itemKey,
-                        It.IsAny<string[]>(),
-                        It.IsAny<Dictionary<string, string>>()))
+                        itemKey))
                 .Returns(itemViewModel);
 
             var loggerFactory = new Mock<ILoggerFactory>();
@@ -128,10 +124,10 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
         [Fact]
         public void TestDetailsSuccess()
         {
-            var result = controller.Details(bankKey, itemKey, iSAAP);
+            var result = controller.Details(bankKey, itemKey);
 
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<ItemViewModel>(viewResult.ViewData.Model);
+            JsonResult resJson = Assert.IsType<JsonResult>(result);
+            var model = Assert.IsType<ItemViewModel>(resJson.Value);
 
             Assert.Equal(itemViewModel, model);
 
@@ -143,7 +139,7 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
         [Fact]
         public void TestDetailsNullParam()
         {
-            var result = controller.Details(null, itemKey, iSAAP);
+            var result = controller.Details(null, itemKey);
 
             Assert.IsType<BadRequestResult>(result);
         }
@@ -154,36 +150,9 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
         [Fact]
         public void TestDetailsBadId()
         {
-            var result = controller.Details(bankKey + 1, itemKey + 1, iSAAP);
+            var result = controller.Details(bankKey + 1, itemKey + 1);
 
             Assert.IsType<BadRequestResult>(result);
-        }
-
-        /// <summary>
-        /// Tests that a cookie ISSAP is returned instead of param
-        /// </summary>
-        [Fact]
-        public void TestDetailsNoISAAP()
-        {
-            var result = controller.Details(bankKey, itemKey, string.Empty);
-
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsType<ItemViewModel>(viewResult.ViewData.Model);
-
-            Assert.Equal(itemViewModel, model);
-        }
-
-        /// <summary>
-        /// Tests that Index returns correct RedirectToAction controller and action name
-        /// </summary>
-        [Fact]
-        public void TestIndex()
-        {
-            var result = controller.Index();
-            var resultRedirect = Assert.IsType<RedirectToActionResult>(result);
-
-            Assert.Equal("Index", resultRedirect.ActionName);
-            Assert.Equal("itemsSearch", resultRedirect.ControllerName);
         }
     }
 

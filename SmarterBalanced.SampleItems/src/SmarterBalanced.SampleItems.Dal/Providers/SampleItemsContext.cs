@@ -18,6 +18,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
         public ImmutableArray<AboutThisItemViewModel> AboutAllItems { get; }
         public ImmutableArray<Subject> Subjects { get; }
         public AppSettings AppSettings { get; }
+        public ImmutableArray<MergedAccessibilityFamily> MergedAccessibilityFamilies { get; }
 
         public SampleItemsContext(
             ImmutableArray<SampleItem> sampleItems,
@@ -26,6 +27,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             ImmutableArray<InteractionType> aboutInteractionTypes,
             ImmutableArray<Subject> subjects,
             ImmutableArray<AboutThisItemViewModel> aboutAllItems,
+            ImmutableArray<MergedAccessibilityFamily> mergedAccessibilityFamilies,
             AppSettings appSettings)
         {
             SampleItems = sampleItems;
@@ -35,6 +37,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             AppSettings = appSettings;
             AboutInteractionTypes = aboutInteractionTypes;
             AboutAllItems = aboutAllItems;
+            MergedAccessibilityFamilies = mergedAccessibilityFamilies;
         }
 
         /// <summary>
@@ -47,6 +50,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             ImmutableArray<InteractionType> aboutInteractionTypes = default(ImmutableArray<InteractionType>),
             ImmutableArray<Subject> subjects = default(ImmutableArray<Subject>),
             ImmutableArray<AboutThisItemViewModel> aboutAllItems = default(ImmutableArray<AboutThisItemViewModel>),
+            ImmutableArray<MergedAccessibilityFamily> mergedAccessibilityFamilies = default(ImmutableArray<MergedAccessibilityFamily>),
             AppSettings appSettings = null)
         {
             var context = new SampleItemsContext(
@@ -56,7 +60,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
                 subjects: subjects,
                 appSettings: appSettings,
                 aboutAllItems: aboutAllItems,
-                aboutInteractionTypes: aboutInteractionTypes);
+                aboutInteractionTypes: aboutInteractionTypes,
+                mergedAccessibilityFamilies: mergedAccessibilityFamilies);
 
             return context;
         }
@@ -81,11 +86,11 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             return associatedStimulusDigests;
 
         }
+
         public SampleItem GetSampleItem(int bankKey, int itemKey)
         {
             return SampleItems.SingleOrDefault(item => item.BankKey == bankKey && item.ItemKey == itemKey);
 
         }
-
     }
 }

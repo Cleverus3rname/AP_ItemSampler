@@ -20,8 +20,6 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
 
         public bool IsPerformanceItem { get; }
 
-        public ImmutableArray<AccessibilityResourceGroup> AccResourceGroups { get; }
-
         public MoreLikeThisViewModel MoreLikeThisVM { get; }
 
         public string PerformanceItemDescription { get; }
@@ -30,12 +28,12 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
 
         public ImmutableArray<string> BrailleItemCodes { get; }
         public ImmutableArray<string> BraillePassageCodes { get; }
+        public string DefaultIsaapCodes { get; }
 
         public ItemViewModel(
             string itemViewerServiceUrl,
             string accessibilityCookieName,
             bool isPerformanceItem,
-            ImmutableArray<AccessibilityResourceGroup> accResourceGroups,
             MoreLikeThisViewModel moreLikeThisVM,
             string subject,
             ImmutableArray<string> brailleItemCodes,
@@ -44,13 +42,13 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
             ItemIdentifier nonBrailleItem,
             string performanceItemDescription = "",
             string itemNames = "",
-            string brailleItemNames = ""
+            string brailleItemNames = "",
+            string defaultIsaapCodes = ""
             )
         {
             ItemViewerServiceUrl = itemViewerServiceUrl;
             AccessibilityCookieName = accessibilityCookieName;
             IsPerformanceItem = isPerformanceItem;
-            AccResourceGroups = accResourceGroups;
             MoreLikeThisVM = moreLikeThisVM;
             Subject = subject;
             BrailleItemCodes = brailleItemCodes;
@@ -61,6 +59,7 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
             ItemNames = itemNames;
             BrailleItemCodes = brailleItemCodes;
             BrailleItemNames = brailleItemNames;
+            DefaultIsaapCodes = defaultIsaapCodes;
         }
     }
 }

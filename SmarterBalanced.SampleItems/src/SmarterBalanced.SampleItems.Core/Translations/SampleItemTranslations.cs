@@ -14,7 +14,7 @@ namespace SmarterBalanced.SampleItems.Core.Translations
         {
             string claimTitle = (string.IsNullOrEmpty(sampleItem.Claim?.ClaimNumber)) ? string.Empty : $"Claim {sampleItem.Claim.ClaimNumber}";
             string title = $"{sampleItem.Subject?.ShortLabel} {sampleItem.Grade.ToDisplayString()} {claimTitle}";
-            string url = $"{baseUrl}/Item/Details?bankKey={sampleItem.BankKey}&itemKey={sampleItem.ItemKey}";
+            string url = $"{baseUrl}/Item/?bankKey={sampleItem.BankKey}&itemKey={sampleItem.ItemKey}";
             
             var vm = SampleItemViewModel.Create(
              bankKey: sampleItem.BankKey,

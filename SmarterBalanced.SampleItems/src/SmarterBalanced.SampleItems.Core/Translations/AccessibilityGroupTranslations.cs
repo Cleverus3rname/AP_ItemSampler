@@ -11,26 +11,38 @@ namespace SmarterBalanced.SampleItems.Core.Translations
 {
     public static class AccessibilityGroupTranslations
     {
-        public static ImmutableArray<AccessibilityResourceGroup> ApplyPreferences(
+
+        public static ImmutableArray<AccessibilityResourceGroup> ApplyIsaapPreferences(
             this ImmutableArray<AccessibilityResourceGroup> groups,
-            string[] isaap,
-            Dictionary<string, string> cookie)
+            string[] isaap)
         {
-            if (isaap == null) throw new ArgumentNullException(nameof(isaap));
             if (groups == null) throw new ArgumentNullException(nameof(groups));
-            if (cookie == null) throw new ArgumentNullException(nameof(cookie));
+            if (isaap == null) throw new ArgumentNullException(nameof(isaap));
 
             if (isaap.Length != 0)
             {
                 var isaapGroups = groups
                     .Select(g => g.WithResources(g.AccessibilityResources
-                        .Select(r => r.ApplyIsaap(isaap))
+                        .Select(r => r.ApplyIsaapToResource(isaap))
                         .ToImmutableArray()))
                     .ToImmutableArray();
 
                 return isaapGroups;
             }
-            else if (cookie.Count != 0)
+            else
+            {
+                return groups;
+            }
+        }
+
+        public static ImmutableArray<AccessibilityResourceGroup> ApplyCookiePreferences(
+            this ImmutableArray<AccessibilityResourceGroup> groups,
+            Dictionary<string, string> cookie)
+        {
+            if (groups == null) throw new ArgumentNullException(nameof(groups));
+            if (cookie == null) throw new ArgumentNullException(nameof(cookie));
+
+            if (cookie.Count != 0)
             {
                 var cookieGroups = groups
                     .Select(g => g.WithResources(g.AccessibilityResources
@@ -46,7 +58,28 @@ namespace SmarterBalanced.SampleItems.Core.Translations
             }
         }
 
-        private static AccessibilityResource ApplyIsaap(this AccessibilityResource resource, string[] isaap)
+        public static ImmutableArray<AccessibilityResourceGroup> ApplyPreferences(
+            this ImmutableArray<AccessibilityResourceGroup> groups,
+            string[] isaap = default(string[]),
+            Dictionary<string, string> cookie = default(Dictionary<string, string>))
+        {
+            if (groups == null) throw new ArgumentNullException(nameof(groups));
+
+            if (isaap.Length != 0)
+            {
+                return ApplyIsaapPreferences(groups, isaap);
+            }
+            else if (cookie.Count != 0)
+            {
+                return ApplyCookiePreferences(groups, cookie);
+            }
+            else
+            {
+                return groups;
+            }
+        }
+
+        private static AccessibilityResource ApplyIsaapToResource(this AccessibilityResource resource, string[] isaap)
         {
             var issapSelection = resource.Selections.FirstOrDefault(sel => isaap.Contains(sel.SelectionCode));
             if (issapSelection == null)
@@ -80,5 +113,5 @@ namespace SmarterBalanced.SampleItems.Core.Translations
             return resource;
         }
     }
-    
+
 }
