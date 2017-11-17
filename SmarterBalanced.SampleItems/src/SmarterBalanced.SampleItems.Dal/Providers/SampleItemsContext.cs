@@ -19,6 +19,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
         public ImmutableArray<Subject> Subjects { get; }
         public AppSettings AppSettings { get; }
         public ImmutableArray<MergedAccessibilityFamily> MergedAccessibilityFamilies { get; }
+        public ImmutableArray<Target> Targets { get; }
+        public ImmutableArray<Claim> Claims { get; }
 
         public SampleItemsContext(
             ImmutableArray<SampleItem> sampleItems,
@@ -28,6 +30,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             ImmutableArray<Subject> subjects,
             ImmutableArray<AboutThisItemViewModel> aboutAllItems,
             ImmutableArray<MergedAccessibilityFamily> mergedAccessibilityFamilies,
+            ImmutableArray<Target> targets,
+            ImmutableArray<Claim> claims,
             AppSettings appSettings)
         {
             SampleItems = sampleItems;
@@ -38,6 +42,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             AboutInteractionTypes = aboutInteractionTypes;
             AboutAllItems = aboutAllItems;
             MergedAccessibilityFamilies = mergedAccessibilityFamilies;
+            Targets = targets;
+            Claims = claims;
         }
 
         /// <summary>
@@ -51,6 +57,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             ImmutableArray<Subject> subjects = default(ImmutableArray<Subject>),
             ImmutableArray<AboutThisItemViewModel> aboutAllItems = default(ImmutableArray<AboutThisItemViewModel>),
             ImmutableArray<MergedAccessibilityFamily> mergedAccessibilityFamilies = default(ImmutableArray<MergedAccessibilityFamily>),
+            ImmutableArray<Target> targets = default(ImmutableArray<Target>),
+            ImmutableArray<Claim> claims = default(ImmutableArray<Claim>),
             AppSettings appSettings = null)
         {
             var context = new SampleItemsContext(
@@ -61,7 +69,9 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
                 appSettings: appSettings,
                 aboutAllItems: aboutAllItems,
                 aboutInteractionTypes: aboutInteractionTypes,
-                mergedAccessibilityFamilies: mergedAccessibilityFamilies);
+                mergedAccessibilityFamilies: mergedAccessibilityFamilies,
+                targets: targets,
+                claims: claims);
 
             return context;
         }

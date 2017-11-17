@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -23,8 +24,11 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         /// The user facing name of the claim. e.g. Problem Solving and Modeling
         /// </summary>
         public string Label { get; }
-        
+
+        [JsonIgnore]
         public ImmutableArray<Target> Targets { get; }
+
+        public ImmutableArray<int> TargetCodes { get; }
 
         public Claim(string code, string claimNumber, string label, ImmutableArray<Target> targets)
         {
@@ -32,6 +36,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             ClaimNumber = claimNumber;
             Label = label;
             Targets = targets;
+            TargetCodes = targets.Select(t => t.NameHash).ToImmutableArray();
         }
 
         public static Claim Create(

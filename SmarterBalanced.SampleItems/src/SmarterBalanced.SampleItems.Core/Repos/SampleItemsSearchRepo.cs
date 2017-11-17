@@ -71,7 +71,9 @@ namespace SmarterBalanced.SampleItems.Core.Repos
             return new ItemsSearchViewModel
             {
                 InteractionTypes = context.InteractionTypes,
-                Subjects = context.Subjects
+                Subjects = context.Subjects,
+                Targets = context.Targets,
+                Claims = context.Claims
             };
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -12,8 +13,11 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         public string Code { get; }
         public string Label { get; }
         public string ShortLabel { get; }
+
+        [JsonIgnore]
         public ImmutableArray<Claim> Claims { get; }
         public ImmutableArray<string> InteractionTypeCodes { get; }
+        public ImmutableArray<string> ClaimCodes { get; }
 
         public Subject(string code, string label, string shortLabel, ImmutableArray<Claim> claims, ImmutableArray<string> interactionTypeCodes)
         {
@@ -22,6 +26,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             ShortLabel = shortLabel;
             Claims = claims;
             InteractionTypeCodes = interactionTypeCodes;
+            ClaimCodes = claims.Select(c => c.Code).ToImmutableArray();
         }
 
         public static Subject Create(string code, string label, string shortLabel, ImmutableArray<Claim> claims, ImmutableArray<string> interactionTypeCodes)

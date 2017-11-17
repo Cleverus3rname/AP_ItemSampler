@@ -10,6 +10,7 @@ using SmarterBalanced.SampleItems.Dal.Configurations.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Immutable;
 using SmarterBalanced.SampleItems.Dal.Xml.Models;
+using System;
 
 namespace SmarterBalanced.SampleItems.Dal.Providers
 {
@@ -59,6 +60,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
                 .ToImmutableArray();
 
             var aboutInteractionTypes = LoadAboutInteractionTypes(interactionGroup);
+            var claims = GetClaims(subjects);
+            var targets = GetTargets(claims);
 
             SampleItemsContext context = new SampleItemsContext(
                 sampleItems: sampleItems,
@@ -68,12 +71,26 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
                 appSettings: appSettings,
                 aboutAllItems: aboutItems,
                 aboutInteractionTypes: aboutInteractionTypes,
-                mergedAccessibilityFamilies: accessibilityResourceFamilies);
+                mergedAccessibilityFamilies: accessibilityResourceFamilies,
+                targets: targets,
+                claims: claims);
 
             logger.LogInformation($"Loaded {sampleItems.Length} sample items");
             logger.LogInformation($"Context loaded successfully");
 
             return context;
+        }
+
+        private static ImmutableArray<Target> GetTargets(ImmutableArray<Claim> claims)
+        {
+            var targets = claims.SelectMany(i => i.Targets).ToImmutableArray();
+            return targets;
+        }
+
+        private static ImmutableArray<Claim> GetClaims(ImmutableArray<Subject> subjects)
+        {
+            var claims = subjects.SelectMany(i => i.Claims).ToImmutableArray();
+            return claims;
         }
 
         public static async Task<ImmutableArray<ItemDigest>> LoadItemDigests(
