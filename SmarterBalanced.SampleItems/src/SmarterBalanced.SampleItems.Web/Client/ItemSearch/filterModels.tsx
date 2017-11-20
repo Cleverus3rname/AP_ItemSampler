@@ -1,11 +1,13 @@
 ﻿import { OptionTypeModel, AdvancedFilterCategoryModel } from '@osu-cass/sb-components'
 
+//todo remove all of this
 export const mockAdvancedFilterCategories: AdvancedFilterCategoryModel[] = [
     {
         "disabled": false,
         "isMultiSelect": true,
         "helpText": "Grade HelpText here.",
         "label": "Grades",
+        "code": "Grade",
         "filterOptions": [
             {
                 "label": "Elementary",
@@ -23,13 +25,15 @@ export const mockAdvancedFilterCategories: AdvancedFilterCategoryModel[] = [
                 "isSelected": false
             }
         ],
-        "displayAllButton":true
+        "displayAllButton": true
     },
     {//Subjects filter
         "disabled": false,
         "isMultiSelect": true,
         "label": "Subjects",
         "helpText": "Subjects HelpText here.",
+        "code": "Subjects",
+
         "filterOptions": [
             {
                 "label": "Mathematics",
@@ -43,33 +47,7 @@ export const mockAdvancedFilterCategories: AdvancedFilterCategoryModel[] = [
             }
         ],
         "displayAllButton": true
-    },
-    {//Claims
-        "disabled": false,
-        "isMultiSelect": true,
-        "label": "Claim",
-        "helpText": "Claim HelpText here.",
-        "filterOptions": [
-        ],
-        "displayAllButton": true
-    },
-    {//Targets
-        "disabled": false,
-        "isMultiSelect": true,
-        "label": "Target",
-        "helpText": "Target HelpText here.",
-        "filterOptions": [
-        ],
-        "displayAllButton": true
-    },
-    {//Calculator on/off
-        "disabled": false,
-        "isMultiSelect": true,
-        "label": "Calculator",
-        "helpText": "Calculator HelpText here.",
-        "filterOptions": [
-        ],
-        "displayAllButton": true
     }
+
 
 ];

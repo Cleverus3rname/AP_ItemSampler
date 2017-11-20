@@ -18,7 +18,7 @@ module.exports = (env) => {
             ]
         },
         entry: {
-            vendor: ['bootstrap', 'bootstrap/dist/css/bootstrap.css', "@osu-cass/sb-components/build/Styles/custom.less", 'font-awesome/css/font-awesome.css', 'event-source-polyfill', 'isomorphic-fetch', 'react', 'react-dom', 'react-router-dom', 'jquery'],
+            vendor: ['bootstrap', 'bootstrap/dist/css/bootstrap.css', '@osu-cass/sb-components/lib/sb-components.css', 'font-awesome/css/font-awesome.css', 'event-source-polyfill', 'isomorphic-fetch', 'react', 'react-dom', 'react-router-dom', 'jquery'],
         },
         output: {
             path: path.join(__dirname, 'wwwroot', 'dist'),
