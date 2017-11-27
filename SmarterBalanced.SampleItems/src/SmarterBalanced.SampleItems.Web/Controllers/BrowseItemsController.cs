@@ -35,6 +35,19 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return Json(model);
         }
 
+        [HttpGet("FilterSearchModel")]
+        public IActionResult FilterSearchModel()
+        {
+            var model = sampleItemsSearchRepo.GetFilterSearch();
+            if (model == null)
+            {
+                return BadRequest();
+            }
+
+            return Json(model);
+        }
+
+
         [HttpGet("Search")]
         [EnableCors("AllowAllOrigins")]
         public IActionResult Search(string itemID, GradeLevels gradeLevels, string[] subjects, string[] interactionTypes, string[] claims, bool performanceOnly, int[] targets)

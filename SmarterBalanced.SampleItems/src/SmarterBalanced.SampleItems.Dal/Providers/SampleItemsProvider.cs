@@ -62,6 +62,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             var aboutInteractionTypes = LoadAboutInteractionTypes(interactionGroup);
             var claims = GetClaims(subjects);
             var targets = GetTargets(claims);
+            var filterSearch = SearchFilterTranslation.ToSearchFilter(appSettings.SbContent.FilterCategories,
+                subjects: subjects, claims: claims, interactionTypes: aboutInteractionTypes);
 
             SampleItemsContext context = new SampleItemsContext(
                 sampleItems: sampleItems,
@@ -73,7 +75,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
                 aboutInteractionTypes: aboutInteractionTypes,
                 mergedAccessibilityFamilies: accessibilityResourceFamilies,
                 targets: targets,
-                claims: claims);
+                claims: claims,
+                filterSearch: filterSearch);
 
             logger.LogInformation($"Loaded {sampleItems.Length} sample items");
             logger.LogInformation($"Context loaded successfully");

@@ -21,6 +21,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
         public ImmutableArray<MergedAccessibilityFamily> MergedAccessibilityFamilies { get; }
         public ImmutableArray<Target> Targets { get; }
         public ImmutableArray<Claim> Claims { get; }
+        public FilterSearch FilterSearch {get;}
 
         public SampleItemsContext(
             ImmutableArray<SampleItem> sampleItems,
@@ -32,7 +33,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             ImmutableArray<MergedAccessibilityFamily> mergedAccessibilityFamilies,
             ImmutableArray<Target> targets,
             ImmutableArray<Claim> claims,
-            AppSettings appSettings)
+            AppSettings appSettings,
+            FilterSearch filterSearch)
         {
             SampleItems = sampleItems;
             ItemCards = itemCards;
@@ -44,6 +46,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             MergedAccessibilityFamilies = mergedAccessibilityFamilies;
             Targets = targets;
             Claims = claims;
+            FilterSearch = filterSearch;
         }
 
         /// <summary>
@@ -59,7 +62,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             ImmutableArray<MergedAccessibilityFamily> mergedAccessibilityFamilies = default(ImmutableArray<MergedAccessibilityFamily>),
             ImmutableArray<Target> targets = default(ImmutableArray<Target>),
             ImmutableArray<Claim> claims = default(ImmutableArray<Claim>),
-            AppSettings appSettings = null)
+            AppSettings appSettings = null,
+            FilterSearch filterSearch = null)
         {
             var context = new SampleItemsContext(
                 sampleItems: sampleItems,
@@ -71,7 +75,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
                 aboutInteractionTypes: aboutInteractionTypes,
                 mergedAccessibilityFamilies: mergedAccessibilityFamilies,
                 targets: targets,
-                claims: claims);
+                claims: claims,
+                filterSearch: filterSearch);
 
             return context;
         }

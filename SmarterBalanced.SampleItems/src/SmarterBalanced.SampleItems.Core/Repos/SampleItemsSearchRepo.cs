@@ -22,6 +22,11 @@ namespace SmarterBalanced.SampleItems.Core.Repos
             logger = loggerFactory.CreateLogger<SampleItemsSearchRepo>();
         }
 
+        public FilterSearch GetFilterSearch()
+        {
+            return context.FilterSearch;
+        }
+
         public IList<ItemCardViewModel> GetItemCards()
         {
             return context.ItemCards.ToList();

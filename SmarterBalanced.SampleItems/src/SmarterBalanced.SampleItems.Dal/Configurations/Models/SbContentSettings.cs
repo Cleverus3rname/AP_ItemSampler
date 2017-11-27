@@ -19,6 +19,7 @@ namespace SmarterBalanced.SampleItems.Dal.Configurations.Models
         public List<string> DictionarySupportedItemTypes { get; set; }
         public List<AccessibilityType> AccessibilityTypes { get; set; }
         public Dictionary<string, string> LanguageToLabel { get; set; }
+        public List<FilterCategorySettings> FilterCategories { get; set; }
 
     }
 }

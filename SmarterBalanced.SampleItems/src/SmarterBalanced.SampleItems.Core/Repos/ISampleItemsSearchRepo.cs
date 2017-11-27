@@ -11,5 +11,6 @@ namespace SmarterBalanced.SampleItems.Core.Repos
         IList<ItemCardViewModel> GetItemCards(ItemsSearchParams parms);
         ItemsSearchViewModel GetItemsSearchViewModel();
         IList<SampleItemViewModel> GetSampleItemViewModels(string baseUrl);
+        FilterSearch GetFilterSearch();
     }
 }

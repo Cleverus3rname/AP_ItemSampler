@@ -2,7 +2,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { RouteComponentProps } from 'react-router';
-import { mockAdvancedFilterCategories } from './filterModels';
 import { FilterISPComponent } from './filterISPComponent';
 import { updateUrl, readUrl } from '../UrlHelper';
 import { filterItems }  from './ItemSearchFilter'
@@ -18,7 +17,10 @@ import {
     itemPageLink,
     FilterOptionModel,
     AdvancedFilterContainer,
-    AdvancedFilterCategoryModel
+    AdvancedFilterCategoryModel,
+    Filter,
+    ItemSearch,
+    ItemSearchFilterModel
 } from '@osu-cass/sb-components';
 
 
@@ -27,37 +29,37 @@ export const ItemsSearchClient = (params: SearchAPIParamsModel) =>
     get<ItemCardModel[]>("/BrowseItems/search", params);
 
 export const ItemsViewModelClient = () => 
-    get<ItemsSearchModel>("/BrowseItems/ItemsSearchViewModel");
+    get<ItemSearchFilterModel>("/BrowseItems/FilterSearchModel");
 
 
 
 export interface Props extends RouteComponentProps<{}> {
     itemsSearchClient: (params: SearchAPIParamsModel) => Promise<ItemCardModel[]>;
-    itemsViewModelClient: () => Promise<ItemsSearchModel>;
+    itemsViewModelClient: () => Promise<ItemSearchFilterModel>;
 }
 
 export interface State {
     searchResults: Resource<ItemCardModel[]>;
     itemSearch: Resource<ItemsSearchModel>;
-    currentFilter: AdvancedFilterCategoryModel[];
+    currentFilter?: AdvancedFilterCategoryModel[];
+
 }
 
 export class ItemsSearchComponent extends React.Component<Props, State> {
+    private searchModel: ItemsSearchModel | undefined = undefined;
     constructor(props: Props) {
         super(props);
         this.state = {
             searchResults: { kind: "loading" },
             itemSearch: { kind: "loading" },
-            currentFilter: mockAdvancedFilterCategories
         };
 
         this.props.itemsViewModelClient()
-            .then(data => this.onFetchedItemSearch(data))
+            .then(data => this.onFetchFilterModel(data))
             .catch(err => this.onError(err));
 
         
-        const params = this.translateAdvancedFilterCate(this.state.currentFilter);
-        this.props.itemsSearchClient(params)
+        this.props.itemsSearchClient({})
             .then((data) => this.onSearch(data))
             .catch((err) => this.onError(err));
         
@@ -70,21 +72,20 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         this.setState({ searchResults: { kind: "failure" } });
     }
 
-    onFetchedItemSearch(itemsSearch: ItemsSearchModel) {
-        const newFilters = [...this.state.currentFilter];
+    getFilterCategories(itemSearchFilter: ItemSearchFilterModel) {
 
-        const newGrade = this.state.currentFilter.find(f => f.label.toLocaleLowerCase() === "grades")
-        const newSubject = this.state.currentFilter.find(f => f.label.toLocaleLowerCase() === "subjects");
-        if (newGrade && newSubject) {
-            // TODO: get buisness logic for displable filter options. 
-            //if math is selected change displayed claims/targets/etc...
+    }
+    //TODO:translate the itemsearchfiltermodel to a flat itemsearchmodel
+    getItemSearchModel(itemSearchFilter: ItemSearchFilterModel) {
 
-            //else if english is selected change displayed  claims/targets/etc...
-        }
-
+    }
+    onFetchFilterModel(itemSearchFilter: ItemSearchFilterModel) {
+        //TODO: Filter grades
+        const filters = this.getFilterCategories();
+        const searchModel = this.getItemSearchModel();
         this.setState({
-            itemSearch: { kind: "success", content: itemsSearch },
-            currentFilter: newFilters
+            itemSearch: { kind: "success", content: searchModel },
+            currentFilter: filter
         }, );
 
     }
@@ -125,40 +126,6 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         }
         return resultsElement;
     }
-
-    // TODO: Optimize this 
-    translateAdvancedFilterCate(categorys: AdvancedFilterCategoryModel[]): SearchAPIParamsModel {
-        let model: SearchAPIParamsModel = {
-            itemId: "",
-            gradeLevels: GradeLevels.All,
-            subjects: [],
-            claims: [],
-            interactionTypes: [],
-            performanceOnly: false,
-            targets:[]
-        };
-
-        const gradeCategory = categorys.find(c => c.label.toLowerCase() === 'grades');
-        if (gradeCategory && !gradeCategory.disabled) {
-            model.gradeLevels = GradeLevels.All;
-            const selectedGrade = gradeCategory.filterOptions.find(fo => fo.isSelected);
-            if (selectedGrade) {
-                model.gradeLevels = Number(selectedGrade.key);
-            }
-        }
-
-        const subjectsCategory = categorys.find(c => c.label.toLowerCase() === 'subjects');
-        if (subjectsCategory && !subjectsCategory.disabled) {
-            subjectsCategory.filterOptions.forEach(fo => {
-                if (fo.isSelected) {
-                    model.subjects.push(fo.key);
-                }
-            });
-        }
-
-        return model;
-    }
-
     beginSearchFilter = (categories: AdvancedFilterCategoryModel[]) => {
         this.setState({
             currentFilter: categories
