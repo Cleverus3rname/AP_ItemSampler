@@ -54,21 +54,23 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
 
             var aboutItems = sampleItems
                 .Select(item => AboutThisItemViewModelTranslations.FromSampleItem(
-                    sampleItem: item, 
-                    itemCards: itemCards, 
+                    sampleItem: item,
+                    itemCards: itemCards,
                     allSampleItems: sampleItems))
                 .ToImmutableArray();
 
             var aboutInteractionTypes = LoadAboutInteractionTypes(interactionGroup);
             var claims = GetClaims(subjects);
             var targets = GetTargets(claims);
+
+            var subjectInteractionTypes = LoadSubjectInteractionTypes(interactionGroup, subjects);
             var filterSearch = SearchFilterTranslation.ToSearchFilter(appSettings.SbContent.FilterCategories,
-                subjects: subjects, claims: claims, interactionTypes: aboutInteractionTypes);
+                subjects: subjects, claims: claims, interactionTypes: subjectInteractionTypes);
 
             SampleItemsContext context = new SampleItemsContext(
                 sampleItems: sampleItems,
                 itemCards: itemCards,
-                interactionTypes: interactionGroup.InteractionTypes,
+                interactionTypes: subjectInteractionTypes,
                 subjects: subjects,
                 appSettings: appSettings,
                 aboutAllItems: aboutItems,
@@ -101,7 +103,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
         {
             var metaDataFiles = XmlSerialization.FindMetadataXmlFiles(contentDir);
             var contentFiles = XmlSerialization.FindContentXmlFiles(contentDir);
-            
+
             var itemMetadata = await XmlSerialization.DeserializeXmlFilesAsync<ItemMetadata>(metaDataFiles);
             var itemContents = await XmlSerialization.DeserializeXmlFilesAsync<ItemContents>(contentFiles);
 
@@ -191,6 +193,19 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
                 .ToImmutableArray();
 
             return aboutInteractionTypes;
+        }
+
+        //TODO: refactor and condense with loadaboutinteractiontypes
+        private static ImmutableArray<InteractionType> LoadSubjectInteractionTypes(InteractionGroup interactionGroup,
+            ImmutableArray<Subject> subjects)
+        {
+            var subjectCodes = subjects.SelectMany(s => s.InteractionTypeCodes);   
+            var interactionTypes = interactionGroup.InteractionTypes
+                .Where(i => subjectCodes.Contains(i.Code))
+                .OrderBy(i => i.Order)
+                .ToImmutableArray();
+
+            return interactionTypes;
         }
 
     }

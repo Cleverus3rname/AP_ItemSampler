@@ -19,24 +19,40 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         public ImmutableArray<string> InteractionTypeCodes { get; }
         public ImmutableArray<string> ClaimCodes { get; }
 
-        public Subject(string code, string label, string shortLabel, ImmutableArray<Claim> claims, ImmutableArray<string> interactionTypeCodes)
+        public Subject(
+            string code,
+            string label,
+            string shortLabel,
+            ImmutableArray<Claim> claims,
+            ImmutableArray<string> interactionTypeCodes,
+            ImmutableArray<string> claimCodes)
         {
             Code = code;
             Label = label;
             ShortLabel = shortLabel;
             Claims = claims;
             InteractionTypeCodes = interactionTypeCodes;
-            ClaimCodes = claims.Select(c => c.Code).ToImmutableArray();
+            ClaimCodes = claimCodes;
         }
 
-        public static Subject Create(string code, string label, string shortLabel, ImmutableArray<Claim> claims, ImmutableArray<string> interactionTypeCodes)
+        public static Subject Create(
+            string code,
+            string label = "",
+            string shortLabel = "",
+            ImmutableArray<Claim> claims = default(ImmutableArray<Claim>),
+            ImmutableArray<string> interactionTypeCodes = default(ImmutableArray<string>))
         {
+            claims = claims.IsDefault ? ImmutableArray<Claim>.Empty : claims;
+            interactionTypeCodes = interactionTypeCodes.IsDefault ? ImmutableArray<string>.Empty : interactionTypeCodes;
+
+            var claimCodes = claims.Select(c => c.Code).ToImmutableArray();
             return new Subject(
                 code,
                 label,
                 shortLabel,
                 claims,
-                interactionTypeCodes
+                interactionTypeCodes,
+                claimCodes: claimCodes
             );
         }
 
@@ -46,7 +62,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             var family = interactionFamilies.Single(f => f.SubjectCode == code);
             var claims = subjectElement.Elements("Claim").Select(c => Claim.Create(c)).ToImmutableArray();
 
-            var subject = new Subject(
+            var subject = Create(
                 code: code,
                 label: (string)subjectElement.Element("Label"),
                 shortLabel: (string)subjectElement.Element("ShortLabel"),
@@ -64,8 +80,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
                     .Where(t => t.ClaimId == c.ClaimNumber && t.Subject == Code)
                     .ToList()))
                 .ToImmutableArray();
-            
-            return new Subject(
+
+            return Create(
                 code: Code,
                 label: Label,
                 shortLabel: ShortLabel,

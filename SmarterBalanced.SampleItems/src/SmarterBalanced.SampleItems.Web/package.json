@@ -40,7 +40,7 @@
     "webpack-hot-middleware": "2.20.0"
   },
   "dependencies": {
-    "@osu-cass/sb-components": "0.0.33",
+    "@osu-cass/sb-components": "0.0.38",
     "bootstrap": "3.3.7",
     "es6-promise": "4.1.1",
     "event-source-polyfill": "0.0.11",

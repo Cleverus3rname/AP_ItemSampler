@@ -196,16 +196,8 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
             MergedAccessibilityFamily resourceFamily = AccessibilityResourceTranslation.MergeGlobalResources(noPartialResourcesFamily, Resources);
             var resourceFamilies = ImmutableArray.Create(resourceFamily);
 
-            Claim1 = new Claim(
-                "claim1",
-                "1",
-                "ELA Claim 1",
-                ImmutableArray.Create<Target>());
-            Claim2 = new Claim(
-                "claim2",
-                "2",
-                "3",
-                ImmutableArray.Create<Target>());
+            Claim1 = Claim.Create(code: "claim1", claimNumber: "1");
+            Claim2 = Claim.Create(code: "claim2", claimNumber: "1");
 
             ItMath = new InteractionType("2", "EQ", "", 2);
             ItEla = new InteractionType("1", "WER", "", 1);

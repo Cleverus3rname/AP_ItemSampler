@@ -19,7 +19,7 @@ export const siteLinks: SbNavlinkProps[] = [
 export const routes = <Layout siteName="Sample Items" links={siteLinks}>
     <Route exact path='/' component={Home} />
 
-    <Route exact path='/AboutItems' render={(props) => (
+    <Route exact path='/AboutItems/:itemType?' render={(props) => (
         <AboutTestItemsContainer {...props} aboutClient={aboutTestItemsClient} />
     )} />
 

@@ -82,12 +82,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
 
             var subjects = new List<Subject>
             {
-                new Subject(
-                    code: "MATH",
-                    label: string.Empty,
-                    shortLabel: string.Empty,
-                    claims: ImmutableArray.Create<Claim>(),
-                    interactionTypeCodes: ImmutableArray.Create<string>())
+                Subject.Create(code: "MATH")
             };
 
             var placeholderText = new RubricPlaceHolderText

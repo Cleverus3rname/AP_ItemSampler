@@ -30,7 +30,12 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
 
         public ImmutableArray<int> TargetCodes { get; }
 
-        public Claim(string code, string claimNumber, string label, ImmutableArray<Target> targets)
+        public Claim(
+            string code,
+            string claimNumber,
+            string label,
+            ImmutableArray<Target> targets,
+            ImmutableArray<int> targetCodes)
         {
             Code = code;
             ClaimNumber = claimNumber;
@@ -40,25 +45,26 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         }
 
         public static Claim Create(
-            ImmutableArray<Target> targets,
-            string code = "", 
-            string claimNumber = "", 
+            string code,
+            ImmutableArray<Target> targets = default(ImmutableArray<Target>),
+            string claimNumber = "",
             string label = "")
         {
-            if (targets == null)
-            {
-                targets = ImmutableArray.Create<Target>();
-            }
+
+            targets = targets.IsDefault ? ImmutableArray<Target>.Empty : targets;
+            var targetCodes = targets.Select(t => t.NameHash).ToImmutableArray();
+
             return new Claim(
                  code: code,
                  claimNumber: claimNumber,
                  label: label,
-                 targets: targets);
+                 targets: targets,
+                 targetCodes: targetCodes);
         }
 
         public static Claim Create(XElement element)
         {
-            var claim = new Claim(
+            var claim = Create(
                 code: (string)element.Element("Code"),
                 label: (string)element.Element("Label"),
                 claimNumber: (string)element.Element("ClaimNumber"),
@@ -69,7 +75,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
 
         public Claim WithTargets(IList<Target> targets)
         {
-            return new Claim(
+            return Create(
                 code: Code,
                 claimNumber: ClaimNumber,
                 label: Label,
