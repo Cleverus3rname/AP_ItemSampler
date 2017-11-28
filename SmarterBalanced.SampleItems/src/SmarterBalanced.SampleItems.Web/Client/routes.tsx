@@ -30,7 +30,7 @@ export const routes = <Layout siteName="Sample Items" links={siteLinks}>
             itemsViewModelClient={ItemsViewModelClient} />
     )} />
 
-    <Route path='/Item' render={(props) => (
+    <Route path='/Item/:bankKey-:itemKey' render={(props) => (
         <ItemPageContainer {...props}
             aboutThisClient={aboutThisItemViewModelClient}
             itemPageClient={itemPageClient}
