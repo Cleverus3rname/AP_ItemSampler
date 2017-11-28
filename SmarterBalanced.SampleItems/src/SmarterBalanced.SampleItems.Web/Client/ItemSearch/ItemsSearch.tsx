@@ -2,35 +2,22 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { RouteComponentProps } from 'react-router';
-import { FilterISPComponent } from './filterISPComponent';
-import { updateUrl, readUrl } from '../UrlHelper';
 
 import {
     Resource,
-    get,
     ItemCard,
     ItemCardModel,
-    GradeLevels,
     SearchAPIParamsModel,
     ItemsSearchModel,
     itemPageLink,
-    FilterOptionModel,
     AdvancedFilterContainer,
     AdvancedFilterCategoryModel,
     Filter,
     ItemSearch,
     ItemsSearchFilterModel,
-    getResourceContent
+    getResourceContent,    SearchUrl
 } from '@osu-cass/sb-components';
-
-
-
-export const ItemsSearchClient = (params: SearchAPIParamsModel) =>
-    get<ItemCardModel[]>("/BrowseItems/search", params);
-
-export const ItemsViewModelClient = () =>
-    get<ItemsSearchFilterModel>("/BrowseItems/FilterSearchModel");
-
+import { getFilterCategories, getItemSearchModel } from './SiwSearch';
 
 
 export interface Props extends RouteComponentProps<{}> {
@@ -42,28 +29,32 @@ export interface State {
     searchResults: Resource<ItemCardModel[]>;
     itemSearch: Resource<ItemsSearchModel>;
     currentFilter?: AdvancedFilterCategoryModel[];
+    searchAPIParams: SearchAPIParamsModel;
 
 }
 
 export class ItemsSearchComponent extends React.Component<Props, State> {
-    private searchModel: ItemsSearchModel | undefined = undefined;
     constructor(props: Props) {
         super(props);
+
+        const searchAPIParams = this.getLocationSearch();
         this.state = {
             searchResults: { kind: "loading" },
             itemSearch: { kind: "loading" },
+            searchAPIParams: searchAPIParams
         };
+    }
 
+    componentDidMount() {
         this.props.itemsViewModelClient()
             .then(data => this.onFetchFilterModel(data))
             .catch(err => this.onError(err));
 
-
         this.props.itemsSearchClient({})
             .then((data) => this.onSearch(data))
             .catch((err) => this.onError(err));
-
     }
+
     onSearch(results: ItemCardModel[]) {
         this.setState({ searchResults: { kind: "success", content: results } });
     }
@@ -72,33 +63,11 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         this.setState({ searchResults: { kind: "failure" } });
     }
 
-    getFilterCategories(itemSearchFilter: ItemsSearchFilterModel): AdvancedFilterCategoryModel[] {
-        const claims = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.claims), isMultiSelect: true, disabled: false, displayAllButton: true };
-        const subjects = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects), isMultiSelect: true, disabled: false, displayAllButton: true };
-        const interactions = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.interactionTypes), isMultiSelect: true, disabled: false, displayAllButton: true };
-        //TODO: add rest
-        let advancedFilters: AdvancedFilterCategoryModel[] = [
-            subjects, claims, interactions
-        ];
-
-        return advancedFilters;
-
-
-    }
-    //TODO:translate the itemsearchfiltermodel to a flat itemsearchmodel
-    getItemSearchModel(itemSearchFilter: ItemsSearchFilterModel): ItemsSearchModel {
-        const itemSearch: ItemsSearchModel = {
-            claims: itemSearchFilter.claims.filterOptions,
-            subjects: itemSearchFilter.subjects.filterOptions,
-            interactionTypes: itemSearchFilter.interactionTypes.filterOptions
-        };
-        return itemSearch;
-
-    }
+   
     onFetchFilterModel(itemSearchFilter: ItemsSearchFilterModel) {
         //TODO: Filter grades
-        const filters = this.getFilterCategories(itemSearchFilter);
-        const searchModel = this.getItemSearchModel(itemSearchFilter);
+        const filters = getFilterCategories(itemSearchFilter);
+        const searchModel = getItemSearchModel(itemSearchFilter);
         this.setState({
             itemSearch: { kind: "success", content: searchModel },
             currentFilter: filters
@@ -119,10 +88,10 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     }
 
     getFilteredItemCards(cards: ItemCardModel[]): ItemCardModel[] {
-        const filters = this.state.currentFilter;
-        if (filters) {
-            const searchAPI = ItemSearch.filterToSearchApiModel(filters);
-            cards = ItemSearch.filterItemCards(cards, searchAPI);
+        try {
+            cards = ItemSearch.filterItemCards(cards, this.state.searchAPIParams);
+        } catch (exception) {
+            console.error("unable to filter item cards", exception);
         }
 
         return cards;
@@ -156,29 +125,53 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             {this.renderItemCards()}
         </div>
 
-
     }
-    beginSearchFilter = (categories: AdvancedFilterCategoryModel[]) => {
+
+    updateLocationSearch(searchAPI: SearchAPIParamsModel) {
+        const search = SearchUrl.encodeQuery(searchAPI);
+        const location = {
+            ...this.props.history.location, search: search
+        };
+        this.props.history.replace(location);
+    }
+
+    getLocationSearch(): SearchAPIParamsModel {
+        let searchAPI: SearchAPIParamsModel = {};
+        try {
+            searchAPI = SearchUrl.decodeSearch(this.props.location.search);
+        } catch { }
+
+        return searchAPI;
+    }
+
+    onFilterUpdate = (categories: AdvancedFilterCategoryModel[]) => {
         const searchModel = getResourceContent(this.state.itemSearch);
+        let searchAPI = { ...this.state.searchAPIParams };
+
+        searchAPI = ItemSearch.filterToSearchApiModel(categories);
+        this.updateLocationSearch(searchAPI);
 
         if (searchModel) {
-            const searchAPI = ItemSearch.filterToSearchApiModel(categories);
             categories = Filter.getUpdatedSearchFilters(searchModel, categories, searchAPI)
         }
 
         this.setState({
-            currentFilter: categories
+            currentFilter: categories,
+            searchAPIParams: searchAPI
         });
     }
-
 
     renderfilters() {
         const isLoading = this.isLoading();
 
-
         if (this.state.currentFilter) {
             return (
-                <FilterISPComponent defaultFilter={this.state.currentFilter} searchFilters={this.beginSearchFilter} />
+                <div style={{ borderRadius: "5px", "backgroundColor": "white" }}>
+                    <h1 style={{ padding: "10px" }}>Browse Items</h1>
+                    <div>
+                        <AdvancedFilterContainer filterOptions={...this.state.currentFilter} onClick={this.onFilterUpdate} />
+                    </div>
+                </div>
             );
         }
         else {
