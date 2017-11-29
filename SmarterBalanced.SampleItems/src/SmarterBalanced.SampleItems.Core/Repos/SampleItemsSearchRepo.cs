@@ -22,6 +22,11 @@ namespace SmarterBalanced.SampleItems.Core.Repos
             logger = loggerFactory.CreateLogger<SampleItemsSearchRepo>();
         }
 
+        public FilterSearch GetFilterSearch()
+        {
+            return context.FilterSearch;
+        }
+
         public IList<ItemCardViewModel> GetItemCards()
         {
             return context.ItemCards.ToList();
@@ -71,7 +76,9 @@ namespace SmarterBalanced.SampleItems.Core.Repos
             return new ItemsSearchViewModel
             {
                 InteractionTypes = context.InteractionTypes,
-                Subjects = context.Subjects
+                Subjects = context.Subjects,
+                Targets = context.Targets,
+                Claims = context.Claims
             };
         }
 

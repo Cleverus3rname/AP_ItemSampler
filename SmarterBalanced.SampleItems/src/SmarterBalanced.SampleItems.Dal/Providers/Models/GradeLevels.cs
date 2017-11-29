@@ -30,28 +30,28 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         {
             switch (s)
             {
-                case "03": 
+                case "03":
                 case "3":
                     return GradeLevels.Grade3;
-                case "04": 
+                case "04":
                 case "4":
                     return GradeLevels.Grade4;
                 case "05":
                 case "5":
                     return GradeLevels.Grade5;
-                case "06": 
+                case "06":
                 case "6":
                     return GradeLevels.Grade6;
-                case "07": 
+                case "07":
                 case "7":
                     return GradeLevels.Grade7;
-                case "08": 
+                case "08":
                 case "8":
                     return GradeLevels.Grade8;
-                case "09": 
+                case "09":
                 case "9":
-                case "10": 
-                case "11": 
+                case "10":
+                case "11":
                 case "12":
                     return GradeLevels.High;
                 case "NA": return GradeLevels.NA;
@@ -71,6 +71,16 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
                 GradeLevels.Grade10,
                 GradeLevels.Grade11,
                 GradeLevels.Grade12);
+
+
+        public static readonly ImmutableArray<GradeLevels> allGrades =
+            singleGrades.AddRange(
+                ImmutableArray.Create(
+                    GradeLevels.Elementary,
+                    GradeLevels.Middle,
+                    GradeLevels.High,
+                    GradeLevels.NA,
+                    GradeLevels.All));
 
         static string FlagToString(this GradeLevels grade)
         {

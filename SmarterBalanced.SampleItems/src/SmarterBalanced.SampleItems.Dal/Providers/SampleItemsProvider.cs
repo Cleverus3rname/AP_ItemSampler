@@ -10,6 +10,7 @@ using SmarterBalanced.SampleItems.Dal.Configurations.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Immutable;
 using SmarterBalanced.SampleItems.Dal.Xml.Models;
+using System;
 
 namespace SmarterBalanced.SampleItems.Dal.Providers
 {
@@ -53,22 +54,31 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
 
             var aboutItems = sampleItems
                 .Select(item => AboutThisItemViewModelTranslations.FromSampleItem(
-                    sampleItem: item, 
-                    itemCards: itemCards, 
+                    sampleItem: item,
+                    itemCards: itemCards,
                     allSampleItems: sampleItems))
                 .ToImmutableArray();
 
             var aboutInteractionTypes = LoadAboutInteractionTypes(interactionGroup);
+            var claims = GetClaims(subjects);
+            var targets = GetTargets(claims);
+
+            var subjectInteractionTypes = LoadSubjectInteractionTypes(interactionGroup, subjects);
+            var filterSearch = SearchFilterTranslation.ToSearchFilter(appSettings.SbContent.FilterCategories,
+                subjects: subjects, claims: claims, interactionTypes: subjectInteractionTypes);
 
             SampleItemsContext context = new SampleItemsContext(
                 sampleItems: sampleItems,
                 itemCards: itemCards,
-                interactionTypes: interactionGroup.InteractionTypes,
+                interactionTypes: subjectInteractionTypes,
                 subjects: subjects,
                 appSettings: appSettings,
                 aboutAllItems: aboutItems,
                 aboutInteractionTypes: aboutInteractionTypes,
-                mergedAccessibilityFamilies: accessibilityResourceFamilies);
+                mergedAccessibilityFamilies: accessibilityResourceFamilies,
+                targets: targets,
+                claims: claims,
+                filterSearch: filterSearch);
 
             logger.LogInformation($"Loaded {sampleItems.Length} sample items");
             logger.LogInformation($"Context loaded successfully");
@@ -76,12 +86,24 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             return context;
         }
 
+        private static ImmutableArray<Target> GetTargets(ImmutableArray<Claim> claims)
+        {
+            var targets = claims.SelectMany(i => i.Targets).ToImmutableArray();
+            return targets;
+        }
+
+        private static ImmutableArray<Claim> GetClaims(ImmutableArray<Subject> subjects)
+        {
+            var claims = subjects.SelectMany(i => i.Claims).ToImmutableArray();
+            return claims;
+        }
+
         public static async Task<ImmutableArray<ItemDigest>> LoadItemDigests(
             string contentDir)
         {
             var metaDataFiles = XmlSerialization.FindMetadataXmlFiles(contentDir);
             var contentFiles = XmlSerialization.FindContentXmlFiles(contentDir);
-            
+
             var itemMetadata = await XmlSerialization.DeserializeXmlFilesAsync<ItemMetadata>(metaDataFiles);
             var itemContents = await XmlSerialization.DeserializeXmlFilesAsync<ItemContents>(contentFiles);
 
@@ -171,6 +193,19 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
                 .ToImmutableArray();
 
             return aboutInteractionTypes;
+        }
+
+        //TODO: refactor and condense with loadaboutinteractiontypes
+        private static ImmutableArray<InteractionType> LoadSubjectInteractionTypes(InteractionGroup interactionGroup,
+            ImmutableArray<Subject> subjects)
+        {
+            var subjectCodes = subjects.SelectMany(s => s.InteractionTypeCodes);   
+            var interactionTypes = interactionGroup.InteractionTypes
+                .Where(i => subjectCodes.Contains(i.Code))
+                .OrderBy(i => i.Order)
+                .ToImmutableArray();
+
+            return interactionTypes;
         }
 
     }

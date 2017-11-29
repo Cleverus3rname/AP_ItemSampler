@@ -10,5 +10,7 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
     {
         public IList<InteractionType> InteractionTypes { get; set; }
         public IList<Subject> Subjects { get; set; }
+        public IList<Target> Targets { get; set; }
+        public IList<Claim> Claims { get; set; }
     }
 }

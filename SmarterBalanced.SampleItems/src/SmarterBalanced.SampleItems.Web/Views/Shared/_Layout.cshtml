@@ -15,12 +15,24 @@
     <environment exclude="Development">
         <link rel="stylesheet" href="~/dist/site.css" asp-append-version="true" />
     </environment>
-    </head>
+</head>
 
-    <body>
-        @RenderBody()
+<body>
+    @RenderBody()
 
-        <script src="~/dist/vendor.js" asp-append-version="true"></script>
-        @RenderSection("scripts", required: false)
-    </body>
+    <environment names="Development">
+        <script>  window.ga = function () { console.log(arguments) } </script>
+    </environment>
+    <environment names="Staging,Production">
+        <script>
+            window.ga = window.ga || function () { (ga.q = ga.q || []).push(arguments) }; ga.l = +new Date;
+            ga('create', 'UA-27429193-4', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <script async src='https://www.google-analytics.com/analytics.js'></script>
+    </environment>
+
+    <script src="~/dist/vendor.js" asp-append-version="true"></script>
+    @RenderSection("scripts", required: false)
+</body>
 </html>

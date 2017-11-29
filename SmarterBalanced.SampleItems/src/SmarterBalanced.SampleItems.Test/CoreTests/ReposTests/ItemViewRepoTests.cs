@@ -79,11 +79,11 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
             SampleItems = ImmutableArray.Create(MathDigest, ElaDigest, DuplicateDigest, DuplicateDigest, DuplicateDigest, PerformanceDigest, PerformanceDigest2, BrailleItem, BrailleItemDuplicate, BrailleItemReplace);
             var itemCards = ImmutableArray.Create(MathCard, ElaCard, DuplicateCard, DuplicateCard, DuplicateCard, PerformanceCard, PerformanceCard2);
 
-            Math = new Subject("Math", "", "", new ImmutableArray<Claim>() { }, new ImmutableArray<string>() { });
-            Ela = new Subject("ELA", "", "", new ImmutableArray<Claim>() { }, new ImmutableArray<string>() { });
-            NotASubject = new Subject("NotASubject", "", "", new ImmutableArray<Claim>() { }, new ImmutableArray<string>() { });
-            Claim1 = new Claim("1", "", "", ImmutableArray.Create<Target>());
-            Claim2 = new Claim("2", "", "", ImmutableArray.Create<Target>());
+            Math = Subject.Create("Math");
+            Ela = Subject.Create("ELA");
+            NotASubject = Subject.Create("NotASubject");
+            Claim1 = Claim.Create("1");
+            Claim2 = Claim.Create("2");
 
             //generated item cards for more like this tests
             itemCards = itemCards.AddRange(MoreItemCards());

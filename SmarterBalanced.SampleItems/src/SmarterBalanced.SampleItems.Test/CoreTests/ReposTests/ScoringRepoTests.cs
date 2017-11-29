@@ -54,7 +54,7 @@ namespace SmarterBalanced.SampleItems.Test.CoreTests.ReposTests
             var interaction = InteractionType.Create();
             var interactionTypes = ImmutableArray.Create(interaction);
             var gradeLevels = ImmutableArray.Create(GradeLevels.All);
-            Math = new Subject("Math", "", "", new ImmutableArray<Claim>() { }, new ImmutableArray<string>() { });
+            Math = Subject.Create(code: "Math");
             var subjects = ImmutableArray.Create(Math);
 
             Context = SampleItemsContext.Create(sampleItems: SampleItems, itemCards: ItemCards, appSettings: settings, interactionTypes: interactionTypes, subjects: subjects);

@@ -2,66 +2,59 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { RouteComponentProps } from 'react-router';
-import { mockAdvancedFilterCategories } from './filterModels';
-import { FilterISPComponent } from './filterISPComponent';
-import { updateUrl, readUrl } from '../UrlHelper';
-import { filterItems }  from './ItemSearchFilter'
 
 import {
     Resource,
-    get,
     ItemCard,
     ItemCardModel,
-    GradeLevels,
     SearchAPIParamsModel,
     ItemsSearchModel,
     itemPageLink,
-    FilterOptionModel,
     AdvancedFilterContainer,
-    AdvancedFilterCategoryModel
+    AdvancedFilterCategoryModel,
+    Filter,
+    ItemSearch,
+    ItemsSearchFilterModel,
+    getResourceContent,    SearchUrl
 } from '@osu-cass/sb-components';
-
-
-
-export const ItemsSearchClient = (params: SearchAPIParamsModel) =>
-    get<ItemCardModel[]>("/BrowseItems/search", params);
-
-export const ItemsViewModelClient = () => 
-    get<ItemsSearchModel>("/BrowseItems/ItemsSearchViewModel");
-
+import { getFilterCategories, getItemSearchModel } from './SiwSearch';
 
 
 export interface Props extends RouteComponentProps<{}> {
     itemsSearchClient: (params: SearchAPIParamsModel) => Promise<ItemCardModel[]>;
-    itemsViewModelClient: () => Promise<ItemsSearchModel>;
+    itemsViewModelClient: () => Promise<ItemsSearchFilterModel>;
 }
 
 export interface State {
     searchResults: Resource<ItemCardModel[]>;
     itemSearch: Resource<ItemsSearchModel>;
-    currentFilter: AdvancedFilterCategoryModel[];
+    currentFilter?: AdvancedFilterCategoryModel[];
+    searchAPIParams: SearchAPIParamsModel;
+
 }
 
 export class ItemsSearchComponent extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
+
+        const searchAPIParams = this.getLocationSearch();
         this.state = {
             searchResults: { kind: "loading" },
             itemSearch: { kind: "loading" },
-            currentFilter: mockAdvancedFilterCategories
+            searchAPIParams: searchAPIParams
         };
+    }
 
+    componentDidMount() {
         this.props.itemsViewModelClient()
-            .then(data => this.onFetchedItemSearch(data))
+            .then(data => this.onFetchFilterModel(data))
             .catch(err => this.onError(err));
 
-        
-        const params = this.translateAdvancedFilterCate(this.state.currentFilter);
-        this.props.itemsSearchClient(params)
+        this.props.itemsSearchClient({})
             .then((data) => this.onSearch(data))
             .catch((err) => this.onError(err));
-        
     }
+
     onSearch(results: ItemCardModel[]) {
         this.setState({ searchResults: { kind: "success", content: results } });
     }
@@ -70,27 +63,16 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         this.setState({ searchResults: { kind: "failure" } });
     }
 
-    onFetchedItemSearch(itemsSearch: ItemsSearchModel) {
-        const newFilters = [...this.state.currentFilter];
-
-        const newGrade = this.state.currentFilter.find(f => f.label.toLocaleLowerCase() === "grades")
-        const newSubject = this.state.currentFilter.find(f => f.label.toLocaleLowerCase() === "subjects");
-        if (newGrade && newSubject) {
-            // TODO: get buisness logic for displable filter options. 
-            //if math is selected change displayed claims/targets/etc...
-
-            //else if english is selected change displayed  claims/targets/etc...
-        }
-
+   
+    onFetchFilterModel(itemSearchFilter: ItemsSearchFilterModel) {
+        //TODO: Filter grades
+        const filters = getFilterCategories(itemSearchFilter);
+        const searchModel = getItemSearchModel(itemSearchFilter);
         this.setState({
-            itemSearch: { kind: "success", content: itemsSearch },
-            currentFilter: newFilters
+            itemSearch: { kind: "success", content: searchModel },
+            currentFilter: filters
         }, );
 
-    }
-
-    updateCurrentFilterOnLoad(itemsSearch: ItemsSearchModel) {
-        this.setState({})
     }
 
     selectSingleResult() {
@@ -105,90 +87,92 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         return this.state.searchResults.kind === "loading" || this.state.searchResults.kind === "reloading";
     }
 
-    renderResultElement(): JSX.Element | JSX.Element[] | undefined {
-        const searchResults = this.state.searchResults;
+    getFilteredItemCards(cards: ItemCardModel[]): ItemCardModel[] {
+        try {
+            cards = ItemSearch.filterItemCards(cards, this.state.searchAPIParams);
+        } catch (exception) {
+            console.error("unable to filter item cards", exception);
+        }
 
+        return cards;
+    }
+
+
+    renderItemCards(): JSX.Element[] | JSX.Element | undefined {
+        const cardState = this.state.searchResults;
+        const cards = getResourceContent(cardState);
         let resultsElement: JSX.Element[] | JSX.Element | undefined;
-        if ((searchResults.kind === "success" || searchResults.kind === "reloading") && searchResults.content) {
 
-            resultsElement = filterItems(this.state.currentFilter, searchResults.content).map(digest =>
-                <ItemCard {...digest} key={digest.bankKey.toString() + "-" + digest.itemKey.toString()} />);
+        if (cards) {
+            const filteredCards = this.getFilteredItemCards(cards);
 
-            if (resultsElement.length === 0) {
+            if (filteredCards.length === 0) {
                 resultsElement = <span className="placeholder-text" role="alert">No results found for the given search terms.</span>
             }
 
-        } else if (searchResults.kind === "failure") {
+            resultsElement = filteredCards.map(digest =>
+                <ItemCard {...digest} key={digest.bankKey.toString() + "-" + digest.itemKey.toString()} />);
+
+        } else if (cardState.kind === "failure") {
             resultsElement = <div className="placeholder-text" role="alert">An error occurred. Please try again later.</div>;
-        } else {
-            resultsElement = undefined;
         }
+
         return resultsElement;
+
+    }
+    renderResultElement(): JSX.Element {
+        return <div className="search-results" >
+            {this.renderItemCards()}
+        </div>
+
     }
 
-    // TODO: Optimize this 
-    translateAdvancedFilterCate(categorys: AdvancedFilterCategoryModel[]): SearchAPIParamsModel {
-        let model: SearchAPIParamsModel = {
-            itemId: "",
-            gradeLevels: GradeLevels.All,
-            subjects: [],
-            claims: [],
-            interactionTypes: [],
-            performanceOnly: false,
-            targets:[]
+    updateLocationSearch(searchAPI: SearchAPIParamsModel) {
+        const search = SearchUrl.encodeQuery(searchAPI);
+        const location = {
+            ...this.props.history.location, search: search
         };
-
-        const gradeCategory = categorys.find(c => c.label.toLowerCase() === 'grades');
-        if (gradeCategory && !gradeCategory.disabled) {
-            model.gradeLevels = GradeLevels.All;
-            const selectedGrade = gradeCategory.filterOptions.find(fo => fo.isSelected);
-            if (selectedGrade) {
-                model.gradeLevels = Number(selectedGrade.key);
-            }
-        }
-
-        const subjectsCategory = categorys.find(c => c.label.toLowerCase() === 'subjects');
-        if (subjectsCategory && !subjectsCategory.disabled) {
-            subjectsCategory.filterOptions.forEach(fo => {
-                if (fo.isSelected) {
-                    model.subjects.push(fo.key);
-                }
-            });
-        }
-
-        return model;
+        this.props.history.replace(location);
     }
 
-    beginSearchFilter = (categories: AdvancedFilterCategoryModel[]) => {
+    getLocationSearch(): SearchAPIParamsModel {
+        let searchAPI: SearchAPIParamsModel = {};
+        try {
+            searchAPI = SearchUrl.decodeSearch(this.props.location.search);
+        } catch { }
+
+        return searchAPI;
+    }
+
+    onFilterUpdate = (categories: AdvancedFilterCategoryModel[]) => {
+        const searchModel = getResourceContent(this.state.itemSearch);
+        let searchAPI = { ...this.state.searchAPIParams };
+
+        searchAPI = ItemSearch.filterToSearchApiModel(categories);
+        this.updateLocationSearch(searchAPI);
+
+        if (searchModel) {
+            categories = Filter.getUpdatedSearchFilters(searchModel, categories, searchAPI)
+        }
+
         this.setState({
-            currentFilter: categories
+            currentFilter: categories,
+            searchAPIParams: searchAPI
         });
-        const searchResults = this.state.itemSearch;
-        if (searchResults.kind !== "success") {
-
-            const params = this.translateAdvancedFilterCate(categories);
-            this.props.itemsSearchClient(params)
-                .then((data) => this.onSearch(data))
-                .catch((err) => this.onError(err));
-        }
     }
-
 
     renderfilters() {
         const isLoading = this.isLoading();
-        const searchVm = this.state.itemSearch;
 
-        const param = this.translateAdvancedFilterCate(this.state.currentFilter);
-
-        if (searchVm.kind == "success" || searchVm.kind == "reloading") {
-            if (searchVm.content) {
-                return (
-                    <FilterISPComponent defaultFilter={this.state.currentFilter} searchFilters={this.beginSearchFilter} />
-                );
-            }
-            else {
-                return <p><em>Loading...</em></p>
-            }
+        if (this.state.currentFilter) {
+            return (
+                <div style={{ borderRadius: "5px", "backgroundColor": "white" }}>
+                    <h1 style={{ padding: "10px" }}>Browse Items</h1>
+                    <div>
+                        <AdvancedFilterContainer filterOptions={...this.state.currentFilter} onClick={this.onFilterUpdate} />
+                    </div>
+                </div>
+            );
         }
         else {
             return <p><em>Loading...</em></p>
@@ -197,11 +181,9 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
     render() {
         return (
-            <div className="search-container" style={{ "marginTop":"50px"}}>
+            <div className="search-container" style={{ "marginTop": "50px" }}>
                 {this.renderfilters()}
-                <div className="search-results" >
-                    {this.renderResultElement()}
-                </div>
+                {this.renderResultElement()}
             </div>
         );
     }
