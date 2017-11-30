@@ -34,10 +34,11 @@ export interface State {
 }
 
 export class ItemsSearchComponent extends React.Component<Props, State> {
+
     constructor(props: Props) {
         super(props);
 
-        const searchAPIParams = this.getLocationSearch();
+        const searchAPIParams = this.getLocationSearch(this.props.location.search);
         this.state = {
             searchResults: { kind: "loading" },
             itemSearch: { kind: "loading" },
@@ -55,6 +56,21 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             .catch((err) => this.onError(err));
     }
 
+    componentWillReceiveProps(nextProps: Props) {
+        if (nextProps.history.action === "PUSH") {
+            const searchAPIParams = this.getLocationSearch(nextProps.location.search);
+            const itemSearch = getResourceContent(this.state.itemSearch);
+            this.setState({
+                searchAPIParams: searchAPIParams,
+                itemSearch: { kind: "reloading", content: itemSearch }
+            })
+            this.props.itemsViewModelClient()
+                .then(data => this.onFetchFilterModel(data))
+                .catch(err => this.onError(err));
+        }
+    }
+
+
     onSearch(results: ItemCardModel[]) {
         this.setState({ searchResults: { kind: "success", content: results } });
     }
@@ -66,8 +82,9 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
    
     onFetchFilterModel(itemSearchFilter: ItemsSearchFilterModel) {
         //TODO: Filter grades
-        const filters = getFilterCategories(itemSearchFilter);
+        let filters = getFilterCategories(itemSearchFilter, this.state.searchAPIParams);
         const searchModel = getItemSearchModel(itemSearchFilter);
+        filters = Filter.getUpdatedSearchFilters(searchModel, filters, this.state.searchAPIParams);
         this.setState({
             itemSearch: { kind: "success", content: searchModel },
             currentFilter: filters
@@ -135,10 +152,10 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         this.props.history.replace(location);
     }
 
-    getLocationSearch(): SearchAPIParamsModel {
+    getLocationSearch(search: string): SearchAPIParamsModel {
         let searchAPI: SearchAPIParamsModel = {};
         try {
-            searchAPI = SearchUrl.decodeSearch(this.props.location.search);
+            searchAPI = SearchUrl.decodeSearch(search);
         } catch { }
 
         return searchAPI;

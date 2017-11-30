@@ -15,13 +15,17 @@ export const ItemsViewModelClient = () =>
     get<ItemsSearchFilterModel>("/BrowseItems/FilterSearchModel");
 
 
-export function getFilterCategories(itemSearchFilter: ItemsSearchFilterModel): AdvancedFilterCategoryModel[] {
-    const claims = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.claims), isMultiSelect: true, disabled: false, displayAllButton: true };
-    const subjects = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects), isMultiSelect: true, disabled: false, displayAllButton: true };
-    const interactions = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.interactionTypes), isMultiSelect: true, disabled: false, displayAllButton: true };
+export function getFilterCategories(itemSearchFilter: ItemsSearchFilterModel, searchAPI: SearchAPIParamsModel): AdvancedFilterCategoryModel[] {
+    const claims = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.claims, searchAPI), isMultiSelect: true, disabled: false, displayAllButton: true };
+    const subjects = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects, searchAPI), isMultiSelect: true, disabled: false, displayAllButton: true };
+    const interactions = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.interactionTypes, searchAPI), isMultiSelect: true, disabled: false, displayAllButton: true };
+    const grades = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.grades, searchAPI), isMultiSelect: true, disabled: false, displayAllButton: true };
+    const techTypes = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.technologyTypes, searchAPI), isMultiSelect: false, disabled: false, displayAllButton: true };
+
+
     //TODO: add rest
     let advancedFilters: AdvancedFilterCategoryModel[] = [
-        subjects, claims, interactions
+        grades, subjects, claims, interactions, techTypes
     ];
 
     return advancedFilters;
