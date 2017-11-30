@@ -25,7 +25,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             var gradesFilter = ToFilterCategory(GradeLevelsUtils.allGrades, settings
                 .FirstOrDefault(s => s.Code.ToLower() == "grade"));
             var technologyType = TechnologyTypeToFilterCategory(
-                settings.FirstOrDefault(s => s.Code.ToLower() == "performancecat"));
+                settings.FirstOrDefault(s => s.Code.ToLower() == "technologytype"));
 
             var filterSearch = new FilterSearch
             {
