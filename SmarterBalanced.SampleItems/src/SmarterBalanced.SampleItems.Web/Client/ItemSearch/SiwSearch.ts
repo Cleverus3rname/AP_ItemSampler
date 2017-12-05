@@ -5,7 +5,9 @@
     ItemsSearchFilterModel,
     ItemsSearchModel,
     ItemCardModel,
-    get
+    get,
+
+    GradeLevels
 } from "@osu-cass/sb-components";
 
 export const ItemsSearchClient = (params: SearchAPIParamsModel) =>
@@ -16,6 +18,8 @@ export const ItemsViewModelClient = () =>
 
 
 export function getFilterCategories(itemSearchFilter: ItemsSearchFilterModel, searchAPI: SearchAPIParamsModel): AdvancedFilterCategoryModel[] {
+    const gradeOptions = [GradeLevels.Elementary, GradeLevels.Middle, GradeLevels.High];
+    itemSearchFilter.grades.filterOptions = gradeOptions;
     const claims = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.claims, searchAPI), isMultiSelect: true, disabled: false, displayAllButton: true };
     const subjects = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects, searchAPI), isMultiSelect: true, disabled: false, displayAllButton: true };
     const interactions = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.interactionTypes, searchAPI), isMultiSelect: true, disabled: false, displayAllButton: true };

@@ -1,30 +1,13 @@
 ﻿@import "constants.less";
 
-body {
+.home-container {
     background-image: url('/images/backgroundimg.jpg');
     background-repeat: no-repeat;
     background-size: cover;
+    flex-grow: 1;
 }
 
-@media screen and (max-width: @small) {
-    body {
-        //background-size: inherit;
-    }
-}
-
-.container {
-    align-self: flex-start;
-    margin: 20px;
-}
-
-@media screen and (max-width: @phone-portrait) {
-    .container {
-        align-self: center;
-        padding: 0;
-    }
-}
-
-.home-container {
+.home-welcome {
     height: auto; // SB
     max-width: 500px;
     font-size: @font-size-base; // SB
@@ -33,12 +16,11 @@ body {
     background-color: rgba(256,256,256,.9); // SB
     box-shadow: @sb-shadow; // SB
     color: black;
-    margin-bottom: 25px;
+    margin: 25px;
 }
 
 @media screen and (max-width: @phone-portrait) {
-    .home-container {
-        height: 100%;
+    .home-welcome {
         padding: 14px;
         box-shadow: none;
     }

@@ -9,7 +9,6 @@ import {
     ItemCardModel,
     SearchAPIParamsModel,
     ItemsSearchModel,
-    itemPageLink,
     AdvancedFilterContainer,
     AdvancedFilterCategoryModel,
     Filter,
@@ -79,7 +78,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         this.setState({ searchResults: { kind: "failure" } });
     }
 
-   
+
     onFetchFilterModel(itemSearchFilter: ItemsSearchFilterModel) {
         //TODO: Filter grades
         let filters = getFilterCategories(itemSearchFilter, this.state.searchAPIParams);
@@ -96,7 +95,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         const searchResults = this.state.searchResults;
         if (searchResults.kind === "success" && searchResults.content && searchResults.content.length === 1) {
             const searchResult = searchResults.content[0];
-            itemPageLink(searchResult.bankKey, searchResult.itemKey);
+            //itemPageLink(searchResult.bankKey, searchResult.itemKey);
         }
     }
 
@@ -164,6 +163,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     onFilterUpdate = (categories: AdvancedFilterCategoryModel[]) => {
         const searchModel = getResourceContent(this.state.itemSearch);
         let searchAPI = { ...this.state.searchAPIParams };
+        const grad = Filter.getSelectedGrade(categories);
 
         searchAPI = ItemSearch.filterToSearchApiModel(categories);
         this.updateLocationSearch(searchAPI);
@@ -183,11 +183,8 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
         if (this.state.currentFilter) {
             return (
-                <div style={{ borderRadius: "5px", "backgroundColor": "white" }}>
-                    <h1 style={{ padding: "10px" }}>Browse Items</h1>
-                    <div>
-                        <AdvancedFilterContainer filterOptions={...this.state.currentFilter} onClick={this.onFilterUpdate} />
-                    </div>
+                <div>
+                    <AdvancedFilterContainer filterOptions={...this.state.currentFilter} onClick={this.onFilterUpdate} pageTitle="Browse Items" />
                 </div>
             );
         }
@@ -198,7 +195,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
     render() {
         return (
-            <div className="search-container" style={{ "marginTop": "50px" }}>
+            <div className="container search-container">
                 {this.renderfilters()}
                 {this.renderResultElement()}
             </div>
