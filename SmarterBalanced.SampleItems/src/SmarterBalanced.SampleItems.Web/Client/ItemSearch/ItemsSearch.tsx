@@ -127,7 +127,9 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             }
 
             resultsElement = filteredCards.map(digest =>
-                <ItemCard {...digest} key={digest.bankKey.toString() + "-" + digest.itemKey.toString()} />);
+                <ItemCard
+                    {...digest}
+                    key={digest.bankKey.toString() + "-" + digest.itemKey.toString()} />);
 
         } else if (cardState.kind === "failure") {
             resultsElement = <div className="placeholder-text" role="alert">An error occurred. Please try again later.</div>;
@@ -160,7 +162,10 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         return searchAPI;
     }
 
-    onFilterUpdate = (categories: AdvancedFilterCategoryModel[]) => {
+    onFilterUpdate = (categories: AdvancedFilterCategoryModel[] | undefined) => {
+        if (!categories) {
+            return;
+        }
         const searchModel = getResourceContent(this.state.itemSearch);
         let searchAPI = { ...this.state.searchAPIParams };
         const grad = Filter.getSelectedGrade(categories);
@@ -184,7 +189,11 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         if (this.state.currentFilter) {
             return (
                 <div>
-                    <AdvancedFilterContainer filterOptions={...this.state.currentFilter} onClick={this.onFilterUpdate} pageTitle="Browse Items" />
+                    <AdvancedFilterContainer
+                        filterCategories={...this.state.currentFilter}
+                        onUpdateFilter={this.onFilterUpdate}
+                        pageTitle="Browse Items"
+                    />
                 </div>
             );
         }

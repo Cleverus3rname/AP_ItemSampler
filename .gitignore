@@ -276,5 +276,6 @@ _references.js
 **/Client/**/*.map
 
 /**/wwwroot/dist/
+/**/wwwroot/Assets/
 #sphinx
 /docs/_build

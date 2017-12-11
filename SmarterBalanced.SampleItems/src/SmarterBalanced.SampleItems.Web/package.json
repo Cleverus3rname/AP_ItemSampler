@@ -18,6 +18,7 @@
     "aspnet-webpack": "2.0.1",
     "aspnet-webpack-react": "3.0.0",
     "awesome-typescript-loader": "3.2.1",
+    "copy-webpack-plugin": "^4.2.3",
     "css-loader": "0.28.7",
     "enzyme": "3.1.1",
     "extract-text-webpack-plugin": "3.0.2",
@@ -40,7 +41,7 @@
     "webpack-hot-middleware": "2.20.0"
   },
   "dependencies": {
-    "@osu-cass/sb-components": "0.0.60",
+    "@osu-cass/sb-components": "0.0.63",
     "bootstrap": "3.3.7",
     "es6-promise": "4.1.1",
     "event-source-polyfill": "0.0.11",
@@ -48,6 +49,10 @@
     "jquery": "3.2.1",
     "react": "16.1.0",
     "react-dom": "16.1.0",
-    "react-router-dom": "4.2.2"
+    "react-router-dom": "4.2.2",
+    "typeface-pt-sans-caption": "0.0.44",
+    "typeface-pt-serif": "0.0.44",
+    "typeface-pt-serif-caption": "0.0.44",
+    "react-modal": "3.1.2"
   }
 }
