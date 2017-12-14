@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "module": "es2015",
+    "module": "commonjs",
     "moduleResolution": "node",
     "target": "es5",
     "jsx": "react",
     "sourceMap": true,
     "skipDefaultLibCheck": true,
     "strict": true,
+    "allowSyntheticDefaultImports": false,    
     "types": [ "webpack-env" ],
     "lib": [ "es6", "dom" ]
   },
@@ -17,5 +18,10 @@
   ],
   "typeRoots": [
     "./node_modules/@types"
+  ], 
+  "plugins": [
+    {
+      "name": "tslint-language-service"
+    }
   ]
 }
