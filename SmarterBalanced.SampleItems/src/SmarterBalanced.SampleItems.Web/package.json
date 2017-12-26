@@ -1,15 +1,15 @@
 {
-  "version": "2.1.0",
-  "name": "sampleitemsapp",
-  "private": true,
+  "version": "2.0.0",
+  "name": "ap-item-sampler",
+  "license": "MPL-2.0",
   "scripts": {
     "install": "npm run webpack-vendor && npm run webpack",
     "build": "npm run webpack-vendor && npm run webpack",
     "build:prod": "npm run webpack-vendor:prod && npm run webpack:prod",
-    "webpack:prod": "./node_modules/.bin/webpack --config webpack.config.js --env.prod",
-    "webpack": "./node_modules/.bin/webpack --config webpack.config.js --env.dev",
-    "webpack-vendor:prod": "./node_modules/.bin/webpack --config webpack.config.venodr.js --env.prod",
-    "webpack-vendor": "./node_modules/.bin/webpack --config webpack.config.vendor.js --env.dev",
+    "webpack": "cross-env NODE_ENV=development webpack --config webpack.config.js --env.dev",
+    "webpack:prod": "cross-env NODE_ENV=production webpack --config webpack.config.js --env.prod ",
+    "webpack-vendor": "cross-env NODE_ENV=development webpack --config webpack.config.vendor.js --env.dev",
+    "webpack-vendor:prod": "cross-env NODE_ENV=production webpack --config webpack.config.vendor.js --env.prod",
     "clean": "rm -rf ./wwwroot/dist ./wwwroot/Assets ?"
   },
   "devDependencies": {
@@ -51,7 +51,8 @@
     "typescript": "2.6.1",
     "url-loader": "0.6.2",
     "webpack": "3.8.1",
-    "webpack-hot-middleware": "2.20.0"
+    "webpack-hot-middleware": "2.20.0",
+    "cross-env": "^5.1.1"
   },
   "dependencies": {
     "@osu-cass/sb-components": "0.0.64",
