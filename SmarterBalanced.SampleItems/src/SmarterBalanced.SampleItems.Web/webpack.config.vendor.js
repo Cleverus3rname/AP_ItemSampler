@@ -36,10 +36,10 @@ module.exports = (env) => {
         entry: {
             vendor: [
                 'bootstrap',
-                'bootstrap/dist/css/bootstrap.css',
-                '@osu-cass/sb-components',
-                '@osu-cass/sb-components/lib/sb-components.css',
-                'font-awesome/css/font-awesome.css',
+                "bootstrap/less/bootstrap.less",
+                "font-awesome/less/font-awesome.less",
+                "@osu-cass/sb-components",
+                "@osu-cass/sb-components/lib/Assets/Styles/sb-components.less",
                 'event-source-polyfill',
                 'isomorphic-fetch',
                 'react',
@@ -66,7 +66,7 @@ module.exports = (env) => {
             }),
             new CopyWebpackPlugin([
                 {
-                    from: path.join(__dirname, 'node_modules', '@osu-cass/sb-components/lib/Assets/Images'),
+                    from: path.join(__dirname, 'node_modules', '@sbac/sbac-ui-kit/src/images'),
                     to: path.join(__dirname, 'wwwroot', 'Assets/Images')
                 }
             ])
