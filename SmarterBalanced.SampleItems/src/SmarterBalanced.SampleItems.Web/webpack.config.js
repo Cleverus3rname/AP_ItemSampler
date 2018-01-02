@@ -15,12 +15,19 @@ module.exports = (env) => {
             filename: '[name].js',
             publicPath: 'dist/'
         },
+        resolve: {
+            extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
+            modules: [
+                path.join(__dirname, 'node_modules'),
+                path.join(__dirname, './client')
+            ]
+        },
         module: {
             rules: [
                 {
                     test: /\.tsx?$/,
                     include: /Client/,
-                    use: 'awesome-typescript-loader?silent=true'
+                    use: 'ts-loader'
                 },
                 {
                     test: /\.css$/,

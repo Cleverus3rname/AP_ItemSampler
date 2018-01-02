@@ -5,16 +5,16 @@
     ItemsSearchFilterModel,
     ItemsSearchModel,
     ItemCardModel,
-    get,
+    getRequest,
 
     GradeLevels
 } from "@osu-cass/sb-components";
 
 export const ItemsSearchClient = (params: SearchAPIParamsModel) =>
-    get<ItemCardModel[]>("/BrowseItems/search", params);
+    getRequest<ItemCardModel[]>("/BrowseItems/search", params);
 
 export const ItemsViewModelClient = () =>
-    get<ItemsSearchFilterModel>("/BrowseItems/FilterSearchModel");
+    getRequest<ItemsSearchFilterModel>("/BrowseItems/FilterSearchModel");
 
 
 export function getFilterCategories(itemSearchFilter: ItemsSearchFilterModel, searchAPI: SearchAPIParamsModel): AdvancedFilterCategoryModel[] {
