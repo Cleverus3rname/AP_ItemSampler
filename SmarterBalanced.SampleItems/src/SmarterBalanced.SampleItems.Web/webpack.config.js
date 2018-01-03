@@ -1,7 +1,6 @@
 ﻿const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
 const bundleOutputDir = './wwwroot/dist';
 
 module.exports = (env) => {
@@ -44,12 +43,15 @@ module.exports = (env) => {
                 {
                     test: /\.(png|svg|jpg|gif)$/,
                     use: 'file-loader'
+                },
+                {
+                    test: /\.(woff|woff2|eot|ttf)(\?|$)/,
+                    use: 'url-loader?limit=100000'
                 }
 
             ]
         },
         plugins: [
-            new CheckerPlugin(),
             new webpack.DllReferencePlugin({
                 context: __dirname,
                 manifest: require('./wwwroot/dist/vendor-manifest.json')

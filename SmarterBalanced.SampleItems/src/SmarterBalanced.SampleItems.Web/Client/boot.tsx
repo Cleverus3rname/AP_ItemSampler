@@ -1,4 +1,7 @@
 import './Styles/bundle.less';
+import 'typeface-pt-sans-caption/index.css';
+import 'typeface-pt-serif/index.css';
+import 'typeface-pt-serif-caption/index.css';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
