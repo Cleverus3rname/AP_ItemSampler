@@ -36,16 +36,20 @@ module.exports = (env) => {
         entry: {
             vendor: [
                 'bootstrap',
-                "bootstrap/less/bootstrap.less",
-                "font-awesome/less/font-awesome.less",
-                "@osu-cass/sb-components",
-                "@osu-cass/sb-components/lib/Assets/Styles/sb-components.less",
+                'bootstrap/less/bootstrap.less',
+                'font-awesome/less/font-awesome.less',
+                // '@sbac/sbac-ui-kit/src/less/sbac-ui-kit.less', //won't work, depends on bootstrap
+                '@osu-cass/sb-components/lib/Assets/Styles/sb-components.less',
+                '@osu-cass/sb-components',
                 'event-source-polyfill',
                 'isomorphic-fetch',
                 'react',
                 'react-dom',
                 'react-router-dom',
-                'jquery'
+                'jquery',
+                'typeface-pt-sans-caption/index.css',
+                'typeface-pt-serif/index.css',
+                'typeface-pt-serif-caption/index.css'
             ],
         },
         output: {
