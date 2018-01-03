@@ -6,10 +6,10 @@
     "install": "npm run webpack-vendor && npm run webpack",
     "build": "npm run webpack-vendor && npm run webpack",
     "build:prod": "npm run webpack-vendor:prod && npm run webpack:prod",
-    "webpack": "cross-env NODE_ENV=development webpack --config webpack.config.js --env.dev",
-    "webpack:prod": "cross-env NODE_ENV=production webpack --config webpack.config.js --env.prod ",
-    "webpack-vendor": "cross-env NODE_ENV=development webpack --config webpack.config.vendor.js --env.dev",
-    "webpack-vendor:prod": "cross-env NODE_ENV=production webpack --config webpack.config.vendor.js --env.prod",
+    "webpack": "./node_modules/.bin/cross-env NODE_ENV=development webpack --config webpack.config.js --env.dev",
+    "webpack:prod": "./node_modules/.bin/cross-env NODE_ENV=production webpack --config webpack.config.js --env.prod ",
+    "webpack-vendor": "./node_modules/.bin/cross-env NODE_ENV=development webpack --config webpack.config.vendor.js --env.dev",
+    "webpack-vendor:prod": "./node_modules/.bin/cross-env NODE_ENV=production webpack --config webpack.config.vendor.js --env.prod",
     "clean": "rm -rf ./wwwroot/dist ./wwwroot/Assets ?"
   },
   "devDependencies": {
@@ -56,7 +56,6 @@
     "webpack-hot-middleware": "2.20.0"
   },
   "dependencies": {
-    "@osu-cass/sb-components": "^1.0.1",
     "@sbac/sbac-ui-kit": "github:smarterapp/sbac-global-ui-kit",
     "bootstrap": "3.3.7",
     "es6-promise": "4.1.1",

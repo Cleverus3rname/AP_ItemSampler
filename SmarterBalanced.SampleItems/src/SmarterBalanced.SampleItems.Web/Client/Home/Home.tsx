@@ -33,7 +33,6 @@ export class Home extends React.Component<RouteComponentProps<{}>, {}> {
 
                 </div >
             </div >
-        </div>
-
+        </div>;
     }
 }
