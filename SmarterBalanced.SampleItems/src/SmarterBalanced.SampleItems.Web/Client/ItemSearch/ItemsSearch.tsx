@@ -132,6 +132,11 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
     }
 
+    rowSelect = (item: ItemModel, reset: boolean) => {
+        window.location.href = `item/${item.bankKey}-${item.itemKey}`;
+    }
+    itemSelect = (item: ItemCardModel) => {};
+
     renderResultElement (): JSX.Element {
         const cardState = this.state.searchResults;
         const cards = getResourceContent( cardState );
@@ -142,8 +147,8 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
         return <div className="search-results" >
             <SearchResultContainer
-                onRowSelection={(item: ItemModel, reset: boolean) => {}}
-                onItemSelection={(item: ItemCardModel) => {}}
+                onRowSelection={this.rowSelect}
+                onItemSelection={this.itemSelect}
                 itemCards={filteredItemCards}
                 defaultRenderType={SearchResultType.ItemCard}
             />
