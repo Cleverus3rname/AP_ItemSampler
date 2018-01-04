@@ -195,7 +195,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     }
 
     renderFilters () {
-        let content = <p><em>Loading...</em></p>;
+        let content = <div className="loader"/>;
         if ( this.state.currentFilter ) {
             content = (
                 <div>
