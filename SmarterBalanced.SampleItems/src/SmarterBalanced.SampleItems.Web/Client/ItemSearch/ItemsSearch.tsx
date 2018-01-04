@@ -17,7 +17,8 @@ import {
     SearchUrl,
     FilterLink,
     SearchResultContainer,
-    SearchResultType
+    SearchResultType,
+    ItemModel
 } from '@osu-cass/sb-components';
 import { getFilterCategories, getItemSearchModel } from './SiwSearch';
 
@@ -141,8 +142,8 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
         return <div className="search-results" >
             <SearchResultContainer
-                onRowSelection={() => {}}
-                onItemSelection={() => {}}
+                onRowSelection={(item: ItemModel, reset: boolean) => {}}
+                onItemSelection={(item: ItemCardModel) => {}}
                 itemCards={filteredItemCards}
                 defaultRenderType={SearchResultType.ItemCard}
             />
