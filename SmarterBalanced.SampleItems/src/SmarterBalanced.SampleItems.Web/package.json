@@ -55,7 +55,7 @@
     "webpack-hot-middleware": "2.20.0"
   },
   "dependencies": {
-    "@osu-cass/sb-components": "^1.0.1",
+    "@osu-cass/sb-components": "^1.1.0-alpha",
     "@sbac/sbac-ui-kit": "github:osu-cass/sbac-global-ui-kit#develop",
     "bootstrap": "3.3.7",
     "es6-promise": "4.1.1",
