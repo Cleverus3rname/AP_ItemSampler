@@ -1,7 +1,6 @@
 ﻿const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
 const bundleOutputDir = './wwwroot/dist';
 
 module.exports = (env) => {
@@ -15,16 +14,44 @@ module.exports = (env) => {
             filename: '[name].js',
             publicPath: 'dist/'
         },
+        resolve: {
+            extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
+            modules: [
+                path.join(__dirname, 'node_modules'),
+                path.join(__dirname, './client')
+            ]
+        },
         module: {
             rules: [
-                { test: /\.tsx?$/, include: /Client/, use: 'awesome-typescript-loader?silent=true' },
-                { test: /\.css$/, use: isDevBuild ? ['style-loader', 'css-loader'] : ExtractTextPlugin.extract({ use: 'css-loader?minimize' }) },
-                { test: /\.less$/, use: isDevBuild ? ['style-loader', 'css-loader', 'less-loader'] : ExtractTextPlugin.extract({ use: ['css-loader?minimize', 'less-loader'] }) },
-                { test: /\.(png|jpg|jpeg|gif|svg)$/, use: 'url-loader?limit=25000' }
+                {
+                    test: /\.tsx?$/,
+                    include: /Client/,
+                    use: 'ts-loader'
+                },
+                {
+                    test: /\.css$/,
+                    use: isDevBuild ?
+                        ['style-loader', 'css-loader'] :
+                        ExtractTextPlugin.extract({ use: 'css-loader?minimize' })
+                },
+                {
+                    test: /\.less$/,
+                    use: isDevBuild ?
+                        ['style-loader', 'css-loader', 'less-loader'] :
+                        ExtractTextPlugin.extract({ use: ['css-loader?minimize', 'less-loader'] })
+                },
+                {
+                    test: /\.(png|svg|jpg|gif)$/,
+                    use: 'file-loader'
+                },
+                {
+                    test: /\.(woff|woff2|eot|ttf)(\?|$)/,
+                    use: 'url-loader?limit=100000'
+                }
+
             ]
         },
         plugins: [
-            new CheckerPlugin(),
             new webpack.DllReferencePlugin({
                 context: __dirname,
                 manifest: require('./wwwroot/dist/vendor-manifest.json')

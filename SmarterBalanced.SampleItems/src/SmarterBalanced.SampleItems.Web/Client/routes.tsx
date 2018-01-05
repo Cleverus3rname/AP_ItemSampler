@@ -6,7 +6,7 @@ import {
 } from '@osu-cass/sb-components';
 
 import { Home } from './Home/Home';
-import { ItemsSearchComponent } from './ItemSearch/ItemsSearch'
+import { ItemsSearchComponent } from './ItemSearch/ItemsSearch';
 import { RouteComponentProps } from 'react-router';
 import { ItemsSearchClient, ItemsViewModelClient } from './ItemSearch/SiwSearch';
 

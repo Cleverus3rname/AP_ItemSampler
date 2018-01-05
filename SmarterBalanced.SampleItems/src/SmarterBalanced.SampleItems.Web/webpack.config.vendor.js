@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = (env) => {
     const extractCSS = new ExtractTextPlugin('vendor.css');
@@ -8,17 +9,48 @@ module.exports = (env) => {
     return [{
         stats: { modules: false },
         resolve: {
-            extensions: [ '.js' ]
+            extensions: ['.js', '.less', '.css']
         },
         module: {
             rules: [
-                { test: /\.less$/, use: isDevBuild ? ['style-loader', 'css-loader', 'less-loader'] : ExtractTextPlugin.extract({ use: ['css-loader?minimize', 'less-loader'] }) },
-                { test: /\.(png|woff|woff2|eot|ttf|svg)(\?|$)/, use: 'url-loader?limit=100000' },
-                { test: /\.css(\?|$)/, use: extractCSS.extract([ isDevBuild ? 'css-loader' : 'css-loader?minimize' ]) }
+                {
+                    test: /\.less$/,
+                    use: isDevBuild ?
+                        ['style-loader', 'css-loader', 'less-loader'] :
+                        ExtractTextPlugin.extract({ use: ['css-loader?minimize', 'less-loader'] })
+                },
+                {
+                    test: /\.(woff|woff2|eot|ttf|svg)(\?|$)/,
+                    use: 'url-loader?limit=100000'
+                },
+                {
+                    test: /\.(png|jpg|gif)$/,
+                    use: 'file-loader'
+                },
+                {
+                    test: /\.css(\?|$)/,
+                    use: extractCSS.extract([isDevBuild ? 'css-loader' : 'css-loader?minimize'])
+                }
             ]
         },
         entry: {
-            vendor: ['bootstrap', 'bootstrap/dist/css/bootstrap.css', '@osu-cass/sb-components/lib/sb-components.css', 'font-awesome/css/font-awesome.css', 'event-source-polyfill', 'isomorphic-fetch', 'react', 'react-dom', 'react-router-dom', 'jquery'],
+            vendor: [
+                'bootstrap',
+                'bootstrap/less/bootstrap.less',
+                'font-awesome/less/font-awesome.less',
+                // '@sbac/sbac-ui-kit/src/less/sbac-ui-kit.less', //won't work, depends on bootstrap
+                '@osu-cass/sb-components/lib/Assets/Styles/sb-components.less',
+                '@osu-cass/sb-components',
+                'event-source-polyfill',
+                'isomorphic-fetch',
+                'react',
+                'react-dom',
+                'react-router-dom',
+                'jquery',
+                'typeface-pt-sans-caption/index.css',
+                'typeface-pt-serif/index.css',
+                'typeface-pt-serif-caption/index.css'
+            ],
         },
         output: {
             path: path.join(__dirname, 'wwwroot', 'dist'),
@@ -35,7 +67,13 @@ module.exports = (env) => {
             }),
             new webpack.DefinePlugin({
                 'process.env.NODE_ENV': isDevBuild ? '"development"' : '"production"'
-            })
+            }),
+            new CopyWebpackPlugin([
+                {
+                    from: path.join(__dirname, 'node_modules', '@sbac/sbac-ui-kit/src/images'),
+                    to: path.join(__dirname, 'wwwroot', 'Assets/Images')
+                }
+            ])
         ].concat(isDevBuild ? [] : [
             new webpack.optimize.UglifyJsPlugin()
         ])

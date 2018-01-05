@@ -1,4 +1,3 @@
-import '../Styles/home.less';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link, NavLink } from 'react-router-dom';
@@ -34,7 +33,6 @@ export class Home extends React.Component<RouteComponentProps<{}>, {}> {
 
                 </div >
             </div >
-        </div>
-
+        </div>;
     }
 }
