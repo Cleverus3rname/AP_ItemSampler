@@ -1,6 +1,6 @@
 ﻿import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, Redirect } from 'react-router';
 
 import {
     Resource,
@@ -33,7 +33,8 @@ export interface State {
     itemSearch: Resource<ItemsSearchModel>;
     currentFilter?: AdvancedFilterCategoryModel[];
     searchAPIParams: SearchAPIParamsModel;
-
+    item: ItemModel | undefined;
+    redirect: boolean;
 }
 
 export class ItemsSearchComponent extends React.Component<Props, State> {
@@ -45,7 +46,9 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         this.state = {
             searchAPIParams,
             searchResults: { kind: "loading" },
-            itemSearch: { kind: "loading" }
+            itemSearch: { kind: "loading" },
+            item: undefined,
+            redirect: false
         };
     }
 
@@ -132,10 +135,10 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
     }
 
-    rowSelect = (item: ItemModel, reset: boolean) => {
-        window.location.href = `item/${item.bankKey}-${item.itemKey}`;
+    rowSelect = ( item: ItemModel, reset: boolean ) => {
+        this.setState( { item, redirect: true } );
     }
-    itemSelect = (item: ItemCardModel) => {};
+    itemSelect = ( item: ItemCardModel ) => { };
 
     renderResultElement (): JSX.Element {
         const cardState = this.state.searchResults;
@@ -151,6 +154,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
                 onItemSelection={this.itemSelect}
                 itemCards={filteredItemCards}
                 defaultRenderType={SearchResultType.ItemCard}
+                isLinkTable={true}
             />
         </div>;
 
@@ -158,9 +162,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
     updateLocationSearch ( searchAPI: SearchAPIParamsModel ) {
         const search = SearchUrl.encodeQuery( searchAPI );
-        const location = {
-            search, ...this.props.history.location
-        };
+        const location = { ...this.props.history.location, search };
         this.props.history.replace( location );
     }
 
@@ -195,7 +197,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     }
 
     renderFilters () {
-        let content = <div className="loader"/>;
+        let content;
         if ( this.state.currentFilter ) {
             content = (
                 <div>
@@ -213,12 +215,20 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     }
 
     render () {
-        return (
-            <div className="container search-container">
+        const { redirect, item } = this.state;
+
+        let content;
+        if ( item ) {
+            content = <Redirect push to={`/item/${ item.bankKey }-${ item.itemKey }`} />;
+        }
+        if ( !redirect ) {
+            content = <div role="main" className="container search-container">
                 {this.renderFilters()}
                 {this.renderResultElement()}
                 <FilterLink filterId="siw-advanced-filter" />
-            </div>
-        );
+            </div>;
+        }
+
+        return content;
     }
 }
