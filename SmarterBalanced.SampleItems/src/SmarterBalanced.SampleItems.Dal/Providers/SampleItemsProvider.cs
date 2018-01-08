@@ -65,7 +65,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
 
             var subjectInteractionTypes = LoadSubjectInteractionTypes(interactionGroup, subjects);
             var filterSearch = SearchFilterTranslation.ToSearchFilter(appSettings.SbContent.FilterCategories,
-                subjects: subjects, claims: claims, interactionTypes: subjectInteractionTypes);
+                subjects: subjects, claims: claims, interactionTypes: subjectInteractionTypes, targets: targets);
 
             SampleItemsContext context = new SampleItemsContext(
                 sampleItems: sampleItems,

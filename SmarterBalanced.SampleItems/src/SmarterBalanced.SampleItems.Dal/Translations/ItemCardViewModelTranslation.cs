@@ -32,7 +32,8 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 brailleOnlyitem: sampleItem.BrailleOnlyItem,
                 depthOfKnowledge: sampleItem.DepthOfKnowledge,
                 ccss: sampleItem.CoreStandards?.CommonCoreStandardsId,
-                domain: sampleItem.Domain);
+                domain: sampleItem.Domain,
+                calculator: sampleItem.AllowCalculator);
 
             return card;
         }

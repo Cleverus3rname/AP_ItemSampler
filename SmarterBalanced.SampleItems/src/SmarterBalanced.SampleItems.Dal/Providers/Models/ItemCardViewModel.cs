@@ -22,10 +22,11 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         public string InteractionTypeCode { get; }
         public string InteractionTypeLabel { get; }
         public bool IsPerformanceItem { get; }
-        public bool BrailleOnlyItem { get;}
+        public bool BrailleOnlyItem { get; }
         public string Domain { get; }
         public string DepthOfKnowledge { get; }
         public string CommonCoreStandardId { get; }
+        public bool Calculator { get; }
 
         public ItemCardViewModel(
             int bankKey,
@@ -46,7 +47,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             bool brailleOnlyItem,
             string domain,
             string depthOfKnowledge,
-            string ccss)
+            string ccss,
+            bool calculator)
         {
             BankKey = bankKey;
             ItemKey = itemKey;
@@ -67,6 +69,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             Domain = domain;
             CommonCoreStandardId = ccss;
             TargetId = targetId;
+            Calculator = calculator;
         }
 
         /// <summary>
@@ -91,7 +94,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
            bool brailleOnlyitem = false,
            string domain = "",
            string depthOfKnowledge = "",
-           string ccss = "")
+           string ccss = "",
+           bool calculator = false)
         {
             return new ItemCardViewModel(
                 bankKey: bankKey,
@@ -112,7 +116,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
                 domain: domain,
                 depthOfKnowledge: depthOfKnowledge,
                 ccss: ccss,
-                targetId: targetId);
+                targetId: targetId,
+                calculator: calculator);
         }
 
     }

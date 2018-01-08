@@ -25,11 +25,13 @@ export function getFilterCategories(itemSearchFilter: ItemsSearchFilterModel, se
     const interactions = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.interactionTypes, searchAPI), isMultiSelect: true, disabled: false, displayAllButton: true };
     const grades = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.grades, searchAPI), isMultiSelect: true, disabled: false, displayAllButton: true };
     const techTypes = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.technologyTypes, searchAPI), isMultiSelect: false, disabled: false, displayAllButton: true };
+    const targets = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.targets, searchAPI), isMultiSelect: true, disabled: false, displayAllButton: true };
+    const calculator = { ...ItemSearch.filterSearchToCategory(itemSearchFilter.calculator, searchAPI), isMultiSelect: false, disabled: false, displayAllButton: true };
 
 
     //TODO: add rest
     let advancedFilters: AdvancedFilterCategoryModel[] = [
-        grades, subjects, claims, interactions, techTypes
+        grades, subjects, claims, interactions, techTypes, targets, calculator
     ];
 
     return advancedFilters;
