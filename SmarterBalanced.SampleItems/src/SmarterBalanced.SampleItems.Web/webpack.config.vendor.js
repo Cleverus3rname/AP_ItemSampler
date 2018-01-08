@@ -38,8 +38,7 @@ module.exports = (env) => {
                 'bootstrap',
                 'bootstrap/less/bootstrap.less',
                 'font-awesome/less/font-awesome.less',
-                // '@sbac/sbac-ui-kit/src/less/sbac-ui-kit.less', //won't work, depends on bootstrap
-                '@osu-cass/sb-components/lib/Assets/Styles/sb-components.less',
+                '@osu-cass/sb-components/lib/Assets/Styles/bundle.less',
                 '@osu-cass/sb-components',
                 'event-source-polyfill',
                 'isomorphic-fetch',
