@@ -154,6 +154,29 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
 
             Assert.IsType<BadRequestResult>(result);
         }
+
+        /// <summary>
+        /// Tests that a BadRequestResult is returned given a null key
+        /// </summary>
+        [Fact]
+        public void TestAboutThisItemViewModelNullParam()
+        {
+            var result = controller.AboutThisItemViewModel(null, itemKey);
+
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        /// <summary>
+        /// Tests that the correct result is returned given good keys
+        /// </summary>
+        [Fact]
+        public void TestAboutThisItemModelGood()
+        {
+            var result = controller.AboutThisItemViewModel(bankKey, itemKey);
+
+            JsonResult resJson = Assert.IsType<JsonResult>(result);
+            var model = Assert.IsType<ItemViewModel>(resJson.Value);
+        }
     }
 
 }
