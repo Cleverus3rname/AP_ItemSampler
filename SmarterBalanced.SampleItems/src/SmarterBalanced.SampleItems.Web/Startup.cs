@@ -16,7 +16,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
 using Microsoft.AspNetCore.SpaServices.Webpack;
-
+using SmarterBalanced.SampleItems.Core.AccessibilityTesting;
 
 namespace SmarterBalanced.SampleItems.Web
 {
@@ -85,7 +85,7 @@ namespace SmarterBalanced.SampleItems.Web
 
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowAllOrigins", builder => 
+                options.AddPolicy("AllowAllOrigins", builder =>
                     builder.AllowAnyHeader()
                     .AllowAnyOrigin()
                     .AllowAnyMethod());
@@ -93,6 +93,7 @@ namespace SmarterBalanced.SampleItems.Web
 
             services.AddSingleton(context);
             services.AddSingleton(appSettings);
+            services.AddScoped<AccessibilityTestRepo, AccessibilityTestRepo>();
             services.AddScoped<IItemViewRepo, ItemViewRepo>();
             services.AddScoped<ISampleItemsSearchRepo, SampleItemsSearchRepo>();
             services.AddScoped<IAboutItemsRepo, AboutItemsRepo>();
@@ -113,7 +114,7 @@ namespace SmarterBalanced.SampleItems.Web
                     HotModuleReplacement = true,
                     ReactHotModuleReplacement = true
                 });
-           
+
                 app.UseStaticFiles();
 
                 //app.UseDeveloperExceptionPage();
