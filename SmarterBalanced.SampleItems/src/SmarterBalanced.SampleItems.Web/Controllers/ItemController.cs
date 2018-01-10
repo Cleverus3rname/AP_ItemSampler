@@ -125,6 +125,11 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
 
             var aboutThis = repo.GetAboutThisItemViewModel(bankKey.Value, itemKey.Value);
 
+            if (aboutThis == null)
+            {
+                return BadRequest();
+            }
+
             return Json(aboutThis);
         }
 
