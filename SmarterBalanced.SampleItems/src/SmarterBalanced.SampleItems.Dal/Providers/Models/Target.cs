@@ -73,9 +73,9 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         public override int GetHashCode()
         {
             var hash = 0;
-            foreach (char c in Name)
+            for (int i = 0; i < Name.Length; i++)
             {
-                hash += c; 
+                hash = (hash + Name[i] * (i + 1)) % 999999; 
             }
             return hash;
         }

@@ -43,7 +43,8 @@ export function getItemSearchModel(itemSearchFilter: ItemsSearchFilterModel): It
     const itemSearch: ItemsSearchModel = {
         claims: itemSearchFilter.claims.filterOptions,
         subjects: itemSearchFilter.subjects.filterOptions,
-        interactionTypes: itemSearchFilter.interactionTypes.filterOptions
+        interactionTypes: itemSearchFilter.interactionTypes.filterOptions,
+        targets: itemSearchFilter.targets.filterOptions
     };
     return itemSearch;
 
