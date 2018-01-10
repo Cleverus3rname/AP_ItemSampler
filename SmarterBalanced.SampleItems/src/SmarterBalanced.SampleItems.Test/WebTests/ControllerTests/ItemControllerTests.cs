@@ -52,7 +52,7 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
             );
             ItemCardViewModel cardCookie = digest.ToItemCardViewModel();
 
-            var aboutItemCookie = AboutThisItemViewModel.Create(
+            AboutThisItemViewModel aboutItemCookie = AboutThisItemViewModel.Create(
                 scoring: SampleItemScoring.Create(),
                 itemCard: cardCookie,
                 depthOfKnowledge: "",
@@ -106,10 +106,8 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
 
             itemViewRepoMock
                 .Setup(repo =>
-                    repo.GetItemViewModel(
-                        bankKey,
-                        itemKey))
-                .Returns(itemViewModel);
+                    repo.GetAboutThisItemViewModel(bankKey, itemKey))
+                .Returns(aboutItemCookie);
 
             var loggerFactory = new Mock<ILoggerFactory>();
             var logger = new Mock<ILogger>();
@@ -167,15 +165,25 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
         }
 
         /// <summary>
+        /// Tests that the correct result is returned given invalid keys
+        /// </summary>
+        [Fact]
+        public void TestAboutThisItemBadId()
+        {
+            var result = controller.AboutThisItemViewModel(bankKey + 1, itemKey + 1);
+
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        /// <summary>
         /// Tests that the correct result is returned given good keys
         /// </summary>
         [Fact]
-        public void TestAboutThisItemModelGood()
+        public void TestAboutThisItemViewModelGood()
         {
             var result = controller.AboutThisItemViewModel(bankKey, itemKey);
 
             JsonResult resJson = Assert.IsType<JsonResult>(result);
-            var model = Assert.IsType<ItemViewModel>(resJson.Value);
         }
     }
 
