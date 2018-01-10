@@ -36,5 +36,4 @@ export const routes = <Layout siteName="Sample Items" links={siteLinks}>
             itemPageClient={itemPageClient}
             itemAccessibilityClient={itemAccessibilityClient} />
     )} />
-
 </Layout>;
