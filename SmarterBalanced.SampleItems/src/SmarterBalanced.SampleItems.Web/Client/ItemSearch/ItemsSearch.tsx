@@ -18,9 +18,11 @@ import {
     FilterLink,
     SearchResultContainer,
     SearchResultType,
-    ItemModel
+    ItemModel,
+    FilterContainer,
+    BasicFilterCategoryModel
 } from '@osu-cass/sb-components';
-import { getFilterCategories, getItemSearchModel } from './SiwSearch';
+import { getAdvancedFilterCategories, getItemSearchModel, getBasicFilterCategories } from './SiwSearch';
 
 
 export interface Props extends RouteComponentProps<{}> {
@@ -31,7 +33,8 @@ export interface Props extends RouteComponentProps<{}> {
 export interface State {
     searchResults: Resource<ItemCardModel[]>;
     itemSearch: Resource<ItemsSearchModel>;
-    currentFilter?: AdvancedFilterCategoryModel[];
+    advancedFilter: AdvancedFilterCategoryModel[];
+    basicFilter: BasicFilterCategoryModel[];
     searchAPIParams: SearchAPIParamsModel;
     item: ItemModel | undefined;
     redirect: boolean;
@@ -48,7 +51,9 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             searchResults: { kind: "loading" },
             itemSearch: { kind: "loading" },
             item: undefined,
-            redirect: false
+            redirect: false,
+            basicFilter: [],
+            advancedFilter: []
         };
     }
 
@@ -76,7 +81,6 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         }
     }
 
-
     onSearch ( results: ItemCardModel[] ) {
         this.setState( { searchResults: { kind: "success", content: results } } );
     }
@@ -88,12 +92,14 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
     onFetchFilterModel ( itemSearchFilter: ItemsSearchFilterModel ) {
         //TODO: Filter grades
-        let filters = getFilterCategories( itemSearchFilter, this.state.searchAPIParams );
+        let advancedFilters = getAdvancedFilterCategories(itemSearchFilter, this.state.searchAPIParams);
+        let basicFilters = getBasicFilterCategories(itemSearchFilter, this.state.searchAPIParams);
         const searchModel = getItemSearchModel( itemSearchFilter );
-        filters = Filter.getUpdatedSearchFilters( searchModel, filters, this.state.searchAPIParams );
+        advancedFilters = Filter.getUpdatedSearchFilters( searchModel, advancedFilters, this.state.searchAPIParams );
         this.setState( {
             itemSearch: { kind: "success", content: searchModel },
-            currentFilter: filters
+            advancedFilter: advancedFilters,
+            basicFilter: basicFilters
         }, );
 
     }
@@ -175,37 +181,55 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         return searchAPI;
     }
 
-    onFilterUpdate = ( categories: AdvancedFilterCategoryModel[] | undefined ) => {
+    onAdvancedFilterUpdate = ( categories: AdvancedFilterCategoryModel[] | undefined ) => {
         if ( !categories ) {
             return;
         }
-        const searchModel = getResourceContent( this.state.itemSearch );
-        let searchAPI = { ...this.state.searchAPIParams };
-        const grad = Filter.getSelectedGrade( categories );
 
-        searchAPI = ItemSearch.filterToSearchApiModel( categories );
+        const advancedSearchAPI = ItemSearch.filterToSearchApiModel(categories);
+        const basicSearchAPI = ItemSearch.filterToSearchApiModel(this.state.basicFilter);
+        const searchAPI = Object.assign({}, basicSearchAPI, advancedSearchAPI);
         this.updateLocationSearch( searchAPI );
 
+        const searchModel = getResourceContent(this.state.itemSearch);
         if ( searchModel ) {
             categories = Filter.getUpdatedSearchFilters( searchModel, categories, searchAPI );
         }
 
-        this.setState( {
-            currentFilter: categories,
+        this.setState({
+            advancedFilter: categories,
             searchAPIParams: searchAPI
-        } );
+        });
+    }
+
+    onBasicFilterUpdate = (categories: BasicFilterCategoryModel[] | undefined) => {
+        if (!categories) {
+            return;
+        }
+
+        const advancedSearchAPI = ItemSearch.filterToSearchApiModel(this.state.advancedFilter);
+        const basicSearchAPI = ItemSearch.filterToSearchApiModel(categories);
+        //later source objects overwrite properties of earlier ones
+        const searchAPI = Object.assign({}, advancedSearchAPI, basicSearchAPI);
+        this.updateLocationSearch(searchAPI);
+
+        this.setState({
+            basicFilter: categories,
+            searchAPIParams: searchAPI
+        });
     }
 
     renderFilters () {
         let content;
-        if ( this.state.currentFilter ) {
+        if ( this.state.advancedFilter ) {
             content = (
                 <div>
-                    <AdvancedFilterContainer
+                    <FilterContainer
                         filterId="siw-advanced-filter"
-                        filterCategories={...this.state.currentFilter}
-                        onUpdateFilter={this.onFilterUpdate}
-                        pageTitle="Browse Items"
+                        basicFilterCategories={this.state.basicFilter}
+                        onUpdateBasicFilter={this.onBasicFilterUpdate}
+                        advancedFilterCategories={this.state.advancedFilter}
+                        onUpdateAdvancedFilter={this.onAdvancedFilterUpdate}
                     />
                 </div>
             );
