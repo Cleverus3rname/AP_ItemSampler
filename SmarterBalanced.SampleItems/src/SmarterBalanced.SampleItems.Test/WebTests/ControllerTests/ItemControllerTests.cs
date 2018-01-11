@@ -201,6 +201,18 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
 
             Assert.Equal(aboutThisItemViewModel, model);
         }
+
+        /// <summary>
+        /// Test that the correct result is returned when given a null parameter
+        /// </summary>
+        [Fact]
+        public void TestAccessibilityResourceGroupIsaapNullParam()
+        {
+            var result = controller.AccessibilityResourceGroupIsaap(null, null, null, false);
+
+            Assert.IsType<BadRequestResult>(result);
+        }
+
     }
 
 }
