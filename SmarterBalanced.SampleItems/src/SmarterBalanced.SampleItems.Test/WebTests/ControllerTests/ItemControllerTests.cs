@@ -20,6 +20,8 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
         ItemController controller;
         ItemViewModel itemViewModel;
         ItemViewModel itemViewModelCookie;
+        AboutThisItemViewModel aboutThisItemViewModel;
+        AboutThisItemViewModel aboutItemCookie;
         int bankKey;
         int itemKey;
         string iSAAP;
@@ -52,13 +54,23 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
             );
             ItemCardViewModel cardCookie = digest.ToItemCardViewModel();
 
-            AboutThisItemViewModel aboutItemCookie = AboutThisItemViewModel.Create(
+
+            aboutItemCookie = AboutThisItemViewModel.Create(
                 scoring: SampleItemScoring.Create(),
                 itemCard: cardCookie,
                 depthOfKnowledge: "",
                 targetDescription: "",
                 commonCoreStandardsDescription: "");
 
+            aboutThisItemViewModel = new AboutThisItemViewModel(
+                itemCard: card,
+                scoring: SampleItemScoring.Create(),
+                targetDescription: "",
+                depthOfKnowledge: "",
+                commonCoreStandardsDescription: "",
+                educationalDifficulty: "",
+                evidenceStatement: "",
+                associatedItems: "");
 
 
             iSAAP = "TDS_test;TDS_test2;";
@@ -107,7 +119,7 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
             itemViewRepoMock
                 .Setup(repo =>
                     repo.GetAboutThisItemViewModel(bankKey, itemKey))
-                .Returns(aboutItemCookie);
+                .Returns(aboutThisItemViewModel);
 
             var loggerFactory = new Mock<ILoggerFactory>();
             var logger = new Mock<ILogger>();
@@ -184,6 +196,10 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
             var result = controller.AboutThisItemViewModel(bankKey, itemKey);
 
             JsonResult resJson = Assert.IsType<JsonResult>(result);
+
+            var model = Assert.IsType<AboutThisItemViewModel>(resJson.Value);
+
+            Assert.Equal(aboutThisItemViewModel, model);
         }
     }
 
