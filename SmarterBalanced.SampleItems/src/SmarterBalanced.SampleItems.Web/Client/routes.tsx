@@ -6,9 +6,9 @@ import {
 } from '@osu-cass/sb-components';
 
 import { Home } from './Home/Home';
-import { ItemsSearchComponent } from './ItemSearch/ItemsSearch';
+import { ItemsSearchComponent } from './ItemSearch/ItemSearchPage';
 import { RouteComponentProps } from 'react-router';
-import { ItemsSearchClient, ItemsViewModelClient } from './ItemSearch/SiwSearch';
+import { ItemsSearchClient, ItemsViewModelClient } from './ItemSearch/ItemSearch';
 
 export const siteLinks: SbNavlinkProps[] = [
     { name: "Home", url: "/" },
