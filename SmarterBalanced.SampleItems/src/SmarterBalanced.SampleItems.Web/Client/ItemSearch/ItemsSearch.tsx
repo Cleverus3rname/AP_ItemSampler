@@ -18,7 +18,8 @@ import {
     FilterLink,
     SearchResultContainer,
     SearchResultType,
-    ItemModel
+    ItemModel,
+    LoadingOverlay
 } from '@osu-cass/sb-components';
 import { getFilterCategories, getItemSearchModel } from './SiwSearch';
 
@@ -35,6 +36,7 @@ export interface State {
     searchAPIParams: SearchAPIParamsModel;
     item: ItemModel | undefined;
     redirect: boolean;
+    loading: boolean;
 }
 
 export class ItemsSearchComponent extends React.Component<Props, State> {
@@ -48,7 +50,8 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             searchResults: { kind: "loading" },
             itemSearch: { kind: "loading" },
             item: undefined,
-            redirect: false
+            redirect: false,
+            loading: true
         };
     }
 
@@ -78,11 +81,17 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
 
     onSearch ( results: ItemCardModel[] ) {
-        this.setState( { searchResults: { kind: "success", content: results } } );
+        this.setState( {
+            searchResults: { kind: "success", content: results },
+            loading: !this.state.loading
+        } );
     }
 
     onError ( err: any ) {
-        this.setState( { searchResults: { kind: "failure" } } );
+        this.setState( {
+            searchResults: { kind: "failure" },
+            loading: !this.state.loading
+        } );
     }
 
 
@@ -215,18 +224,20 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     }
 
     render () {
-        const { redirect, item } = this.state;
+        const { redirect, item, loading } = this.state;
 
         let content;
         if ( item ) {
             content = <Redirect push to={`/item/${ item.bankKey }-${ item.itemKey }`} />;
         }
         if ( !redirect ) {
-            content = <div role="main" className="container search-container">
-                {this.renderFilters()}
-                {this.renderResultElement()}
-                <FilterLink filterId="siw-advanced-filter" />
-            </div>;
+            content = <LoadingOverlay loading={loading}>
+                <div role="main" className="container search-container">
+                    {this.renderFilters()}
+                    {this.renderResultElement()}
+                    <FilterLink filterId="siw-advanced-filter" />
+                </div>
+            </LoadingOverlay>;
         }
 
         return content;
