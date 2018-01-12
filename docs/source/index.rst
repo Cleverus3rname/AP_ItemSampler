@@ -8,6 +8,7 @@ Welcome to AP_ItemSampler Docs
    :caption: Developer Guide
 
    dev/dev
+   accessibility/accessibility
 
 
 Indices and tables
