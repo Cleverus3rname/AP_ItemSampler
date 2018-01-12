@@ -213,6 +213,27 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
             Assert.IsType<BadRequestResult>(result);
         }
 
+        /// <summary>
+        /// Test that the correct result is returned when given an invalid braille code
+        /// </summary>
+        [Fact] 
+        public void TestBrailleBadBrailleCode()
+        {
+            var result = controller.Braille(bankKey, itemKey, null);
+
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        /// <summary>
+        /// Test that the correct result is returned when given bad bank and item keys
+        /// </summary>
+        [Fact]
+        public void TestBrailleBadId()
+        {
+            var result = controller.Braille(bankKey + 1, itemKey + 1, "");
+
+            Assert.IsType<BadRequestResult>(result);
+        }
     }
 
 }
