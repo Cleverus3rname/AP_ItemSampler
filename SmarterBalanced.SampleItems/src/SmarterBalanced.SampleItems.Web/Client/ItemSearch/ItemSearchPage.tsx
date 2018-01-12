@@ -185,7 +185,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     return searchAPI;
   }
 
-  onAdvancedFilterUpdate = (categories: AdvancedFilterCategoryModel[] | undefined) => {
+  onAdvancedFilterUpdate = (categories?: AdvancedFilterCategoryModel[]) => {
       if (!categories) {
           return;
       }
@@ -206,7 +206,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
       });
   }
 
-  onBasicFilterUpdate = (categories: BasicFilterCategoryModel[] | undefined) => {
+  onBasicFilterUpdate = (categories?: BasicFilterCategoryModel[]) => {
       if (!categories) {
           return;
       }
