@@ -22,8 +22,12 @@ export function getBasicFilterCategories(
     searchAPI: SearchAPIParamsModel
 ): BasicFilterCategoryModel[] {
     itemSearchFilter.grades.filterOptions = [
-        GradeLevels.Elementary,
-        GradeLevels.Middle,
+        GradeLevels.Grade3,
+        GradeLevels.Grade4,
+        GradeLevels.Grade5,
+        GradeLevels.Grade6,
+        GradeLevels.Grade7,
+        GradeLevels.Grade8,
         GradeLevels.High
     ];
     const grades = {
@@ -45,16 +49,11 @@ export function getAdvancedFilterCategories(
   itemSearchFilter: ItemsSearchFilterModel,
   searchAPI: SearchAPIParamsModel
 ): AdvancedFilterCategoryModel[] {
-  const gradeOptions = [
-      GradeLevels.Grade3,
-      GradeLevels.Grade4,
-      GradeLevels.Grade5,
-      GradeLevels.Grade6,
-      GradeLevels.Grade7,
-      GradeLevels.Grade8,
-      GradeLevels.High
-  ];
-  itemSearchFilter.grades.filterOptions = gradeOptions;
+    itemSearchFilter.grades.filterOptions = [
+        GradeLevels.Elementary,
+        GradeLevels.Middle,
+        GradeLevels.High
+  ];;
 
   const claims = {
     ...ItemSearch.filterSearchToCategory(itemSearchFilter.claims, searchAPI),

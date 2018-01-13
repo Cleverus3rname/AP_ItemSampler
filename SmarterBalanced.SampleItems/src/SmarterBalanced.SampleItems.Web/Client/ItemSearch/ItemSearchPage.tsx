@@ -21,7 +21,8 @@ import {
   ItemModel,
   BasicFilterCategoryModel,
   FilterCategoryModel,
-  FilterContainer
+  FilterContainer,
+  FilterType
 } from "@osu-cass/sb-components";
 import { getAdvancedFilterCategories, getBasicFilterCategories, getItemSearchModel } from "./ItemSearch";
 
@@ -114,6 +115,75 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     return newCards ? newCards : cards;
   }
 
+  updateLocationSearch(searchAPI: SearchAPIParamsModel) {
+    const search = SearchUrl.encodeQuery(searchAPI);
+    const location = { ...this.props.history.location, search };
+    this.props.history.replace(location);
+  }
+
+  getLocationSearch(search: string): SearchAPIParamsModel {
+    let searchAPI: SearchAPIParamsModel = {};
+    try {
+        searchAPI = SearchUrl.decodeSearch(search);
+    } catch {}
+
+    return searchAPI;
+  }
+
+  onAdvancedFilterUpdate = (categories?: AdvancedFilterCategoryModel[], changed?: FilterType) => {
+    if (!categories) {
+        return;
+    }
+
+    const advancedSearchAPI = ItemSearch.filterToSearchApiModel(categories);
+    const basicSearchAPI = ItemSearch.filterToSearchApiModel(this.state.basicFilter);
+    const searchAPI = Object.assign({}, basicSearchAPI, advancedSearchAPI);
+    this.updateLocationSearch(searchAPI);
+    console.log(searchAPI);
+
+    const searchModel = getResourceContent(this.state.itemSearch);
+    if (searchModel) {
+        categories = Filter.getUpdatedSearchFilters(searchModel, categories, searchAPI);
+    }
+
+    const { basicFilter } = this.state;
+    if (changed) {
+        const changedFilter = basicFilter.find(f => f.code == changed)
+        if (changedFilter) {
+            changedFilter.filterOptions.forEach(o => o.isSelected = false);
+        }
+    }
+
+    this.setState({
+        advancedFilter: categories,
+        searchAPIParams: searchAPI,
+        basicFilter
+    });
+  }
+
+  onBasicFilterUpdate = (categories: BasicFilterCategoryModel[], changed: FilterType) => {
+    if (!categories) {
+        return;
+    }
+
+    const advancedSearchAPI = ItemSearch.filterToSearchApiModel(this.state.advancedFilter);
+    const basicSearchAPI = ItemSearch.filterToSearchApiModel(categories);
+    //later source objects overwrite properties of earlier ones
+    const searchAPI = Object.assign({}, advancedSearchAPI, basicSearchAPI);
+    this.updateLocationSearch(searchAPI);
+
+    const changedFilter = this.state.advancedFilter
+        .find(f => f.code == changed);
+    if (changedFilter) {
+        changedFilter.filterOptions.forEach(o => o.isSelected = false);
+    }
+
+    this.setState({
+        basicFilter: categories,
+        searchAPIParams: searchAPI,
+    });
+  }
+
   renderItemCards(): JSX.Element[] | JSX.Element | undefined {
     const cardState = this.state.searchResults;
     const cards = getResourceContent(cardState);
@@ -168,59 +238,6 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         />
       </div>
     );
-  }
-
-  updateLocationSearch(searchAPI: SearchAPIParamsModel) {
-    const search = SearchUrl.encodeQuery(searchAPI);
-    const location = { ...this.props.history.location, search };
-    this.props.history.replace(location);
-  }
-
-  getLocationSearch(search: string): SearchAPIParamsModel {
-    let searchAPI: SearchAPIParamsModel = {};
-    try {
-      searchAPI = SearchUrl.decodeSearch(search);
-    } catch {}
-
-    return searchAPI;
-  }
-
-  onAdvancedFilterUpdate = (categories?: AdvancedFilterCategoryModel[]) => {
-      if (!categories) {
-          return;
-      }
-
-      const advancedSearchAPI = ItemSearch.filterToSearchApiModel(categories);
-      const basicSearchAPI = ItemSearch.filterToSearchApiModel(this.state.basicFilter);
-      const searchAPI = Object.assign({}, basicSearchAPI, advancedSearchAPI);
-      this.updateLocationSearch(searchAPI);
-
-      const searchModel = getResourceContent(this.state.itemSearch);
-      if (searchModel) {
-          categories = Filter.getUpdatedSearchFilters(searchModel, categories, searchAPI);
-      }
-
-      this.setState({
-          advancedFilter: categories,
-          searchAPIParams: searchAPI
-      });
-  }
-
-  onBasicFilterUpdate = (categories?: BasicFilterCategoryModel[]) => {
-      if (!categories) {
-          return;
-      }
-
-      const advancedSearchAPI = ItemSearch.filterToSearchApiModel(this.state.advancedFilter);
-      const basicSearchAPI = ItemSearch.filterToSearchApiModel(categories);
-      //later source objects overwrite properties of earlier ones
-      const searchAPI = Object.assign({}, advancedSearchAPI, basicSearchAPI);
-      this.updateLocationSearch(searchAPI);
-
-      this.setState({
-          basicFilter: categories,
-          searchAPIParams: searchAPI
-      });
   }
 
   renderFilters() {
