@@ -31,6 +31,28 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return Json(viewModel);
         }
 
+        [HttpGet("GetAccessibilityFamiliesContainingResource")]
+        public IActionResult GetAccessibilityFamiliesContainingResource(string accessibilityResource)
+        {
+            var families = repo.GetAccessibilityFamilies(accessibilityResource);
+            return Json(families);
+        }
+
+        [HttpGet("GetItemAccessibility")]
+        public IActionResult GetItemAccessibility(string[] accessibilityResource, string[] selectionCode, bool enabledState)
+        {
+            var parms = new AccessibilityTestSearch(accessibilityResource, selectionCode, enabledState);
+            var items = repo.GetAccessibilityItemsWithResource(parms);
+            return Json(items);
+        }
+
+        [HttpGet("GetItemsWithClaim")]
+        public IActionResult GetItemsWithClaim(string claim)
+        {
+            var items = repo.GetItemsWithClaim(claim);
+            return Json(items);
+        }
+
     }
 
 }
