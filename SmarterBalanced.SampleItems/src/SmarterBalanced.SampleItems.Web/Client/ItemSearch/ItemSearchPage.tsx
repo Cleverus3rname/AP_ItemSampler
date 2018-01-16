@@ -135,24 +135,26 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         return;
     }
 
-    const advancedSearchAPI = ItemSearch.filterToSearchApiModel(categories);
-    const basicSearchAPI = ItemSearch.filterToSearchApiModel(this.state.basicFilter);
-    const searchAPI = Object.assign({}, basicSearchAPI, advancedSearchAPI);
-    ItemSearch.updateSearchApiModel()
-    this.updateLocationSearch(searchAPI);
-    console.log(searchAPI);
+    let searchAPI = this.state.searchAPIParams;
+    const basicFilter = this.state.basicFilter;
+
+    if (changed) {
+        const changedBasicFilter = basicFilter.find(f => f.code == changed)
+        if (changedBasicFilter) {
+            changedBasicFilter.filterOptions.forEach(o => o.isSelected = false);
+        }
+
+        const changedAdvancedFilter = categories
+            .find(f => f.code === changed);
+        if (changedAdvancedFilter) {
+            searchAPI = ItemSearch.updateSearchApiModel(changedAdvancedFilter, searchAPI);
+            this.updateLocationSearch(searchAPI);
+        }
+    }
 
     const searchModel = getResourceContent(this.state.itemSearch);
     if (searchModel) {
         categories = Filter.getUpdatedSearchFilters(searchModel, categories, searchAPI);
-    }
-
-    const { basicFilter } = this.state;
-    if (changed) {
-        const changedFilter = basicFilter.find(f => f.code == changed)
-        if (changedFilter) {
-            changedFilter.filterOptions.forEach(o => o.isSelected = false);
-        }
     }
 
     this.setState({
@@ -167,16 +169,22 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         return;
     }
 
-    const advancedSearchAPI = ItemSearch.filterToSearchApiModel(this.state.advancedFilter);
-    const basicSearchAPI = ItemSearch.filterToSearchApiModel(categories);
-    //later source objects overwrite properties of earlier ones
-    const searchAPI = Object.assign({}, advancedSearchAPI, basicSearchAPI);
-    this.updateLocationSearch(searchAPI);
+    let searchAPI = this.state.searchAPIParams;
 
-    const changedFilter = this.state.advancedFilter
-        .find(f => f.code == changed);
-    if (changedFilter) {
-        changedFilter.filterOptions.forEach(o => o.isSelected = false);
+    const changedBasicFilter = categories.find(f => f.code === changed);
+    if (changedBasicFilter) {
+        searchAPI = ItemSearch.updateSearchApiModel(changedBasicFilter, searchAPI)
+        this.updateLocationSearch(searchAPI);
+    }
+    let advancedFilter = this.state.advancedFilter;
+    const changedAdvancedFilter = advancedFilter.find(f => f.code === changed);
+    if (changedAdvancedFilter) {
+        changedAdvancedFilter.filterOptions.forEach(o => o.isSelected = false);
+
+        const searchModel = getResourceContent(this.state.itemSearch);
+        if (searchModel) {
+            advancedFilter = Filter.getUpdatedSearchFilters(searchModel, advancedFilter, searchAPI);
+        }
     }
 
     this.setState({
