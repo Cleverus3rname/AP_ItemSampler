@@ -73,8 +73,8 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
 
             foreach(BriefAccessibilityResource resource in rootTestItem.BriefResources)
             {
-                var checkForResource = testItems.Where(item => item.BriefResources.Any(res => res.Label == resource.Label && res.Disabled == false)).ToImmutableArray();
-                if (checkForResource.Length == 0)
+                var checkForResource = testItems.Any(item => !item.BriefResources.Any(res => res.Label == resource.Label));
+                if (!checkForResource)
                 {
                     var itemSearch = new AccessibilityTestSearch(resource.Label, false);
                     var itemsUsingDisabledResource = GetAccessibilityItemsWithResource(itemSearch);
@@ -87,15 +87,5 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
             return testItems;
 
         }
-
-        public ImmutableArray<BriefSampleItem> GetItemsUsingResource(string resourceLabel)
-        {
-            var briefItems = context.SampleItems.Select(item => BriefSampleItem.FromSampleItem(item)).ToImmutableArray();
-            var items = briefItems.Where(item => item.BriefResources
-                .Any(resource => (resource.Label == resourceLabel && resource.Disabled == false)))
-                .ToImmutableArray();
-            return items;
-        }
-
     }
 }
