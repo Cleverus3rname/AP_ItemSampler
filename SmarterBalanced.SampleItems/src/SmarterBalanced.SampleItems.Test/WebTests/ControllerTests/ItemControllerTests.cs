@@ -129,7 +129,7 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
         }
 
         /// <summary>
-        /// Tests that an ItemViewModel is returned given a vaid id.
+        /// Tests that an ItemViewModel is returned given a valid id.
         /// </summary>
         [Fact]
         public void TestDetailsSuccess()
@@ -216,10 +216,18 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
         /// <summary>
         /// Test that the correct result is returned when given an invalid braille code
         /// </summary>
-        [Fact] 
-        public void TestBrailleBadBrailleCode()
+        [Fact]
+        public async void TestBrailleBadBrailleCode()
         {
-            var result = controller.Braille(bankKey, itemKey, null);
+            var result = await controller.Braille(bankKey, itemKey, null);
+            
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        [Fact]
+        public async void TestBrailleNullParam()
+        {
+            var result = await controller.Braille(null, null, null);
 
             Assert.IsType<BadRequestResult>(result);
         }
@@ -228,9 +236,9 @@ namespace SmarterBalanced.SampleItems.Test.WebTests.ControllerTests
         /// Test that the correct result is returned when given bad bank and item keys
         /// </summary>
         [Fact]
-        public void TestBrailleBadId()
+        public async void TestBrailleBadId()
         {
-            var result = controller.Braille(bankKey + 1, itemKey + 1, "");
+            var result = await controller.Braille(bankKey + 1, itemKey + 1, "");
 
             Assert.IsType<BadRequestResult>(result);
         }
