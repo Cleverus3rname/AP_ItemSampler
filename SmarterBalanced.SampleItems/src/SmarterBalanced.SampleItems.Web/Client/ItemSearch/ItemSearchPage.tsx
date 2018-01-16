@@ -138,6 +138,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     const advancedSearchAPI = ItemSearch.filterToSearchApiModel(categories);
     const basicSearchAPI = ItemSearch.filterToSearchApiModel(this.state.basicFilter);
     const searchAPI = Object.assign({}, basicSearchAPI, advancedSearchAPI);
+    ItemSearch.updateSearchApiModel()
     this.updateLocationSearch(searchAPI);
     console.log(searchAPI);
 
