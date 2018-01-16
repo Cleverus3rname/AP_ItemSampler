@@ -43,8 +43,36 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
                 grade: sampleItem.Grade,
                 subjectCode: sampleItem.Subject.Label,
                 claimLabel: sampleItem.Claim.Label,
-                interactionTypeLabel: sampleItem.InteractionType.Label,
+                interactionTypeLabel: sampleItem.Claim.ClaimNumber,
                 briefResources: resourceArray);
+        }
+    }
+
+
+    public class DisabledResourcesComparer : IComparer<BriefSampleItem>
+    {
+        private readonly int numDisabledResources;
+        public DisabledResourcesComparer(int numDisabledResources)
+        {
+            this.numDisabledResources = numDisabledResources;
+        }
+
+        private int Weight(BriefSampleItem checkItem)
+        {
+            int weight = 2;
+            if (checkItem.BriefResources.Length < numDisabledResources)
+                weight--;
+            
+            if (checkItem.BriefResources.Length >= numDisabledResources)
+                weight++;
+
+            return weight;
+        }
+
+        public int Compare(BriefSampleItem x, BriefSampleItem y)
+        {
+            int weightDiff = Weight(x) - Weight(y);
+            return weightDiff;
         }
     }
 }

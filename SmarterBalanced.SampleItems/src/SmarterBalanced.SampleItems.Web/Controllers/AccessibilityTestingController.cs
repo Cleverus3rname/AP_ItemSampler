@@ -38,10 +38,10 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return Json(families);
         }
 
-        [HttpGet("GetItemAccessibility")]
-        public IActionResult GetItemAccessibility(string[] accessibilityResource, string[] selectionCode, bool enabledState)
+        [HttpGet("GetItems")]
+        public IActionResult GetItemAccessibility(string accessibilityResource, bool enabledState)
         {
-            var parms = new AccessibilityTestSearch(accessibilityResource, selectionCode, enabledState);
+            var parms = new AccessibilityTestSearch(accessibilityResource, enabledState);
             var items = repo.GetAccessibilityItemsWithResource(parms);
             return Json(items);
         }
@@ -50,6 +50,13 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         public IActionResult GetItemsWithClaim(string claim)
         {
             var items = repo.GetItemsWithClaim(claim);
+            return Json(items);
+        }
+
+        [HttpGet("GetELATestItems")]
+        public IActionResult GetELATestItems()
+        {
+            var items = repo.GetAccessibilityTestItems();
             return Json(items);
         }
 

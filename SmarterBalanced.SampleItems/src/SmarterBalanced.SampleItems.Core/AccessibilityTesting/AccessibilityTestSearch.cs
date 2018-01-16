@@ -8,17 +8,14 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
 {
     public class AccessibilityTestSearch
     {
-        public string[] Resource { get; }
-        public string[] Selection { get; }
+        public string Resource { get; }
         public bool State { get; }
 
         public AccessibilityTestSearch(
-            string[] accessibilityResource,
-            string[] selectionCode,
+            string accessibilityResource,
             bool enabledState)
         {
             Resource = accessibilityResource;
-            Selection = selectionCode;
             State = enabledState;
         }
     }
