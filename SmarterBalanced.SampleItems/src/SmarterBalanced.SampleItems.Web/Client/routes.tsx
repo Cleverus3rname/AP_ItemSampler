@@ -3,12 +3,12 @@ import { Route, Redirect } from "react-router-dom";
 import {
   Layout,
   SbNavlinkProps,
-  AboutTestItemsContainer,
   aboutTestItemsClient,
   aboutThisItemViewModelClient,
-  ItemPageContainer,
   itemPageClient,
-  itemAccessibilityClient
+  itemAccessibilityClient,
+  ItemViewPage,
+  AboutTestItemsPage
 } from "@osu-cass/sb-components";
 
 import { Home } from "./Home/Home";
@@ -32,7 +32,7 @@ export const routes = (
     <Route
       path="/AboutItems/:itemType?"
       render={props => (
-        <AboutTestItemsContainer
+        <AboutTestItemsPage
           {...props}
           aboutClient={aboutTestItemsClient}
           showRubrics={false}
@@ -54,7 +54,7 @@ export const routes = (
     <Route
       path="/Item/:bankKey-:itemKey"
       render={props => (
-        <ItemPageContainer
+        <ItemViewPage
           {...props}
           aboutThisClient={aboutThisItemViewModelClient}
           itemPageClient={itemPageClient}
