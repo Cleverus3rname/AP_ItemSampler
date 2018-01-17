@@ -137,6 +137,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
     let searchAPI = this.state.searchAPIParams;
     const basicFilter = this.state.basicFilter;
+    const searchModel = getResourceContent(this.state.itemSearch);
 
     if (changed) {
         const changedBasicFilter = basicFilter.find(f => f.code == changed)
@@ -144,19 +145,18 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
             changedBasicFilter.filterOptions.forEach(o => o.isSelected = false);
         }
 
-        const changedAdvancedFilter = categories
-            .find(f => f.code === changed);
+        const changedAdvancedFilter = categories.find(f => f.code === changed);
         if (changedAdvancedFilter) {
             searchAPI = ItemSearch.updateSearchApiModel(changedAdvancedFilter, searchAPI);
-            this.updateLocationSearch(searchAPI);
         }
     }
-
-    const searchModel = getResourceContent(this.state.itemSearch);
+    
     if (searchModel) {
+        searchAPI = ItemSearch.updateSearchParamsDependentFilters(searchAPI, searchModel);
         categories = Filter.getUpdatedSearchFilters(searchModel, categories, searchAPI);
     }
 
+    this.updateLocationSearch(searchAPI);
     this.setState({
         advancedFilter: categories,
         searchAPIParams: searchAPI,
@@ -170,23 +170,29 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     }
 
     let searchAPI = this.state.searchAPIParams;
-
+    const searchModel = getResourceContent(this.state.itemSearch);
+    let advancedFilter = this.state.advancedFilter;
+    
     const changedBasicFilter = categories.find(f => f.code === changed);
     if (changedBasicFilter) {
         searchAPI = ItemSearch.updateSearchApiModel(changedBasicFilter, searchAPI)
-        this.updateLocationSearch(searchAPI);
+        
     }
-    let advancedFilter = this.state.advancedFilter;
+
+    if (searchModel) {
+        searchAPI = ItemSearch.updateSearchParamsDependentFilters(searchAPI, searchModel);
+    }
+    
     const changedAdvancedFilter = advancedFilter.find(f => f.code === changed);
     if (changedAdvancedFilter) {
         changedAdvancedFilter.filterOptions.forEach(o => o.isSelected = false);
-
-        const searchModel = getResourceContent(this.state.itemSearch);
+        
         if (searchModel) {
             advancedFilter = Filter.getUpdatedSearchFilters(searchModel, advancedFilter, searchAPI);
         }
     }
 
+    this.updateLocationSearch(searchAPI);
     this.setState({
         basicFilter: categories,
         searchAPIParams: searchAPI,
