@@ -14,7 +14,8 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             List<FilterCategorySettings> settings,
             ImmutableArray<Subject> subjects,
             ImmutableArray<Claim> claims,
-            ImmutableArray<InteractionType> interactionTypes)
+            ImmutableArray<InteractionType> interactionTypes,
+            ImmutableArray<Target> targets)
         {
             var subjectFilter = ToFilterCategory(subjects, settings
                 .FirstOrDefault(s => s.Code.ToLower() == "subject"));
@@ -26,6 +27,8 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 .FirstOrDefault(s => s.Code.ToLower() == "grade"));
             var technologyType = TechnologyTypeToFilterCategory(
                 settings.FirstOrDefault(s => s.Code.ToLower() == "technologytype"));
+            var targetFilter = ToFilterCategory(targets, settings.FirstOrDefault(s => s.Code.ToLower() == "target"));
+            var calculatorFilter = CalculatorToFilterCategory(settings.FirstOrDefault(s => s.Code.ToLower() == "calculator"));
 
             var filterSearch = new FilterSearch
             {
@@ -33,7 +36,9 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 Claims = claimFilter,
                 InteractionTypes = interactionFilter,
                 Grades = gradesFilter,
-                TechnologyTypes = technologyType
+                TechnologyTypes = technologyType,
+                Calculator = calculatorFilter,
+                Targets = targetFilter
             };
 
             return filterSearch;
@@ -57,6 +62,14 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
             var options = ImmutableArray.Create(performance, cat);
 
             return ToFilterCategory(options, settings);
+        }
+
+        public static FilterCategory<TechnologyType> CalculatorToFilterCategory(FilterCategorySettings settings)
+        {
+            var calc = new TechnologyType { Code = "true", Label = "On" };
+            var calcOff = new TechnologyType { Code = "false", Label = "Off" };
+
+            return ToFilterCategory(ImmutableArray.Create(calc, calcOff), settings);
         }
 
     }
