@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
+using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
 using SmarterBalanced.SampleItems.Core.Repos.Models;
 using SmarterBalanced.SampleItems.Dal.Configurations.Models;
@@ -58,6 +60,22 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         {
             var items = repo.GetAccessibilityTestItems();
             return Json(items);
+        }
+
+        [HttpGet("GetTestCase")]
+        public IActionResult GetTestCase()
+        {
+            var baseUrl = Request.Host.ToString();
+            var items = repo.GetAccessibilityTestItems();
+            var csvStream = new MemoryStream();
+            var writer = new StreamWriter(csvStream, System.Text.Encoding.UTF8);
+            var csv = new CsvWriter(writer);
+
+            csv.WriteRecords(items);
+            writer.Flush();
+            csvStream.Seek(0, SeekOrigin.Begin);
+
+            return File(csvStream, "text/csv", "TestCaseItems.csv");
         }
 
     }

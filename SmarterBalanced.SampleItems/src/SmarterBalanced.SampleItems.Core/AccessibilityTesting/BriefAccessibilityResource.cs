@@ -9,9 +9,9 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
 {
     public class BriefAccessibilityResource
     {
-        public string ResourceCode;
-        public string Label;
-        public bool Disabled;
+        public string ResourceCode { get; }
+        public string Label { get; }
+        public bool Disabled { get; }
 
         public BriefAccessibilityResource(
             string resourceCode,

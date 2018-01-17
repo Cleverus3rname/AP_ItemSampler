@@ -64,27 +64,56 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
 
         public IList<BriefSampleItem> GetAccessibilityTestItems() // Return a list of the top 10 items suitable for testing
         {
+            int numAcceptableDisables = 5;
             var rand = new Random();
-            var briefItems = context.SampleItems.Select(item => BriefSampleItem.FromSampleItem(item)).ToImmutableArray();
-            var elaTestItems = briefItems.Where(item => item.BriefResources.Length <= 5).ToImmutableArray();
-            var rootTestItem = elaTestItems.ElementAt(rand.Next(elaTestItems.Count()));
-            List<BriefSampleItem> testItems = new List<BriefSampleItem>();
-            testItems.Add(rootTestItem);
+            var briefElementaryItems = context.SampleItems
+                .Where(item => item.Grade <= GradeLevels.Elementary)
+                .Select(item => BriefSampleItem.FromSampleItem(item)).ToImmutableArray();
+            var briefHighItems = context.SampleItems
+                .Where(item => (item.Grade <= GradeLevels.High && item.Grade > GradeLevels.Middle))
+                .Select(item => BriefSampleItem.FromSampleItem(item)).ToImmutableArray();
 
-            foreach(BriefAccessibilityResource resource in rootTestItem.BriefResources)
+            var lowTestableItems = briefElementaryItems.Where(item => item.BriefResources.Length <= numAcceptableDisables).ToImmutableArray();
+            var highTestableItems = briefHighItems.Where(item => item.BriefResources.Length <= numAcceptableDisables).ToImmutableArray();
+
+            var lowTestKey = lowTestableItems.ElementAt(rand.Next(lowTestableItems.Count()));
+            var highTestKey = highTestableItems.ElementAt(rand.Next(highTestableItems.Count()));
+
+            List<BriefSampleItem> lowTestItems = new List<BriefSampleItem>();
+            List<BriefSampleItem> highTestItems = new List<BriefSampleItem>();
+
+            lowTestItems.Add(lowTestKey);
+            highTestItems.Add(highTestKey);
+
+            foreach(BriefAccessibilityResource lowResource in lowTestKey.BriefResources)
             {
-                var checkForResource = testItems.Any(item => !item.BriefResources.Any(res => res.Label == resource.Label));
+                var checkForResource = lowTestItems.Any(item => !item.BriefResources.Any(res => res.Label == lowResource.Label));
                 if (!checkForResource)
                 {
-                    var itemSearch = new AccessibilityTestSearch(resource.Label, false);
-                    var itemsUsingDisabledResource = GetAccessibilityItemsWithResource(itemSearch);
-                    testItems.Add(itemsUsingDisabledResource
-                        .Select(item => BriefSampleItem.FromSampleItem(item))
+                    var itemsUsingDisabledResource = briefElementaryItems
+                        .Where(item => !item.BriefResources
+                        .Any(res => res.Label == lowResource.Label)).ToList();
+                    if (lowResource.Label != "Calculator") // Calculator resource is not ever used in Elementary Grades
+                        lowTestItems.Add(itemsUsingDisabledResource
+                            .ElementAt(rand.Next(itemsUsingDisabledResource.Count())));
+                }
+            }
+
+            foreach(BriefAccessibilityResource highResource in highTestKey.BriefResources)
+            {
+                var checkForResource = highTestItems.Any(item => !item.BriefResources.Any(res => res.Label == highResource.Label));
+                if (!checkForResource)
+                {
+                    var itemsUsingDisabledResource = briefHighItems
+                        .Where(item => !item.BriefResources
+                        .Any(res => res.Label == highResource.Label)).ToList();
+                    highTestItems.Add(itemsUsingDisabledResource
                         .ElementAt(rand.Next(itemsUsingDisabledResource.Count())));
                 }
             }
 
-            return testItems;
+            var testSet = lowTestItems.Concat(highTestItems).ToList();
+            return testSet;
 
         }
     }

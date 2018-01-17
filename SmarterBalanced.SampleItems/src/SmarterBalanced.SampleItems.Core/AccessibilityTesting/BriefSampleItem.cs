@@ -9,12 +9,12 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
 {
     public class BriefSampleItem
     {
-        public int ItemKey;
-        public GradeLevels Grade;
-        public string SubjectCode;
-        public string ClaimLabel;
-        public string InteractionTypeLabel;
-        public ImmutableArray<BriefAccessibilityResource> BriefResources;
+        public int ItemKey { get; }
+        public GradeLevels Grade { get; }
+        public string SubjectCode { get; }
+        public string ClaimLabel { get; }
+        public string InteractionTypeLabel { get; }
+        public ImmutableArray<BriefAccessibilityResource> BriefResources { get; }
 
         public BriefSampleItem(
             int itemKey,
