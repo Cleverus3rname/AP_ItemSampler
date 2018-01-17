@@ -104,8 +104,6 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
                         Console.WriteLine("No Elementary Level Items found with {0} Resource Enabled", lowResource.Label);
                         Console.WriteLine("Exception source: {0}", e.Source);
                     }
-                    // if (lowResource.Label != "Calculator") // Calculator resource is not ever used in Elementary Grades
-                        
                 }
             }
 
@@ -138,26 +136,10 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
         public IList<AccessibilityTestItem> FormatTestItems(IList<BriefSampleItem> testItems)
         {
             var rand = new Random();
-            List<string> accessibilityResourceTitles = new List<string>{
-                "Digital Notepad",
-                "English Glossary",
-                "Highlighter",
-                "Calculator",
-                "English Dictionary",
-                "Expandable Passages",
-                "Global Notes",
-                "Strikethrough",
-                "Thesaurus",
-                "Zoom",
-                "Color Choices",
-                "Masking",
-                "Translations (Glossaries)",
-                "Translations (Stacked)",
-                "American Sign Language",
-                "Braille Type",
-                "Closed Captioning",
-                "Streamlined Interface"
-            };
+            SampleItem resourceListItem = context.SampleItems.First();
+            ImmutableArray<AccessibilityResource> resourceList = resourceListItem.AccessibilityResourceGroups
+                .SelectMany(group => group.AccessibilityResources.Select(r => r)).ToImmutableArray();
+            List<string> accessibilityResourceTitles = resourceList.Select(r => r.Label).ToList();
             List<AccessibilityTestItem> itemsUnderTest = new List<AccessibilityTestItem>();
 
             foreach(string selectedResource in accessibilityResourceTitles)
