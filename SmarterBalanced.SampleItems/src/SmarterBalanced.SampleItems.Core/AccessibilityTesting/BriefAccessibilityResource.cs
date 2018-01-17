@@ -33,12 +33,5 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
                 label: label,
                 disabled: disabled);
         }
-
-        //public static BriefAccessibilityResource FromIEnumerable(IEnumerable item)
-        //{
-        //    return new BriefAccessibilityResource(
-        //        resourceCode: item.
-        //    )
-        //}
     }
 }

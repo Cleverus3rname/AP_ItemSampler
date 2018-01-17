@@ -66,12 +66,14 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         public IActionResult GetTestCase()
         {
             var baseUrl = Request.Host.ToString();
-            var items = repo.GetAccessibilityTestItems();
+            var items = repo.GetAccessibilityTestItems(baseUrl);
+            var printableItems = repo.FormatTestItems(items);
+            var orderedItems = printableItems.OrderBy(item => item.ItemKey);
             var csvStream = new MemoryStream();
             var writer = new StreamWriter(csvStream, System.Text.Encoding.UTF8);
             var csv = new CsvWriter(writer);
 
-            csv.WriteRecords(items);
+            csv.WriteRecords(orderedItems);
             writer.Flush();
             csvStream.Seek(0, SeekOrigin.Begin);
 

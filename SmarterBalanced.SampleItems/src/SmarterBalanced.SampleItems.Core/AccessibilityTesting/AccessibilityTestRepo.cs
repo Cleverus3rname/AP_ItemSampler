@@ -62,16 +62,17 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
             return briefItems;
         }
 
-        public IList<BriefSampleItem> GetAccessibilityTestItems() // Return a list of the top 10 items suitable for testing
+        public IList<BriefSampleItem> GetAccessibilityTestItems(string domainUrl = "") // Return a list of the top 10 items suitable for testing
         {
             int numAcceptableDisables = 5;
+            var baseUrl = domainUrl;
             var rand = new Random();
             var briefElementaryItems = context.SampleItems
                 .Where(item => item.Grade <= GradeLevels.Elementary)
-                .Select(item => BriefSampleItem.FromSampleItem(item)).ToImmutableArray();
+                .Select(item => BriefSampleItem.FromSampleItem(item, baseUrl)).ToImmutableArray();
             var briefHighItems = context.SampleItems
                 .Where(item => (item.Grade <= GradeLevels.High && item.Grade > GradeLevels.Middle))
-                .Select(item => BriefSampleItem.FromSampleItem(item)).ToImmutableArray();
+                .Select(item => BriefSampleItem.FromSampleItem(item, baseUrl)).ToImmutableArray();
 
             var lowTestableItems = briefElementaryItems.Where(item => item.BriefResources.Length <= numAcceptableDisables).ToImmutableArray();
             var highTestableItems = briefHighItems.Where(item => item.BriefResources.Length <= numAcceptableDisables).ToImmutableArray();
@@ -93,9 +94,18 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
                     var itemsUsingDisabledResource = briefElementaryItems
                         .Where(item => !item.BriefResources
                         .Any(res => res.Label == lowResource.Label)).ToList();
-                    if (lowResource.Label != "Calculator") // Calculator resource is not ever used in Elementary Grades
+                    try
+                    {
                         lowTestItems.Add(itemsUsingDisabledResource
                             .ElementAt(rand.Next(itemsUsingDisabledResource.Count())));
+                    }
+                    catch (System.ArgumentOutOfRangeException e)
+                    {
+                        Console.WriteLine("No Elementary Level Items found with {0} Resource Enabled", lowResource.Label);
+                        Console.WriteLine("Exception source: {0}", e.Source);
+                    }
+                    // if (lowResource.Label != "Calculator") // Calculator resource is not ever used in Elementary Grades
+                        
                 }
             }
 
@@ -107,14 +117,57 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
                     var itemsUsingDisabledResource = briefHighItems
                         .Where(item => !item.BriefResources
                         .Any(res => res.Label == highResource.Label)).ToList();
-                    highTestItems.Add(itemsUsingDisabledResource
-                        .ElementAt(rand.Next(itemsUsingDisabledResource.Count())));
+                    try
+                    {
+                        highTestItems.Add(itemsUsingDisabledResource
+                            .ElementAt(rand.Next(itemsUsingDisabledResource.Count())));
+                    }
+                    catch (System.ArgumentOutOfRangeException e)
+                    {
+                        Console.WriteLine("No High School Level Items found with {0} Resource Enabled", highResource.Label);
+                        Console.WriteLine("Exception Source: {0}", e.Source);
+                    }
                 }
             }
 
             var testSet = lowTestItems.Concat(highTestItems).ToList();
             return testSet;
 
+        }
+
+        public IList<AccessibilityTestItem> FormatTestItems(IList<BriefSampleItem> testItems)
+        {
+            var rand = new Random();
+            List<string> accessibilityResourceTitles = new List<string>{
+                "Digital Notepad",
+                "English Glossary",
+                "Highlighter",
+                "Calculator",
+                "English Dictionary",
+                "Expandable Passages",
+                "Global Notes",
+                "Strikethrough",
+                "Thesaurus",
+                "Zoom",
+                "Color Choices",
+                "Masking",
+                "Translations (Glossaries)",
+                "Translations (Stacked)",
+                "American Sign Language",
+                "Braille Type",
+                "Closed Captioning",
+                "Streamlined Interface"
+            };
+            List<AccessibilityTestItem> itemsUnderTest = new List<AccessibilityTestItem>();
+
+            foreach(string selectedResource in accessibilityResourceTitles)
+            {
+                var selectedItem = testItems.ElementAt(rand.Next(testItems.Count()));
+                while (selectedItem.BriefResources.Any(res => res.Label == selectedResource))
+                    selectedItem = testItems.ElementAt(rand.Next(testItems.Count()));
+                itemsUnderTest.Add(AccessibilityTestItem.FromBriefSampleItem(selectedItem, selectedResource));
+            }
+            return itemsUnderTest;
         }
     }
 }

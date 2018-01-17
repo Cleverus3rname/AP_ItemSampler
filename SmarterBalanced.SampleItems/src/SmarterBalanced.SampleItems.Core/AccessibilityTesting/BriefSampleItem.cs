@@ -9,43 +9,59 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
 {
     public class BriefSampleItem
     {
+        public int BankKey  { get; }
         public int ItemKey { get; }
         public GradeLevels Grade { get; }
         public string SubjectCode { get; }
         public string ClaimLabel { get; }
-        public string InteractionTypeLabel { get; }
+        public string Url { get; }
         public ImmutableArray<BriefAccessibilityResource> BriefResources { get; }
 
         public BriefSampleItem(
+            int bankKey,
             int itemKey,
             GradeLevels grade,
             string subjectCode,
             string claimLabel,
-            string interactionTypeLabel,
+            string url,
             ImmutableArray<BriefAccessibilityResource> briefResources)
         {
+            BankKey = bankKey;
             ItemKey = itemKey;
             Grade = grade;
             SubjectCode = subjectCode;
             ClaimLabel = claimLabel;
-            InteractionTypeLabel = interactionTypeLabel;
+            Url = url;
             BriefResources = briefResources;
         }
 
-        public static BriefSampleItem FromSampleItem(SampleItem sampleItem)
+        public static BriefSampleItem FromSampleItem(SampleItem sampleItem, string baseUrl = "")
         {
             var disabledResources = sampleItem.AccessibilityResourceGroups
                 .SelectMany(group => group.AccessibilityResources
                 .Where(r => r.Disabled == true).ToImmutableArray()).ToImmutableArray();
             var resourceArray = disabledResources.Select(r => r.ToBriefAccessibilityResource()).ToImmutableArray();
             return new BriefSampleItem(
+                bankKey: sampleItem.BankKey,
                 itemKey: sampleItem.ItemKey,
                 grade: sampleItem.Grade,
                 subjectCode: sampleItem.Subject.Label,
                 claimLabel: sampleItem.Claim.Label,
-                interactionTypeLabel: sampleItem.Claim.ClaimNumber,
+                url: $"{baseUrl}/Item/{sampleItem.BankKey}-{sampleItem.ItemKey}",
                 briefResources: resourceArray);
         }
+
+        // public static BriefSampleItem PrependURL(this BriefSampleItem briefItem, string baseUrl)
+        // {
+        //     return new BriefSampleItem(
+        //         bankKey: briefItem.BankKey,
+        //         itemKey: briefItem.ItemKey,
+        //         grade: briefItem.Grade,
+        //         subjectCode: briefItem.SubjectCode,
+        //         claimLabel: briefItem.ClaimLabel,
+        //         url: $"{baseUrl}/Item/?bankKey={briefItem.BankKey}&itemKey={briefItem.ItemKey}",
+        //         briefResources: briefItem.BriefResources);
+        // }
     }
 
 
