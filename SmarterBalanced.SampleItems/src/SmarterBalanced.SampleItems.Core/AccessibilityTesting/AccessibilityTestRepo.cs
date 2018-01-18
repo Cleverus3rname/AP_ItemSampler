@@ -50,7 +50,8 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
             var items = context.SampleItems
                 .Where(t => t.AccessibilityResourceGroups
                 .Any(ar => ar.AccessibilityResources
-                .Any(ac => (parms.Resource.Contains(ac.Label) && ac.Disabled == parms.State)))).ToList();
+                .Any(ac => (parms.Resource.Contains(ac.Label) && ac.Disabled == parms.State)))).Take(10).ToList();
+            
             var itemKeys = items.Select(i => i.ToItemCardViewModel().ItemKey).ToList();
             return items;
         }
@@ -74,8 +75,18 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
                 .Where(item => (item.Grade <= GradeLevels.High && item.Grade > GradeLevels.Middle))
                 .Select(item => BriefSampleItem.FromSampleItem(item, baseUrl)).ToImmutableArray();
 
-            var lowTestableItems = briefElementaryItems.Where(item => item.BriefResources.Length <= numAcceptableDisables).ToImmutableArray();
-            var highTestableItems = briefHighItems.Where(item => item.BriefResources.Length <= numAcceptableDisables).ToImmutableArray();
+            // var numDisabledEelementaryItems = briefElementaryItems.Where(item => item.AccessibilityResources
+            //     .Any(res => res.Disabled == true)).ToImmutableArray();
+            // var numDisabledHighItems = briefHighItems.Where(item => item.AccessibilityResources
+            //     .Any(res => res.Disabled == true)).ToImmutableArray();
+            
+            var lowTestableItems = briefElementaryItems.Where(item => 
+                item.AccessibilityResources.Where(res => res.Disabled == true).Count()
+                <= numAcceptableDisables).ToImmutableArray();
+
+            var highTestableItems = briefHighItems.Where(item => 
+                item.AccessibilityResources.Where(res => res.Disabled == true).Count() 
+                <= numAcceptableDisables).ToImmutableArray();
 
             var lowTestKey = lowTestableItems.ElementAt(rand.Next(lowTestableItems.Count()));
             var highTestKey = highTestableItems.ElementAt(rand.Next(highTestableItems.Count()));
@@ -86,14 +97,16 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
             lowTestItems.Add(lowTestKey);
             highTestItems.Add(highTestKey);
 
-            foreach(BriefAccessibilityResource lowResource in lowTestKey.BriefResources)
+            foreach(AccessibilityResource lowResource in lowTestKey.AccessibilityResources.Where(res => res.Disabled == true))
             {
-                var checkForResource = lowTestItems.Any(item => !item.BriefResources.Any(res => res.Label == lowResource.Label));
+                var checkForResource = lowTestItems
+                    .Any(item => item.AccessibilityResources
+                    .Any(res => res.Label == lowResource.Label && res.Disabled == false));
                 if (!checkForResource)
                 {
                     var itemsUsingDisabledResource = briefElementaryItems
-                        .Where(item => !item.BriefResources
-                        .Any(res => res.Label == lowResource.Label)).ToList();
+                        .Where(item => item.AccessibilityResources
+                        .Any(res => res.Label == lowResource.Label && res.Disabled == false)).ToList();
                     try
                     {
                         lowTestItems.Add(itemsUsingDisabledResource
@@ -107,14 +120,16 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
                 }
             }
 
-            foreach(BriefAccessibilityResource highResource in highTestKey.BriefResources)
+            foreach(AccessibilityResource highResource in highTestKey.AccessibilityResources.Where(res => res.Disabled == true))
             {
-                var checkForResource = highTestItems.Any(item => !item.BriefResources.Any(res => res.Label == highResource.Label));
+                var checkForResource = highTestItems
+                    .Any(item => item.AccessibilityResources
+                    .Any(res => res.Label == highResource.Label && res.Disabled == false));
                 if (!checkForResource)
                 {
                     var itemsUsingDisabledResource = briefHighItems
-                        .Where(item => !item.BriefResources
-                        .Any(res => res.Label == highResource.Label)).ToList();
+                        .Where(item => item.AccessibilityResources
+                        .Any(res => res.Label == highResource.Label && res.Disabled == false)).ToList();
                     try
                     {
                         highTestItems.Add(itemsUsingDisabledResource
@@ -145,9 +160,9 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
             foreach(string selectedResource in accessibilityResourceTitles)
             {
                 var selectedItem = testItems.ElementAt(rand.Next(testItems.Count()));
-                while (selectedItem.BriefResources.Any(res => res.Label == selectedResource))
+                while (selectedItem.AccessibilityResources.Any(res => res.Label == selectedResource && res.Disabled == true))
                     selectedItem = testItems.ElementAt(rand.Next(testItems.Count()));
-                itemsUnderTest.Add(AccessibilityTestItem.FromBriefSampleItem(selectedItem, selectedResource));
+                itemsUnderTest.Add(AccessibilityTestItem.FromBriefSampleItem(selectedItem, selectedResource, context));
             }
             return itemsUnderTest;
         }

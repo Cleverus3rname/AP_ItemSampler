@@ -13,6 +13,7 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
         {
             var resource = BriefAccessibilityResource.Create(
                 resourceCode: accessibilityResource.ResourceCode,
+                selectionCode: accessibilityResource.CurrentSelectionCode,
                 label: accessibilityResource.Label,
                 disabled: accessibilityResource.Disabled);
             return resource;

@@ -15,7 +15,7 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
         public string SubjectCode { get; }
         public string ClaimLabel { get; }
         public string Url { get; }
-        public ImmutableArray<BriefAccessibilityResource> BriefResources { get; }
+        public ImmutableArray<AccessibilityResource> AccessibilityResources { get; }
 
         public BriefSampleItem(
             int bankKey,
@@ -24,7 +24,7 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
             string subjectCode,
             string claimLabel,
             string url,
-            ImmutableArray<BriefAccessibilityResource> briefResources)
+            ImmutableArray<AccessibilityResource> accessibilityResource)
         {
             BankKey = bankKey;
             ItemKey = itemKey;
@@ -32,7 +32,7 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
             SubjectCode = subjectCode;
             ClaimLabel = claimLabel;
             Url = url;
-            BriefResources = briefResources;
+            AccessibilityResources = accessibilityResource;
         }
 
         public static BriefSampleItem FromSampleItem(SampleItem sampleItem, string baseUrl = "")
@@ -48,7 +48,8 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
                 subjectCode: sampleItem.Subject.Label,
                 claimLabel: sampleItem.Claim.Label,
                 url: $"{baseUrl}/Item/{sampleItem.BankKey}-{sampleItem.ItemKey}",
-                briefResources: resourceArray);
+                accessibilityResource: sampleItem.AccessibilityResourceGroups
+                    .SelectMany(group => group.AccessibilityResources).ToImmutableArray());
         }
 
         // public static BriefSampleItem PrependURL(this BriefSampleItem briefItem, string baseUrl)
@@ -65,30 +66,30 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
     }
 
 
-    public class DisabledResourcesComparer : IComparer<BriefSampleItem>
-    {
-        private readonly int numDisabledResources;
-        public DisabledResourcesComparer(int numDisabledResources)
-        {
-            this.numDisabledResources = numDisabledResources;
-        }
+    // public class DisabledResourcesComparer : IComparer<BriefSampleItem>
+    // {
+    //     private readonly int numDisabledResources;
+    //     public DisabledResourcesComparer(int numDisabledResources)
+    //     {
+    //         this.numDisabledResources = numDisabledResources;
+    //     }
 
-        private int Weight(BriefSampleItem checkItem)
-        {
-            int weight = 2;
-            if (checkItem.BriefResources.Length < numDisabledResources)
-                weight--;
+    //     private int Weight(BriefSampleItem checkItem)
+    //     {
+    //         int weight = 2;
+    //         if (checkItem.BriefResources.Length < numDisabledResources)
+    //             weight--;
             
-            if (checkItem.BriefResources.Length >= numDisabledResources)
-                weight++;
+    //         if (checkItem.BriefResources.Length >= numDisabledResources)
+    //             weight++;
 
-            return weight;
-        }
+    //         return weight;
+    //     }
 
-        public int Compare(BriefSampleItem x, BriefSampleItem y)
-        {
-            int weightDiff = Weight(x) - Weight(y);
-            return weightDiff;
-        }
-    }
+    //     public int Compare(BriefSampleItem x, BriefSampleItem y)
+    //     {
+    //         int weightDiff = Weight(x) - Weight(y);
+    //         return weightDiff;
+    //     }
+    // }
 }

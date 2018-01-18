@@ -78,6 +78,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             csvStream.Seek(0, SeekOrigin.Begin);
 
             return File(csvStream, "text/csv", "TestCaseItems.csv");
+            // return Json(orderedItems.ToList());
         }
 
     }

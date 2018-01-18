@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using SmarterBalanced.SampleItems.Dal.Providers.Models;
+using SmarterBalanced.SampleItems.Dal.Providers;
 
 namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
 {
@@ -15,7 +16,8 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
         public string ClaimLabel { get; }
         public int BankKey { get; }
         public int ItemKey { get; }
-        public string Url { get; }
+        public string SiwUrl { get; }
+        public string IvsUrl { get; }
 
         public AccessibilityTestItem(
             string resourceUnderTest,
@@ -24,7 +26,8 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
             string claimLabel,
             int bankKey,
             int itemKey,
-            string url)
+            string siwurl,
+            string ivsurl)
         {
             ResourceUnderTest = resourceUnderTest;
             SubjectCode = subjectCode;
@@ -32,11 +35,13 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
             ClaimLabel = claimLabel;
             BankKey = bankKey;
             ItemKey = itemKey;
-            Url = url;
+            SiwUrl = siwurl;
+            IvsUrl = ivsurl;
         }
 
-        public static AccessibilityTestItem FromBriefSampleItem(BriefSampleItem briefItem, string resourceUnderTest)
+        public static AccessibilityTestItem FromBriefSampleItem(BriefSampleItem briefItem, string resourceUnderTest, SampleItemsContext context)
         {
+            var resourceIsaapCode = briefItem.AccessibilityResources.Where(res => res.Label == resourceUnderTest).Select(res => res.CurrentSelectionCode).First();
             return new AccessibilityTestItem(
                 resourceUnderTest: resourceUnderTest,
                 subjectCode: briefItem.SubjectCode,
@@ -44,7 +49,8 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
                 claimLabel: briefItem.ClaimLabel,
                 bankKey: briefItem.BankKey,
                 itemKey: briefItem.ItemKey,
-                url: briefItem.Url);
+                siwurl: $"{briefItem.Url}?isaap={context.AppSettings.SettingsConfig.DefaultIsaapCodes}{resourceIsaapCode};",
+                ivsurl: $"{context.AppSettings.SettingsConfig.ItemViewerServiceURL}//items?ids={briefItem.BankKey}-{briefItem.ItemKey}&isaap={context.AppSettings.SettingsConfig.DefaultIsaapCodes}{resourceIsaapCode};");
         }
     }
 }
