@@ -48,11 +48,19 @@ module.exports = env => {
           "react",
           "react-dom",
           "react-router-dom",
+          "react-modal",
           "jquery",
           "typeface-pt-sans-caption/index.css",
           "typeface-pt-serif/index.css",
           "typeface-pt-serif-caption/index.css"
-        ]
+        ].concat(
+          isDevBuild
+            ? []
+            : [
+                "@osu-cass/sb-components/lib/Assets/Styles/bundle.less",
+                "@osu-cass/sb-components"
+              ]
+        )
       },
       output: {
         path: path.join(__dirname, "wwwroot", "dist"),
