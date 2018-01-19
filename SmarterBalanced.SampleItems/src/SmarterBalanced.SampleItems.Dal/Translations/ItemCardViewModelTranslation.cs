@@ -26,12 +26,14 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
                 targetHash: sampleItem.CoreStandards?.Target?.GetHashCode() ?? 0,
                 targetId: sampleItem.CoreStandards?.Target?.Id,
                 targetShortName: sampleItem.CoreStandards?.Target?.Name,
+                targetDesc: sampleItem.CoreStandards?.Target?.Descripton,
                 interactionTypeCode: sampleItem.InteractionType?.Code,
                 interactionTypeLabel: sampleItem.InteractionType?.Label,
                 isPerformanceItem: sampleItem.IsPerformanceItem,
                 brailleOnlyitem: sampleItem.BrailleOnlyItem,
                 depthOfKnowledge: sampleItem.DepthOfKnowledge,
                 ccss: sampleItem.CoreStandards?.CommonCoreStandardsId,
+                ccssDesc: sampleItem.CoreStandards?.CommonCoreStandardsDescription,
                 domain: sampleItem.Domain,
                 calculator: sampleItem.AllowCalculator);
 
