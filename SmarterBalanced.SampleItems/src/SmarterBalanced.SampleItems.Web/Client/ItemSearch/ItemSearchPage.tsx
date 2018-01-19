@@ -152,7 +152,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     }
     
     if (searchModel) {
-        searchAPI = ItemSearch.updateSearchParamsDependentFilters(searchAPI, searchModel);
+        searchAPI = ItemSearch.updateDependentSearchParams(searchAPI, searchModel);
         categories = Filter.getUpdatedSearchFilters(searchModel, categories, searchAPI);
     }
 
@@ -180,7 +180,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     }
 
     if (searchModel) {
-        searchAPI = ItemSearch.updateSearchParamsDependentFilters(searchAPI, searchModel);
+        searchAPI = ItemSearch.updateDependentSearchParams(searchAPI, searchModel);
     }
     
     const changedAdvancedFilter = advancedFilter.find(f => f.code === changed);
