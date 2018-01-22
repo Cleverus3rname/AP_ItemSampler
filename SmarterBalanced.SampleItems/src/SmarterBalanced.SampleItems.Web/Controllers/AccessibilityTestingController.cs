@@ -48,6 +48,10 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return Json(items);
         }
 
+        /// <summary>
+        /// Gets a list of all items with a specified claim.
+        /// </summary>
+        /// <param name="claim">required, desired claim label</param>
         [HttpGet("GetItemsWithClaim")]
         public IActionResult GetItemsWithClaim(string claim)
         {
@@ -55,6 +59,10 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return Json(items);
         }
 
+        /// <summary>
+        /// Gets a list of the smallest number of sample items giving full testing coverage
+        /// of all Accessibility Resources and returns that list.
+        /// </summary>
         [HttpGet("GetELATestItems")]
         public IActionResult GetELATestItems()
         {
@@ -62,6 +70,11 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return Json(items);
         }
 
+        ///<summary>
+        /// Gets a list of sample items that give full testing coverage of all Accessibility
+        /// Resources, associates each resource with an item that it can be tested with,
+        /// and returns a CSV file with information on each resource/item pair.
+        ///</summary>
         [HttpGet("GetTestCase")]
         public IActionResult GetTestCase()
         {
@@ -78,7 +91,6 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             csvStream.Seek(0, SeekOrigin.Begin);
 
             return File(csvStream, "text/csv", "TestCaseItems.csv");
-            // return Json(orderedItems.ToList());
         }
 
     }
