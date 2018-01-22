@@ -34,6 +34,83 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
             return results;
         }
 
+        public IList<InteractionType> GetInteractionTypes()
+        {
+            return context.InteractionTypes.ToList();
+        }
+
+        public IList<BriefSampleItem> GetInteractionTestItems()
+        {
+            var rand = new Random();
+
+            List<BriefSampleItem> lowInteractionItems = new List<BriefSampleItem>();
+            List<BriefSampleItem> highInteractionItems = new List<BriefSampleItem>();
+
+            foreach (InteractionType interaction in context.InteractionTypes.ToList())
+            {
+                var itemsOfType = context.SampleItems
+                    .Where(item => item.InteractionType.Equals(interaction))
+                    .Select(item => BriefSampleItem.FromSampleItem(item)).ToList().OrderBy(item => item.Grade);
+                try
+                {
+                    if (itemsOfType.Any(item => item.Grade <= GradeLevels.Elementary))
+                    {
+                        lowInteractionItems.Add(itemsOfType.Where(item => item.Grade <= GradeLevels.Elementary)
+                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade <= GradeLevels.Elementary))));
+                    }
+                    else if (itemsOfType.Any(item => item.Grade <= GradeLevels.Grade6))
+                    {
+                        lowInteractionItems.Add(itemsOfType.Where(item => item.Grade <= GradeLevels.Grade6)
+                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade <= GradeLevels.Grade6))));
+                    }
+                    else if (itemsOfType.Any(item => item.Grade <= GradeLevels.Grade7))
+                    {
+                        lowInteractionItems.Add(itemsOfType.Where(item => item.Grade <= GradeLevels.Grade7)
+                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade <= GradeLevels.Grade7))));
+                    }
+                    else
+                    {
+                        lowInteractionItems.Add(itemsOfType.First());
+                    }
+                }
+                catch (System.ArgumentOutOfRangeException e)
+                {
+                    Console.WriteLine("No low-level items found for interaction type {0}", interaction.Label);
+                    Console.WriteLine("Exception source: {0}", e.Source);
+                }
+
+                try
+                {
+                    if (itemsOfType.Any(item => item.Grade > GradeLevels.Middle))
+                    {
+                        highInteractionItems.Add(itemsOfType.Where(item => item.Grade > GradeLevels.Middle)
+                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade > GradeLevels.Middle))));
+                    }
+                    else if (itemsOfType.Any(item => item.Grade >= GradeLevels.Grade8))
+                    {
+                        highInteractionItems.Add(itemsOfType.Where(item => item.Grade >= GradeLevels.Grade8)
+                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade >= GradeLevels.Grade8))));
+                    }
+                    else if (itemsOfType.Any(item => item.Grade >= GradeLevels.Grade7))
+                    {
+                        highInteractionItems.Add(itemsOfType.Where(item => item.Grade >= GradeLevels.Grade7)
+                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade >= GradeLevels.Grade7))));
+                    }
+                    else
+                    {
+                        highInteractionItems.Add(itemsOfType.Last());
+                    }
+                }
+                catch (System.ArgumentOutOfRangeException e)
+                {
+                    Console.WriteLine("No high-level items found for interaction type {0}", interaction.Label);
+                    Console.WriteLine("Exception source: {0}", e.Source);
+                }
+            }
+            var testSet = lowInteractionItems.Concat(highInteractionItems).ToList();
+            return testSet;
+        }
+
         public IList<ItemCardViewModel> GetAccessibilityItems()
         {
            var items = context.SampleItems
@@ -203,7 +280,7 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
             {
                 var selectedItem = testItems.ElementAt(rand.Next(testItems.Count()));
                 while (selectedItem.AccessibilityResources.Any(res => res.Label == selectedResource && res.Disabled == true))
-                    selectedItem = testItems.ElementAt(rand.Next(testItems.Count()));t));
+                    selectedItem = testItems.ElementAt(rand.Next(testItems.Count()));
             }
             return itemsUnderTest;
         }

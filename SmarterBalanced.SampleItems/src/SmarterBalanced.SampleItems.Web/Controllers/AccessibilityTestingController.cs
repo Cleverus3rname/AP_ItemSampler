@@ -93,6 +93,19 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return File(csvStream, "text/csv", "TestCaseItems.csv");
         }
 
+        [HttpGet("GetInteractions")]
+        public IActionResult GetInteractions()
+        {
+            return Json(repo.GetInteractionTypes());
+        }
+
+        [HttpGet("GetInteractionTestSet")]
+        public IActionResult GetInteractionTestSet()
+        {
+            var testSet = repo.GetInteractionTestItems();
+            return Json(testSet);
+        }
+
     }
 
 }
