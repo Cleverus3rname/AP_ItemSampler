@@ -80,7 +80,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         {
             var baseUrl = Request.Host.ToString();
             var items = repo.GetAccessibilityTestItems(baseUrl);
-            var printableItems = repo.FormatTestItems(items);
+            var printableItems = repo.FormatAccessibilityTestItems(items);
             var orderedItems = printableItems.OrderBy(item => item.ItemKey);
             var csvStream = new MemoryStream();
             var writer = new StreamWriter(csvStream, System.Text.Encoding.UTF8);
@@ -90,7 +90,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             writer.Flush();
             csvStream.Seek(0, SeekOrigin.Begin);
 
-            return File(csvStream, "text/csv", "TestCaseItems.csv");
+            return File(csvStream, "text/csv", "AccessibilityTestCaseItems.csv");
         }
 
         [HttpGet("GetInteractions")]
@@ -102,8 +102,18 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         [HttpGet("GetInteractionTestSet")]
         public IActionResult GetInteractionTestSet()
         {
-            var testSet = repo.GetInteractionTestItems();
-            return Json(testSet);
+            var baseUrl = Request.Host.ToString();
+            var testSet = repo.GetInteractionTestItems(baseUrl);
+            var orderedItems = testSet.OrderBy(item => item.InteractionUnderTest);
+            var csvStream = new MemoryStream();
+            var writer = new StreamWriter(csvStream, System.Text.Encoding.UTF8);
+            var csv = new CsvWriter(writer);
+
+            csv.WriteRecords(orderedItems);
+            writer.Flush();
+            csvStream.Seek(0, SeekOrigin.Begin);
+
+            return File(csvStream, "text/csv", "InteractionTestCaseItems.csv");
         }
 
     }

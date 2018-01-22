@@ -39,38 +39,38 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
             return context.InteractionTypes.ToList();
         }
 
-        public IList<BriefSampleItem> GetInteractionTestItems()
+        public IList<InteractionTestItem> GetInteractionTestItems(string domainUrl = "")
         {
             var rand = new Random();
 
-            List<BriefSampleItem> lowInteractionItems = new List<BriefSampleItem>();
-            List<BriefSampleItem> highInteractionItems = new List<BriefSampleItem>();
+            List<InteractionTestItem> lowInteractionItems = new List<InteractionTestItem>();
+            List<InteractionTestItem> highInteractionItems = new List<InteractionTestItem>();
 
             foreach (InteractionType interaction in context.InteractionTypes.ToList())
             {
                 var itemsOfType = context.SampleItems
                     .Where(item => item.InteractionType.Equals(interaction))
-                    .Select(item => BriefSampleItem.FromSampleItem(item)).ToList().OrderBy(item => item.Grade);
+                    .Select(item => BriefSampleItem.FromSampleItem(item, domainUrl)).ToList().OrderBy(item => item.Grade);
                 try
                 {
                     if (itemsOfType.Any(item => item.Grade <= GradeLevels.Elementary))
                     {
-                        lowInteractionItems.Add(itemsOfType.Where(item => item.Grade <= GradeLevels.Elementary)
-                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade <= GradeLevels.Elementary))));
+                        lowInteractionItems.Add(InteractionTestItem.FromBriefSampleItem(itemsOfType.Where(item => item.Grade <= GradeLevels.Elementary)
+                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade <= GradeLevels.Elementary))), interaction, context));
                     }
                     else if (itemsOfType.Any(item => item.Grade <= GradeLevels.Grade6))
                     {
-                        lowInteractionItems.Add(itemsOfType.Where(item => item.Grade <= GradeLevels.Grade6)
-                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade <= GradeLevels.Grade6))));
+                        lowInteractionItems.Add(InteractionTestItem.FromBriefSampleItem(itemsOfType.Where(item => item.Grade <= GradeLevels.Grade6)
+                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade <= GradeLevels.Grade6))), interaction, context));
                     }
                     else if (itemsOfType.Any(item => item.Grade <= GradeLevels.Grade7))
                     {
-                        lowInteractionItems.Add(itemsOfType.Where(item => item.Grade <= GradeLevels.Grade7)
-                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade <= GradeLevels.Grade7))));
+                        lowInteractionItems.Add(InteractionTestItem.FromBriefSampleItem(itemsOfType.Where(item => item.Grade <= GradeLevels.Grade7)
+                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade <= GradeLevels.Grade7))), interaction, context));
                     }
                     else
                     {
-                        lowInteractionItems.Add(itemsOfType.First());
+                        lowInteractionItems.Add(InteractionTestItem.FromBriefSampleItem(itemsOfType.First(), interaction, context));
                     }
                 }
                 catch (System.ArgumentOutOfRangeException e)
@@ -83,22 +83,22 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
                 {
                     if (itemsOfType.Any(item => item.Grade > GradeLevels.Middle))
                     {
-                        highInteractionItems.Add(itemsOfType.Where(item => item.Grade > GradeLevels.Middle)
-                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade > GradeLevels.Middle))));
+                        highInteractionItems.Add(InteractionTestItem.FromBriefSampleItem(itemsOfType.Where(item => item.Grade > GradeLevels.Middle)
+                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade > GradeLevels.Middle))), interaction, context));
                     }
                     else if (itemsOfType.Any(item => item.Grade >= GradeLevels.Grade8))
                     {
-                        highInteractionItems.Add(itemsOfType.Where(item => item.Grade >= GradeLevels.Grade8)
-                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade >= GradeLevels.Grade8))));
+                        highInteractionItems.Add(InteractionTestItem.FromBriefSampleItem(itemsOfType.Where(item => item.Grade >= GradeLevels.Grade8)
+                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade >= GradeLevels.Grade8))), interaction, context));
                     }
                     else if (itemsOfType.Any(item => item.Grade >= GradeLevels.Grade7))
                     {
-                        highInteractionItems.Add(itemsOfType.Where(item => item.Grade >= GradeLevels.Grade7)
-                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade >= GradeLevels.Grade7))));
+                        highInteractionItems.Add(InteractionTestItem.FromBriefSampleItem(itemsOfType.Where(item => item.Grade >= GradeLevels.Grade7)
+                            .ElementAt(rand.Next(itemsOfType.Count(item => item.Grade >= GradeLevels.Grade7))), interaction, context));
                     }
                     else
                     {
-                        highInteractionItems.Add(itemsOfType.Last());
+                        highInteractionItems.Add(InteractionTestItem.FromBriefSampleItem(itemsOfType.Last(), interaction, context));
                     }
                 }
                 catch (System.ArgumentOutOfRangeException e)
@@ -159,12 +159,11 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
         public IList<BriefSampleItem> GetAccessibilityTestItems(string domainUrl = "") 
         {
             int numAcceptableDisables = 4;
-            var baseUrl = domainUrl;
             var rand = new Random();
 
             var gradeSortedItems = context.SampleItems
                 .OrderBy(item => item.Grade)
-                .Select(item => BriefSampleItem.FromSampleItem(item, baseUrl)).ToImmutableArray();
+                .Select(item => BriefSampleItem.FromSampleItem(item, domainUrl)).ToImmutableArray();
             var testableItems = gradeSortedItems.Where(item => 
                 item.AccessibilityResources.Where(res => res.Disabled == true).Count()
                 <= numAcceptableDisables).ToImmutableArray();
@@ -268,7 +267,7 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
         ///</summary>
         ///<param name="testItems">required, a list of brief items selected for testing</param>
         ///<returns name="itemsUnderTest">a list of objects containing an item/resource association and item info</returns>
-        public IList<AccessibilityTestItem> FormatTestItems(IList<BriefSampleItem> testItems)
+        public IList<AccessibilityTestItem> FormatAccessibilityTestItems(IList<BriefSampleItem> testItems)
         {
             var rand = new Random();
             SampleItem resourceListItem = context.SampleItems.First();
@@ -284,5 +283,10 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
             }
             return itemsUnderTest;
         }
+
+        // public IList<InteractionTestItem> FormatInteractionTestItems(IList<BriefSampleItem> testItems)
+        // {
+            
+        // }
     }
 }
