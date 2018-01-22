@@ -85,26 +85,17 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
             var baseUrl = domainUrl;
             var rand = new Random();
 
-            // Need a list of brief sample items sorted by grade.
             var gradeSortedItems = context.SampleItems
                 .OrderBy(item => item.Grade)
                 .Select(item => BriefSampleItem.FromSampleItem(item, baseUrl)).ToImmutableArray();
-            
-            // List of all items with numAcceptableDisables resources disabled. This keeps the number of items needed to a minimum.
             var testableItems = gradeSortedItems.Where(item => 
                 item.AccessibilityResources.Where(res => res.Disabled == true).Count()
                 <= numAcceptableDisables).ToImmutableArray();
 
-            // Get a single item to use as the base for the low level coverage. Other items will be selected to fill in the 
-            // resources not covered by this Key Test item.
-            // Selects a random item that is within the Elementary grade levels. 
             var lowTestKey = testableItems
                 .ElementAt(rand
                 .Next(testableItems.Count(item => item.Grade <= GradeLevels.Elementary)));
 
-            // Get a Key test item to use as the base for high level coverage. Other items will be selected to fill in the 
-            // resources not covered by this key test item.
-            // Selects a random item that is within the High School grade levels. 
             var highTestKey = testableItems
                 .ElementAt(rand
                 .Next(testableItems.Count(item => item.Grade <= GradeLevels.Middle), 
@@ -116,41 +107,29 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
             lowTestItems.Add(lowTestKey);
             highTestItems.Add(highTestKey);
 
-            // Iterate over the disabled resources in the selected Low Level Test Key and find sample items that have that resource
-            // enabled. 
             foreach(AccessibilityResource lowResource in lowTestKey.AccessibilityResources.Where(res => res.Disabled == true))
             {
-                // Check whether the currently selected resource is already covered by an item selected for testing.
                 var checkForResource = lowTestItems
                     .Any(item => item.AccessibilityResources
                     .Any(res => res.Label == lowResource.Label && res.Disabled == false));
                 
                 if (!checkForResource)
                 {
-                    // Construct a list of items that have the currently selected resource enabled
-                    // This list can potentially be empty if no accessable items use the selected resource,
-                    // for example, no Elementary level items use the Calculator resource.
                     var itemsUsingDisabledResource = gradeSortedItems
                         .Where(item => item.AccessibilityResources
                         .Any(res => res.Label == lowResource.Label && res.Disabled == false)).ToList();
-                    try // Needed in case the above list is empty
+                    try
                     {
-                        // If there are any items in the elementary school range, select from those
                         if (itemsUsingDisabledResource.Any(item => item.Grade <= GradeLevels.Elementary))
                         {
                             lowTestItems.Add(itemsUsingDisabledResource
                                 .ElementAt(rand
-                                // Select a random item with an index lower than the total number of elementary level
-                                // items in the list
                                 .Next(itemsUsingDisabledResource.Count(item => item.Grade <= GradeLevels.Elementary))));
                         }
-                        // If there aren't any elementary level items, select from middle school items.
                         else
                         {
                             lowTestItems.Add(itemsUsingDisabledResource
                                 .ElementAt(rand
-                                // Select a random item with an index lower than the total number of Middle school level
-                                // items in the list
                                 .Next(itemsUsingDisabledResource.Count(item => item.Grade <= GradeLevels.Middle))));
                         }
 
@@ -163,42 +142,30 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
                 }
             }
 
-            // Iterate over the disabled resources in the selected high level Test Key and find sample items that have that resource
-            // enabled.
             foreach(AccessibilityResource highResource in highTestKey.AccessibilityResources.Where(res => res.Disabled == true))
             {
-                // Check whether the currently selected resource is already covered by an item selected for testing.
                 var checkForResource = highTestItems
                     .Any(item => item.AccessibilityResources
                     .Any(res => res.Label == highResource.Label && res.Disabled == false));
                 
                 if (!checkForResource)
                 {
-                    // Construct a list of items that have the currently selected resource enabled
-                    // This list can potentially be empty if no accessable items use the selected resource,
-                    // for example, no Elementary level items use the Calculator resource.
                     var itemsUsingDisabledResource = gradeSortedItems
                         .Where(item => item.AccessibilityResources
                         .Any(res => res.Label == highResource.Label && res.Disabled == false)).ToList();
-                    try // Needed in case the above list is empty
+                    try
                     {
-                        // If there are any items in the high school range, select from those
                         if (itemsUsingDisabledResource.Any(item => item.Grade > GradeLevels.Middle))
                         {
                             highTestItems.Add(itemsUsingDisabledResource
                                 .ElementAt(rand
-                                // Select a random item with an index after the Middle school items and before
-                                // the end of the list
                                 .Next(itemsUsingDisabledResource.Count(item => item.Grade <= GradeLevels.Middle)
                                     ,itemsUsingDisabledResource.Count())));
                         }
-                        // If there aren't any High level items, select from middle school items.
                         else
                         {
                             lowTestItems.Add(itemsUsingDisabledResource
                                 .ElementAt(rand
-                                    // Select a random item with an index after the Elementary school items and before
-                                    // the end of the list
                                     .Next(itemsUsingDisabledResource.Count(item => item.Grade <= GradeLevels.Elementary),
                                         itemsUsingDisabledResource.Count())));
                         }
@@ -227,33 +194,16 @@ namespace SmarterBalanced.SampleItems.Core.AccessibilityTesting
         public IList<AccessibilityTestItem> FormatTestItems(IList<BriefSampleItem> testItems)
         {
             var rand = new Random();
-
-            // Grab a sample item, whichever is at the top of the list. All sample items contain a list 
-            // of all Accessibility resources. We'll use this item to get a list of all accessibility resources.
             SampleItem resourceListItem = context.SampleItems.First();
-
-            // Create an array of resources
             ImmutableArray<AccessibilityResource> resourceList = resourceListItem.AccessibilityResourceGroups
                 .SelectMany(group => group.AccessibilityResources.Select(r => r)).ToImmutableArray();
-            
-            // Create a list of the names of all resources.
             List<string> accessibilityResourceTitles = resourceList.Select(r => r.Label).ToList();
-           
-            // Create a place to store all formatted test items.
             List<AccessibilityTestItem> itemsUnderTest = new List<AccessibilityTestItem>();
-
-            // Iterate over the resources in the list to associate test items with a resource to test
             foreach(string selectedResource in accessibilityResourceTitles)
             {
-                // Select a random item from the list of items selected for testing.
                 var selectedItem = testItems.ElementAt(rand.Next(testItems.Count()));
-
-                // Keep selecting a new item until one that has the currently selected resource enabled is found.
                 while (selectedItem.AccessibilityResources.Any(res => res.Label == selectedResource && res.Disabled == true))
-                    selectedItem = testItems.ElementAt(rand.Next(testItems.Count()));
-                
-                // Add the association to the list of formatted items.
-                itemsUnderTest.Add(AccessibilityTestItem.FromBriefSampleItem(selectedItem, selectedResource, context));
+                    selectedItem = testItems.ElementAt(rand.Next(testItems.Count()));t));
             }
             return itemsUnderTest;
         }
