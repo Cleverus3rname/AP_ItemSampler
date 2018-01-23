@@ -3,7 +3,7 @@
   "name": "ap-item-sampler",
   "license": "MPL-2.0",
   "scripts": {
-    "install": "npm run webpack-vendor && npm run webpack",
+    "install": "npm run build",
     "build": "npm run webpack-vendor && npm run webpack",
     "build:prod": "npm run webpack-vendor:prod && npm run webpack:prod",
     "webpack": "./node_modules/.bin/cross-env NODE_ENV=development webpack --config webpack.config.js --env.dev",
