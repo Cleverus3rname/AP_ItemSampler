@@ -21,9 +21,10 @@ import {
   ItemModel,
   BasicFilterCategoryModel,
   FilterCategoryModel,
-  FilterContainer
+  FilterContainer,
+  FilterType
 } from "@osu-cass/sb-components";
-import { getFilterCategories, getItemSearchModel } from "./ItemSearch";
+import { getAdvancedFilterCategories, getBasicFilterCategories, getItemSearchModel } from "./ItemSearch";
 
 export interface Props extends RouteComponentProps<{}> {
   itemsSearchClient: (params: SearchAPIParamsModel) => Promise<ItemCardModel[]>;
@@ -33,8 +34,8 @@ export interface Props extends RouteComponentProps<{}> {
 export interface State {
   searchResults: Resource<ItemCardModel[]>;
   itemSearch: Resource<ItemsSearchModel>;
-  advFilters?: AdvancedFilterCategoryModel[];
-  basicFilters?: BasicFilterCategoryModel[];
+  advancedFilter: AdvancedFilterCategoryModel[];
+  basicFilter: BasicFilterCategoryModel[];
   searchAPIParams: SearchAPIParamsModel;
   item: ItemModel | undefined;
   redirect: boolean;
@@ -50,7 +51,9 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
       searchResults: { kind: "loading" },
       itemSearch: { kind: "loading" },
       item: undefined,
-      redirect: false
+      redirect: false,
+      advancedFilter: [],
+      basicFilter: []
     };
   }
 
@@ -90,22 +93,15 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
   }
 
   onFetchFilterModel(itemSearchFilter: ItemsSearchFilterModel) {
-    const { searchAPIParams } = this.state;
-
-    let filters = getFilterCategories(itemSearchFilter, searchAPIParams);
-    const searchModel = getItemSearchModel(itemSearchFilter);
-
-    filters = Filter.getUpdatedSearchFilters(
-      searchModel,
-      filters,
-      searchAPIParams
-    );
-
-    this.setState({
-      itemSearch: { kind: "success", content: searchModel },
-      advFilters: filters,
-      basicFilters: []
-    });
+      let advancedFilters = getAdvancedFilterCategories(itemSearchFilter, this.state.searchAPIParams);
+      let basicFilters = getBasicFilterCategories(itemSearchFilter, this.state.searchAPIParams);
+      const searchModel = getItemSearchModel(itemSearchFilter);
+      advancedFilters = Filter.getUpdatedSearchFilters(searchModel, advancedFilters, this.state.searchAPIParams);
+      this.setState({
+          itemSearch: { kind: "success", content: searchModel },
+          advancedFilter: advancedFilters,
+          basicFilter: basicFilters
+      });
   }
 
   getFilteredItemCards(cards: ItemCardModel[]): ItemCardModel[] {
@@ -117,6 +113,90 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     }
 
     return newCards ? newCards : cards;
+  }
+
+  updateLocationSearch(searchAPI: SearchAPIParamsModel) {
+    const search = SearchUrl.encodeQuery(searchAPI);
+    const location = { ...this.props.history.location, search };
+    this.props.history.replace(location);
+  }
+
+  getLocationSearch(search: string): SearchAPIParamsModel {
+    let searchAPI: SearchAPIParamsModel = {};
+    try {
+        searchAPI = SearchUrl.decodeSearch(search);
+    } catch {}
+
+    return searchAPI;
+  }
+
+  onAdvancedFilterUpdate = (categories?: AdvancedFilterCategoryModel[], changed?: FilterType) => {
+    if (!categories) {
+        return;
+    }
+
+    let searchAPI = this.state.searchAPIParams;
+    const basicFilter = this.state.basicFilter;
+    const searchModel = getResourceContent(this.state.itemSearch);
+
+    if (changed) {
+        const changedBasicFilter = basicFilter.find(f => f.code == changed)
+        if (changedBasicFilter) {
+            changedBasicFilter.filterOptions.forEach(o => o.isSelected = false);
+        }
+
+        const changedAdvancedFilter = categories.find(f => f.code === changed);
+        if (changedAdvancedFilter) {
+            searchAPI = ItemSearch.updateSearchApiModel(changedAdvancedFilter, searchAPI);
+        }
+    }
+    
+    if (searchModel) {
+        searchAPI = ItemSearch.updateDependentSearchParams(searchAPI, searchModel);
+        categories = Filter.getUpdatedSearchFilters(searchModel, categories, searchAPI);
+    }
+
+    this.updateLocationSearch(searchAPI);
+    this.setState({
+        advancedFilter: categories,
+        searchAPIParams: searchAPI,
+        basicFilter
+    });
+  }
+
+  onBasicFilterUpdate = (categories: BasicFilterCategoryModel[], changed: FilterType) => {
+    if (!categories) {
+        return;
+    }
+
+    let searchAPI = this.state.searchAPIParams;
+    const searchModel = getResourceContent(this.state.itemSearch);
+    let advancedFilter = this.state.advancedFilter;
+    
+    const changedBasicFilter = categories.find(f => f.code === changed);
+    if (changedBasicFilter) {
+        searchAPI = ItemSearch.updateSearchApiModel(changedBasicFilter, searchAPI)
+        
+    }
+
+    if (searchModel) {
+        searchAPI = ItemSearch.updateDependentSearchParams(searchAPI, searchModel);
+    }
+    
+    const changedAdvancedFilter = advancedFilter.find(f => f.code === changed);
+    if (changedAdvancedFilter) {
+        changedAdvancedFilter.filterOptions.forEach(o => o.isSelected = false);
+        
+        if (searchModel) {
+            advancedFilter = Filter.getUpdatedSearchFilters(searchModel, advancedFilter, searchAPI);
+        }
+    }
+
+    this.updateLocationSearch(searchAPI);
+    this.setState({
+        basicFilter: categories,
+        searchAPIParams: searchAPI,
+    });
   }
 
   renderItemCards(): JSX.Element[] | JSX.Element | undefined {
@@ -175,78 +255,19 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     );
   }
 
-  updateLocationSearch(searchAPI: SearchAPIParamsModel) {
-    const search = SearchUrl.encodeQuery(searchAPI);
-    const location = { ...this.props.history.location, search };
-    this.props.history.replace(location);
-  }
-
-  getLocationSearch(search: string): SearchAPIParamsModel {
-    let searchAPI: SearchAPIParamsModel = {};
-    try {
-      searchAPI = SearchUrl.decodeSearch(search);
-    } catch {}
-
-    return searchAPI;
-  }
-
-  onFilterApplied(
-    basicCategories: BasicFilterCategoryModel[],
-    advCategories: AdvancedFilterCategoryModel[]
-  ) {
-    const { itemSearch } = this.state;
-    let bothFilters: FilterCategoryModel[] = basicCategories;
-    bothFilters = bothFilters.concat(advCategories);
-
-    let newAdvFilters = advCategories;
-
-    const searchModel = getResourceContent(itemSearch);
-
-    // TODO: if we have duplicate categories maybe we will need to parse two lists in the url.location
-    let searchAPI = ItemSearch.filterToSearchApiModel(advCategories);
-
-    if (searchModel) {
-      newAdvFilters = Filter.getUpdatedSearchFilters(
-        searchModel,
-        advCategories,
-        searchAPI
-      );
-
-      searchAPI = ItemSearch.filterToSearchApiModel(newAdvFilters);
-    }
-
-    this.updateLocationSearch(searchAPI);
-
-    this.setState({
-      advFilters: advCategories,
-      searchAPIParams: searchAPI,
-      basicFilters: basicCategories
-    });
-  }
-
-  handleBasicFilterApplied = (basicFilters: BasicFilterCategoryModel[]) => {
-    this.onFilterApplied(basicFilters, this.state.advFilters || []);
-  };
-
-  handleAdvancedFilterApplied = (
-    advCategories: AdvancedFilterCategoryModel[]
-  ) => {
-    this.onFilterApplied(this.state.basicFilters || [], advCategories);
-  };
-
   renderFilters() {
     let content;
-    const { advFilters, basicFilters } = this.state;
+    const { basicFilter, advancedFilter } = this.state;
 
-    if (advFilters && basicFilters) {
+    if (advancedFilter && basicFilter) {
       content = (
         <div>
           <FilterContainer
             filterId="sb-filter-id"
-            advancedFilterCategories={advFilters}
-            onUpdateAdvancedFilter={this.handleAdvancedFilterApplied}
-            basicFilterCategories={basicFilters}
-            onUpdateBasicFilter={this.handleBasicFilterApplied}
+            advancedFilterCategories={advancedFilter}
+            onUpdateAdvancedFilter={this.onAdvancedFilterUpdate}
+            basicFilterCategories={basicFilter}
+            onUpdateBasicFilter={this.onBasicFilterUpdate}
           />
         </div>
       );
