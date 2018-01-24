@@ -32,11 +32,13 @@ export function getBasicFilterCategories(
     ];
     const grades = {
         ...ItemSearch.filterSearchToCategory(itemSearchFilter.grades, searchAPI),
-        type: OptionTypeModel.DropDown
+        type: OptionTypeModel.DropDown,
+        label: "Grade"
     };
     const subjects = {
         ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects, searchAPI),
-        type: OptionTypeModel.DropDown
+        type: OptionTypeModel.DropDown,
+        label: "Subject"
     };
 
     let basicFilters: BasicFilterCategoryModel[] = [
