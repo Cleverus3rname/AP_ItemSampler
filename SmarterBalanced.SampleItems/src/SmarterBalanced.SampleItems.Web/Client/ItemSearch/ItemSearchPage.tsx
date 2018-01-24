@@ -22,7 +22,8 @@ import {
   BasicFilterCategoryModel,
   FilterCategoryModel,
   FilterContainer,
-  FilterType
+  FilterType,
+  OptionTypeModel
 } from "@osu-cass/sb-components";
 import { getAdvancedFilterCategories, getBasicFilterCategories, getItemSearchModel } from "./ItemSearch";
 
@@ -164,6 +165,15 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     });
   }
 
+  updateSubjectAdvancedFilter(basic: BasicFilterCategoryModel[], advanced: AdvancedFilterCategoryModel[]) {
+      const basicSubject = basic.find(f => f.code === FilterType.Subject);
+      const advSubject = advanced.find(f => f.code === FilterType.Subject);
+
+      if (basicSubject && advSubject) {
+          Filter.updateSingleFilter(advSubject, basicSubject);
+      }
+  }
+
   onBasicFilterUpdate = (categories: BasicFilterCategoryModel[], changed: FilterType) => {
     if (!categories) {
         return;
@@ -189,6 +199,9 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         
         if (searchModel) {
             advancedFilter = Filter.getUpdatedSearchFilters(searchModel, advancedFilter, searchAPI);
+        }
+        if (changed === FilterType.Subject) {
+            this.updateSubjectAdvancedFilter(categories, advancedFilter);
         }
     }
 
