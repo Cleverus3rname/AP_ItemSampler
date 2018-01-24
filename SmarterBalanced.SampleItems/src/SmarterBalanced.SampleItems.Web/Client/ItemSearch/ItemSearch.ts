@@ -51,11 +51,6 @@ export function getAdvancedFilterCategories(
   itemSearchFilter: ItemsSearchFilterModel,
   searchAPI: SearchAPIParamsModel
 ): AdvancedFilterCategoryModel[] {
-    itemSearchFilter.grades.filterOptions = [
-        GradeLevels.Elementary,
-        GradeLevels.Middle,
-        GradeLevels.High
-  ];;
 
   const claims = {
     ...ItemSearch.filterSearchToCategory(itemSearchFilter.claims, searchAPI),
@@ -76,13 +71,6 @@ export function getAdvancedFilterCategories(
       itemSearchFilter.interactionTypes,
       searchAPI
     ),
-    isMultiSelect: true,
-    disabled: false,
-    displayAllButton: true
-  };
-
-  const grades = {
-    ...ItemSearch.filterSearchToCategory(itemSearchFilter.grades, searchAPI),
     isMultiSelect: true,
     disabled: false,
     displayAllButton: true
@@ -116,7 +104,6 @@ export function getAdvancedFilterCategories(
   };
 
   return [
-    grades,
     subjects,
     claims,
     interactions,
