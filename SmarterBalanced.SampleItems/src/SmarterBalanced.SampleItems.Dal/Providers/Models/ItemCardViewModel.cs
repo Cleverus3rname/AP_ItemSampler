@@ -19,6 +19,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         public int TargetHash { get; }
         public string TargetId { get; }
         public string TargetShortName { get; }
+        public string TargetDescription { get; }
         public string InteractionTypeCode { get; }
         public string InteractionTypeLabel { get; }
         public bool IsPerformanceItem { get; }
@@ -26,6 +27,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         public string Domain { get; }
         public string DepthOfKnowledge { get; }
         public string CommonCoreStandardId { get; }
+        public string CcssDescription { get; }
         public bool Calculator { get; }
 
         public ItemCardViewModel(
@@ -41,6 +43,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             int targetHash,
             string targetId,
             string targetShortName,
+            string targetDesc,
             string interactionTypeCode,
             string interactionTypeLabel,
             bool isPerformanceItem,
@@ -48,8 +51,10 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             string domain,
             string depthOfKnowledge,
             string ccss,
+            string ccssDesc,
             bool calculator)
         {
+            TargetDescription = targetDesc;
             BankKey = bankKey;
             ItemKey = itemKey;
             Title = title;
@@ -68,6 +73,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             DepthOfKnowledge = depthOfKnowledge;
             Domain = domain;
             CommonCoreStandardId = ccss;
+            CcssDescription = ccssDesc;
             TargetId = targetId;
             Calculator = calculator;
         }
@@ -88,6 +94,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
            int targetHash = -1,
            string targetId = "",
            string targetShortName = "",
+           string targetDesc = "",
            string interactionTypeCode = "",
            string interactionTypeLabel = "",
            bool isPerformanceItem = false,
@@ -95,6 +102,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
            string domain = "",
            string depthOfKnowledge = "",
            string ccss = "",
+           string ccssDesc = "",
            bool calculator = false)
         {
             return new ItemCardViewModel(
@@ -109,6 +117,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
                 claimLabel: claimLabel,
                 targetHash: targetHash,
                 targetShortName: targetShortName,
+                targetDesc: targetDesc,
                 interactionTypeCode: interactionTypeCode,
                 interactionTypeLabel: interactionTypeLabel,
                 isPerformanceItem: isPerformanceItem,
@@ -116,10 +125,10 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
                 domain: domain,
                 depthOfKnowledge: depthOfKnowledge,
                 ccss: ccss,
+                ccssDesc: ccssDesc,
                 targetId: targetId,
                 calculator: calculator);
         }
-
     }
 
     public class MoreLikeThisComparer : IComparer<ItemCardViewModel>
