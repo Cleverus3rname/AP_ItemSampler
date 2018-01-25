@@ -150,6 +150,8 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         if (changedAdvancedFilter) {
             searchAPI = ItemSearch.updateSearchApiModel(changedAdvancedFilter, searchAPI);
         }
+    } else {
+        searchAPI = { }; // clear the filter
     }
     
     if (searchModel) {
