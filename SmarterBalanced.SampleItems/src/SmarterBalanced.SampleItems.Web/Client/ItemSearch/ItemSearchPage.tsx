@@ -21,13 +21,14 @@ import {
   ItemModel,
   BasicFilterCategoryModel,
   FilterCategoryModel,
-  FilterContainer,
+  FilterContainer,
+
   FilterType
 } from "@osu-cass/sb-components";
 import { getAdvancedFilterCategories, getBasicFilterCategories, getItemSearchModel } from "./ItemSearch";
 
 export interface Props extends RouteComponentProps<{}> {
-  itemsSearchClient: (params: SearchAPIParamsModel) => Promise<ItemCardModel[]>;
+  itemsSearchClient: () => Promise<ItemCardModel[]>;
   itemsViewModelClient: () => Promise<ItemsSearchFilterModel>;
 }
 
@@ -64,7 +65,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
       .catch(err => this.onError(err));
 
     this.props
-      .itemsSearchClient({})
+      .itemsSearchClient()
       .then(data => this.onSearch(data))
       .catch(err => this.onError(err));
   }

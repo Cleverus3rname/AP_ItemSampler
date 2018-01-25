@@ -6,54 +6,54 @@
   ItemsSearchModel,
   ItemCardModel,
   getRequest,
-  GradeLevels,
+  GradeLevels,
   OptionTypeModel,
   BasicFilterCategoryModel
 } from "@osu-cass/sb-components";
 
-export const ItemsSearchClient = (params: SearchAPIParamsModel) =>
-  getRequest<ItemCardModel[]>("/BrowseItems/search", params);
+export const itemSearchClient = getRequest<ItemCardModel[]>(
+  "/BrowseItems/search"
+);
 
-export const ItemsViewModelClient = () =>
-  getRequest<ItemsSearchFilterModel>("/BrowseItems/FilterSearchModel");
+export const itemsSearchFilterClient = getRequest<ItemsSearchFilterModel>(
+  "/BrowseItems/FilterSearchModel"
+);
 
 export function getBasicFilterCategories(
-    itemSearchFilter: ItemsSearchFilterModel,
-    searchAPI: SearchAPIParamsModel
+  itemSearchFilter: ItemsSearchFilterModel,
+  searchAPI: SearchAPIParamsModel
 ): BasicFilterCategoryModel[] {
-    itemSearchFilter.grades.filterOptions = [
-        GradeLevels.Grade3,
-        GradeLevels.Grade4,
-        GradeLevels.Grade5,
-        GradeLevels.Grade6,
-        GradeLevels.Grade7,
-        GradeLevels.Grade8,
-        GradeLevels.High
-    ];
-    const grades = {
-        ...ItemSearch.filterSearchToCategory(itemSearchFilter.grades, searchAPI),
-        type: OptionTypeModel.DropDown
-    };
-    const subjects = {
-        ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects, searchAPI),
-        type: OptionTypeModel.DropDown
-    };
+  itemSearchFilter.grades.filterOptions = [
+    GradeLevels.Grade3,
+    GradeLevels.Grade4,
+    GradeLevels.Grade5,
+    GradeLevels.Grade6,
+    GradeLevels.Grade7,
+    GradeLevels.Grade8,
+    GradeLevels.High
+  ];
+  const grades = {
+    ...ItemSearch.filterSearchToCategory(itemSearchFilter.grades, searchAPI),
+    type: OptionTypeModel.DropDown
+  };
+  const subjects = {
+    ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects, searchAPI),
+    type: OptionTypeModel.DropDown
+  };
 
-    let basicFilters: BasicFilterCategoryModel[] = [
-        grades, subjects
-    ];
-    return basicFilters;
+  let basicFilters: BasicFilterCategoryModel[] = [grades, subjects];
+  return basicFilters;
 }
 
 export function getAdvancedFilterCategories(
   itemSearchFilter: ItemsSearchFilterModel,
   searchAPI: SearchAPIParamsModel
 ): AdvancedFilterCategoryModel[] {
-    itemSearchFilter.grades.filterOptions = [
-        GradeLevels.Elementary,
-        GradeLevels.Middle,
-        GradeLevels.High
-  ];;
+  itemSearchFilter.grades.filterOptions = [
+    GradeLevels.Elementary,
+    GradeLevels.Middle,
+    GradeLevels.High
+  ];
 
   const claims = {
     ...ItemSearch.filterSearchToCategory(itemSearchFilter.claims, searchAPI),
