@@ -21,7 +21,8 @@ import {
   ItemModel,
   BasicFilterCategoryModel,
   FilterCategoryModel,
-  FilterContainer,
+  FilterContainer,
+  CombinedFilter,
   FilterType,
   OptionTypeModel
 } from "@osu-cass/sb-components";
@@ -131,87 +132,100 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     return searchAPI;
   }
 
-  onAdvancedFilterUpdate = (categories?: AdvancedFilterCategoryModel[], changed?: FilterType) => {
-    if (!categories) {
-        return;
-    }
+  //onAdvancedFilterUpdate = (categories?: AdvancedFilterCategoryModel[], changed?: FilterType) => {
+  //  if (!categories) {
+  //      return;
+  //  }
 
-    let searchAPI = this.state.searchAPIParams;
-    const basicFilter = this.state.basicFilter;
-    const searchModel = getResourceContent(this.state.itemSearch);
+  //  let searchAPI = this.state.searchAPIParams;
+  //  const basicFilter = this.state.basicFilter;
+  //  const searchModel = getResourceContent(this.state.itemSearch);
 
-    if (changed) {
-        const changedBasicFilter = basicFilter.find(f => f.code == changed)
-        if (changedBasicFilter) {
-            changedBasicFilter.filterOptions.forEach(o => o.isSelected = false);
-        }
+  //  if (changed) {
+  //      const changedBasicFilter = basicFilter.find(f => f.code == changed)
+  //      if (changedBasicFilter) {
+  //          changedBasicFilter.filterOptions.forEach(o => o.isSelected = false);
+  //      }
 
-        const changedAdvancedFilter = categories.find(f => f.code === changed);
-        if (changedAdvancedFilter) {
-            searchAPI = ItemSearch.updateSearchApiModel(changedAdvancedFilter, searchAPI);
-        }
-    } else {
-        searchAPI = { }; // clear the filter
-    }
+  //      const changedAdvancedFilter = categories.find(f => f.code === changed);
+  //      if (changedAdvancedFilter) {
+  //          searchAPI = ItemSearch.updateSearchApiModel(changedAdvancedFilter, searchAPI);
+  //      }
+  //  } else {
+  //      searchAPI = { }; // clear the filter
+  //  }
     
-    if (searchModel) {
-        searchAPI = ItemSearch.updateDependentSearchParams(searchAPI, searchModel);
-        categories = Filter.getUpdatedSearchFilters(searchModel, categories, searchAPI);
-    }
+  //  if (searchModel) {
+  //      searchAPI = ItemSearch.updateDependentSearchParams(searchAPI, searchModel);
+  //      categories = Filter.getUpdatedSearchFilters(searchModel, categories, searchAPI);
+  //  }
 
-    this.updateLocationSearch(searchAPI);
-    this.setState({
-        advancedFilter: categories,
-        searchAPIParams: searchAPI,
-        basicFilter
-    });
-  }
+  //  this.updateLocationSearch(searchAPI);
+  //  this.setState({
+  //      advancedFilter: categories,
+  //      searchAPIParams: searchAPI,
+  //      basicFilter
+  //  });
+  //}
 
-  updateSubjectAdvancedFilter(basic: BasicFilterCategoryModel[], advanced: AdvancedFilterCategoryModel[]) {
-      const basicSubject = basic.find(f => f.code === FilterType.Subject);
-      const advSubject = advanced.find(f => f.code === FilterType.Subject);
+  //updateSubjectAdvancedFilter(basic: BasicFilterCategoryModel[], advanced: AdvancedFilterCategoryModel[]) {
+  //    const basicSubject = basic.find(f => f.code === FilterType.Subject);
+  //    const advSubject = advanced.find(f => f.code === FilterType.Subject);
 
-      if (basicSubject && advSubject) {
-          Filter.updateSingleFilter(advSubject, basicSubject);
-      }
-  }
+  //    if (basicSubject && advSubject) {
+  //        Filter.updateSingleFilter(advSubject, basicSubject);
+  //    }
+  //}
 
-  onBasicFilterUpdate = (categories: BasicFilterCategoryModel[], changed: FilterType) => {
-    if (!categories) {
-        return;
-    }
+  //onBasicFilterUpdate = (categories: BasicFilterCategoryModel[], changed: FilterType) => {
+  //  if (!categories) {
+  //      return;
+  //  }
 
-    let searchAPI = this.state.searchAPIParams;
-    const searchModel = getResourceContent(this.state.itemSearch);
-    let advancedFilter = this.state.advancedFilter;
+  //  let searchAPI = this.state.searchAPIParams;
+  //  const searchModel = getResourceContent(this.state.itemSearch);
+  //  let advancedFilter = this.state.advancedFilter;
     
-    const changedBasicFilter = categories.find(f => f.code === changed);
-    if (changedBasicFilter) {
-        searchAPI = ItemSearch.updateSearchApiModel(changedBasicFilter, searchAPI)
+  //  const changedBasicFilter = categories.find(f => f.code === changed);
+  //  if (changedBasicFilter) {
+  //      searchAPI = ItemSearch.updateSearchApiModel(changedBasicFilter, searchAPI)
         
-    }
+  //  }
 
-    if (searchModel) {
-        searchAPI = ItemSearch.updateDependentSearchParams(searchAPI, searchModel);
-    }
+  //  if (searchModel) {
+  //      searchAPI = ItemSearch.updateDependentSearchParams(searchAPI, searchModel);
+  //  }
     
-    const changedAdvancedFilter = advancedFilter.find(f => f.code === changed);
-    if (changedAdvancedFilter) {
-        changedAdvancedFilter.filterOptions.forEach(o => o.isSelected = false);
+  //  const changedAdvancedFilter = advancedFilter.find(f => f.code === changed);
+  //  if (changedAdvancedFilter) {
+  //      changedAdvancedFilter.filterOptions.forEach(o => o.isSelected = false);
         
-        if (searchModel) {
-            advancedFilter = Filter.getUpdatedSearchFilters(searchModel, advancedFilter, searchAPI);
-        }
-        if (changed === FilterType.Subject) {
-            this.updateSubjectAdvancedFilter(categories, advancedFilter);
-        }
-    }
+  //      if (searchModel) {
+  //          advancedFilter = Filter.getUpdatedSearchFilters(searchModel, advancedFilter, searchAPI);
+  //      }
+  //      if (changed === FilterType.Subject) {
+  //          this.updateSubjectAdvancedFilter(categories, advancedFilter);
+  //      }
+  //  }
+      
+  //  this.updateLocationSearch(searchAPI);
+  //  this.setState({
+  //      basicFilter: categories,
+  //      searchAPIParams: searchAPI,
+  //  });
+  //}
 
-    this.updateLocationSearch(searchAPI);
-    this.setState({
-        basicFilter: categories,
-        searchAPIParams: searchAPI,
-    });
+  onFilterUpdated = (
+      searchParams: SearchAPIParamsModel,
+      basic: BasicFilterCategoryModel[],
+      advanced: AdvancedFilterCategoryModel[]
+    ) => {
+      this.updateLocationSearch(searchParams);
+      this.setState({
+          basicFilter: basic,
+          advancedFilter: advanced,
+          searchAPIParams: searchParams
+      });
   }
 
   renderItemCards(): JSX.Element[] | JSX.Element | undefined {
@@ -271,19 +285,20 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
   }
 
   renderFilters() {
-    let content;
-    const { basicFilter, advancedFilter } = this.state;
-
+      let content;
+      const { basicFilter, advancedFilter, searchAPIParams, itemSearch } = this.state;
+      const searchModel = getResourceContent(itemSearch);
     if (advancedFilter && basicFilter) {
       content = (
-        <div>
-          <FilterContainer
-            filterId="sb-filter-id"
-            advancedFilterCategories={advancedFilter}
-            onUpdateAdvancedFilter={this.onAdvancedFilterUpdate}
-            basicFilterCategories={basicFilter}
-            onUpdateBasicFilter={this.onBasicFilterUpdate}
-          />
+          <div>
+              <CombinedFilter
+                  basicFilter={basicFilter}
+                  advancedFilter={advancedFilter}
+                  searchAPI={searchAPIParams}
+                  filterId="sb-filter-id"
+                  onFilterUpdated={this.onFilterUpdated}
+                  searchModel={searchModel}
+              />
         </div>
       );
     }
