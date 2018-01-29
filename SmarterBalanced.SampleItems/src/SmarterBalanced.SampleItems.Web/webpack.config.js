@@ -59,6 +59,7 @@ module.exports = env => {
         ]
       },
       plugins: [
+        new webpack.ProvidePlugin({ $: "jquery", jQuery: "jquery" }),
         new webpack.DllReferencePlugin({
           context: __dirname,
           manifest: require("./wwwroot/dist/vendor-manifest.json")
