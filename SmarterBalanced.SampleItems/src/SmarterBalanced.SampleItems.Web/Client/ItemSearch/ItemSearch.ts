@@ -7,20 +7,21 @@
   ItemCardModel,
   getRequest,
   GradeLevels,
-
   OptionTypeModel,
   BasicFilterCategoryModel
 } from "@osu-cass/sb-components";
 
-export const ItemsSearchClient = (params: SearchAPIParamsModel) =>
-  getRequest<ItemCardModel[]>("/BrowseItems/search", params);
+export const itemSearchClient = getRequest<ItemCardModel[]>(
+  "/BrowseItems/search"
+);
 
-export const ItemsViewModelClient = () =>
-  getRequest<ItemsSearchFilterModel>("/BrowseItems/FilterSearchModel");
+export const itemsSearchFilterClient = getRequest<ItemsSearchFilterModel>(
+  "/BrowseItems/FilterSearchModel"
+);
 
 export function getBasicFilterCategories(
-    itemSearchFilter: ItemsSearchFilterModel,
-    searchAPI: SearchAPIParamsModel
+  itemSearchFilter: ItemsSearchFilterModel,
+  searchAPI: SearchAPIParamsModel
 ): BasicFilterCategoryModel[] {
     itemSearchFilter.grades.filterOptions = [
         GradeLevels.Grade3,
@@ -42,10 +43,8 @@ export function getBasicFilterCategories(
         label: "Subject"
     };
 
-    let basicFilters: BasicFilterCategoryModel[] = [
-        grades, subjects
-    ];
-    return basicFilters;
+  let basicFilters: BasicFilterCategoryModel[] = [grades, subjects];
+  return basicFilters;
 }
 
 export function getAdvancedFilterCategories(
