@@ -7,6 +7,7 @@ import * as ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import { BrowserRouter } from 'react-router-dom';
 import * as RoutesModule from './routes';
+require('es6-promise/auto');
 let routes = RoutesModule.routes;
 
 function renderApp() {
