@@ -15,8 +15,8 @@ import { Home } from "./Home/Home";
 import { ItemsSearchComponent } from "./ItemSearch/ItemSearchPage";
 import { RouteComponentProps } from "react-router";
 import {
-  ItemsSearchClient,
-  ItemsViewModelClient
+  itemSearchClient,
+  itemsSearchFilterClient
 } from "./ItemSearch/ItemSearch";
 
 export const siteLinks: SbNavlinkProps[] = [
@@ -24,6 +24,9 @@ export const siteLinks: SbNavlinkProps[] = [
   { name: "About Test Items", url: "/AboutItems" },
   { name: "Browse Test Items", url: "/BrowseItems" }
 ];
+
+const fetchItemCards = () => itemSearchClient;
+const fetchItemViewModel = () => itemsSearchFilterClient;
 
 export const routes = (
   <Layout siteName="Sample Items" links={siteLinks}>
@@ -45,8 +48,8 @@ export const routes = (
       render={props => (
         <ItemsSearchComponent
           {...props}
-          itemsSearchClient={ItemsSearchClient}
-          itemsViewModelClient={ItemsViewModelClient}
+          itemsSearchClient={fetchItemCards}
+          itemsViewModelClient={fetchItemViewModel}
         />
       )}
     />

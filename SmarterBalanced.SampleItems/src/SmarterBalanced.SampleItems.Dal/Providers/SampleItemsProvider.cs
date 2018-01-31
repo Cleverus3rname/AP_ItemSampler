@@ -23,7 +23,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             CoreStandardsXml standardsXml = LoadCoreStandards(contentSettings.CoreStandardsXMLPath);
             var targetCategories = standardsXml.TargetRows
                 .Select(tr => StandardIdentifierTranslation.CoreStandardFromIdentifier(standardsXml, tr.StandardIdentifier).Target)
-                .GroupBy(t => t.Name)
+                .GroupBy(t => new {t.Subject, t.ClaimId, t.Name }) //this was filtering out the same targets. I enabled grouping by subject and claim first. Now we have targets for each claim
                 .Select(g => g.First())
                 .ToImmutableArray();
 
