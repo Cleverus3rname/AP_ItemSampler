@@ -99,6 +99,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
       let basicFilters = getBasicFilterCategories(itemSearchFilter, this.state.searchAPIParams);
       const searchModel = getItemSearchModel(itemSearchFilter);
       advancedFilters = Filter.getUpdatedSearchFilters(searchModel, advancedFilters, this.state.searchAPIParams);
+      advancedFilters = Filter.hideFiltersBasedOnSearchParams(advancedFilters, this.state.searchAPIParams);
       this.setState({
           itemSearch: { kind: "success", content: searchModel },
           advancedFilter: advancedFilters,
