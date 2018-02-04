@@ -2,8 +2,19 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link, NavLink } from 'react-router-dom';
 
+export interface HomeProps extends RouteComponentProps<{}> {
+    appName: string;
+}
 
-export class Home extends React.Component<RouteComponentProps<{}>, {}> {
+export class Home extends React.Component<HomeProps, {}> {
+    constructor(props: HomeProps) {
+        super(props);
+    }
+
+    componentDidMount() {
+        document.title = `Home - Smarter Balanced ${this.props.appName}`;
+    }
+
     public render() {
         return <div className="home-container">
             <div className="container home-welcome">

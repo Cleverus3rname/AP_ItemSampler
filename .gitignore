@@ -279,3 +279,4 @@ _references.js
 /**/wwwroot/Assets/
 #sphinx
 /docs/_build
+**/node_modules/**
