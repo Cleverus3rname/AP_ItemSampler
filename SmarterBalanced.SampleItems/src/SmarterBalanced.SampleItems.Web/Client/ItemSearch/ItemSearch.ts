@@ -6,20 +6,22 @@
   ItemsSearchModel,
   ItemCardModel,
   getRequest,
-  GradeLevels,
+  GradeLevels,
   OptionTypeModel,
   BasicFilterCategoryModel
 } from "@osu-cass/sb-components";
 
-export const ItemsSearchClient = (params: SearchAPIParamsModel) =>
-  getRequest<ItemCardModel[]>("/BrowseItems/search", params);
+export const itemSearchClient = getRequest<ItemCardModel[]>(
+  "/BrowseItems/search"
+);
 
-export const ItemsViewModelClient = () =>
-  getRequest<ItemsSearchFilterModel>("/BrowseItems/FilterSearchModel");
+export const itemsSearchFilterClient = getRequest<ItemsSearchFilterModel>(
+  "/BrowseItems/FilterSearchModel"
+);
 
 export function getBasicFilterCategories(
-    itemSearchFilter: ItemsSearchFilterModel,
-    searchAPI: SearchAPIParamsModel
+  itemSearchFilter: ItemsSearchFilterModel,
+  searchAPI: SearchAPIParamsModel
 ): BasicFilterCategoryModel[] {
     itemSearchFilter.grades.filterOptions = [
         GradeLevels.Grade3,
@@ -32,28 +34,23 @@ export function getBasicFilterCategories(
     ];
     const grades = {
         ...ItemSearch.filterSearchToCategory(itemSearchFilter.grades, searchAPI),
-        type: OptionTypeModel.DropDown
+        type: OptionTypeModel.DropDown,
+        label: "Grade"
     };
     const subjects = {
         ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects, searchAPI),
-        type: OptionTypeModel.DropDown
+        type: OptionTypeModel.DropDown,
+        label: "Subject"
     };
 
-    let basicFilters: BasicFilterCategoryModel[] = [
-        grades, subjects
-    ];
-    return basicFilters;
+  let basicFilters: BasicFilterCategoryModel[] = [grades, subjects];
+  return basicFilters;
 }
 
 export function getAdvancedFilterCategories(
   itemSearchFilter: ItemsSearchFilterModel,
   searchAPI: SearchAPIParamsModel
 ): AdvancedFilterCategoryModel[] {
-    itemSearchFilter.grades.filterOptions = [
-        GradeLevels.Elementary,
-        GradeLevels.Middle,
-        GradeLevels.High
-  ];;
 
   const claims = {
     ...ItemSearch.filterSearchToCategory(itemSearchFilter.claims, searchAPI),
@@ -74,13 +71,6 @@ export function getAdvancedFilterCategories(
       itemSearchFilter.interactionTypes,
       searchAPI
     ),
-    isMultiSelect: true,
-    disabled: false,
-    displayAllButton: true
-  };
-
-  const grades = {
-    ...ItemSearch.filterSearchToCategory(itemSearchFilter.grades, searchAPI),
     isMultiSelect: true,
     disabled: false,
     displayAllButton: true
@@ -114,7 +104,6 @@ export function getAdvancedFilterCategories(
   };
 
   return [
-    grades,
     subjects,
     claims,
     interactions,
