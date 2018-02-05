@@ -64,10 +64,14 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
 
         public static Claim Create(XElement element)
         {
+            string label = (string)element.Element("Label");
+            string claimNumber = (string)element.Element("ClaimNumber");
+            label = $"{claimNumber ?? ""}. {label ?? ""}";
+
             var claim = Create(
                 code: (string)element.Element("Code"),
-                label: (string)element.Element("Label"),
-                claimNumber: (string)element.Element("ClaimNumber"),
+                label: label,
+                claimNumber: claimNumber,
                 targets: ImmutableArray.Create<Target>());
 
             return claim;

@@ -25,6 +25,11 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
                 .Select(tr => StandardIdentifierTranslation.CoreStandardFromIdentifier(standardsXml, tr.StandardIdentifier).Target)
                 .GroupBy(t => t.Name)
                 .Select(g => g.First())
+                .OrderBy(t => {
+                    int i;
+                    Int32.TryParse(t.IdLabel, out i);
+                    return i;
+                })
                 .ToImmutableArray();
 
             var accessibilityResourceFamilies = LoadAccessibility(contentSettings.AccommodationsXMLPath);
