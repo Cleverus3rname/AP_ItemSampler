@@ -1,37 +1,49 @@
 ﻿@import "constants.less";
 
-.home-container {
+.home-page {
     background-image: url('/images/backgroundimg.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     flex-grow: 1;
 }
 
+.home-container {
+    display: flex;
+    flex-direction: column;
+}
+
+
 .home-welcome {
-    height: auto; // SB
     max-width: 500px;
-    padding: 20px 40px 50px;
     border-radius: 10px;
     background-color: rgba(256,256,256,.9); // SB
     box-shadow: @sb-shadow; // SB
     color: black;
-    margin: 25px;
-    width: auto;
+    padding-left: @spacing-unit*2;
+    padding-right: @spacing-unit*2;
+    min-width: 350px;
 }
 
-@media screen and (max-width: @phone-portrait) {
-    .home-welcome {
-        padding: 14px;
-        box-shadow: none;
-    }
-}
 
 .home-title {
     font-size: @font-size-header; // SB
     letter-spacing: @sb-letter-spacing; // SB
+    margin-bottom: @spacing-unit;
 }
 
 .home-container-button {
     text-align: center;
-    display: inline-block;
+    max-width: 300px;
+    &:first-child {
+        margin-bottom: @spacing-unit;
+    }
+}
+
+.home-links {
+    margin-top: @spacing-unit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+  
 }
