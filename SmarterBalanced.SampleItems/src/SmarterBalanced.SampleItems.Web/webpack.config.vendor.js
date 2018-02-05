@@ -52,7 +52,8 @@ module.exports = env => {
           "jquery",
           "typeface-pt-sans-caption/index.css",
           "typeface-pt-serif/index.css",
-          "typeface-pt-serif-caption/index.css"
+          "typeface-pt-serif-caption/index.css",
+          "es6-promise"
         ].concat(
           isDevBuild
             ? []
