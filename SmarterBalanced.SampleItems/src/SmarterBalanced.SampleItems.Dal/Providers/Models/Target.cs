@@ -43,8 +43,8 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
             string claimId)
         {
             string name = NameFromDesc(description);
-            name = String.IsNullOrEmpty(name) 
-                ? idLabel ?? String.Empty 
+            name = String.IsNullOrEmpty(name) || subjectCode == "MATH"
+                ? idLabel ?? String.Empty
                 : $"{idLabel}. {name}";
             Name = name;
             Descripton = RemoveNameFromDescription(description);
