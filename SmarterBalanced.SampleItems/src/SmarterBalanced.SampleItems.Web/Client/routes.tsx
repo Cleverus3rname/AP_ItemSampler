@@ -11,7 +11,6 @@ import {
     AboutTestItemsPage,
     ErrorPageContainer
 } from "@osu-cass/sb-components";
-
 import { Home } from "./Home/Home";
 import { ItemsSearchComponent } from "./ItemSearch/ItemSearchPage";
 import { RouteComponentProps } from "react-router";
@@ -45,6 +44,7 @@ export const routes = (
                         aboutClient={aboutTestItemsClient}
                         showRubrics={false}
                         appName={appName}
+                        errorRedirectPath="/error/500"
                     />
                 )}
             />
@@ -71,13 +71,21 @@ export const routes = (
                         itemAccessibilityClient={itemAccessibilityClient}
                         showRubrics={false}
                         appName={appName}
+                        errorRedirectPath="/error/500"
                     />
                 )}
             />
 
             <Route
+                path="/error/500"
                 render={props => (
-                    <ErrorPageContainer errorCode={404} />
+                    <ErrorPageContainer {...props} errorCode={500} />
+                )}
+            />
+
+            <Route
+                render={props => (
+                    <ErrorPageContainer {...props} errorCode={404} />
                 )}
             />
         </Switch>
