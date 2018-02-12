@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Route, Redirect, Switch } from "react-router-dom";
 import {
     Layout,
     SbNavlinkProps,
@@ -8,7 +8,8 @@ import {
     itemPageClient,
     itemAccessibilityClient,
     ItemViewPage,
-    AboutTestItemsPage
+    AboutTestItemsPage,
+    ErrorPageContainer
 } from "@osu-cass/sb-components";
 
 import { Home } from "./Home/Home";
@@ -31,46 +32,54 @@ const fetchItemViewModel = () => itemsSearchFilterClient;
 
 export const routes = (
     <Layout siteName="Sample Items" links={siteLinks}>
-        <Route exact path="/" render={props => (
-            <Home {...props} appName={appName} />
-        )} />
+        <Switch>
+            <Route exact path="/" render={props => (
+                <Home {...props} appName={appName} />
+            )} />
 
-        <Route
-            path="/AboutItems/:itemType?"
-            render={props => (
-                <AboutTestItemsPage
-                    {...props}
-                    aboutClient={aboutTestItemsClient}
-                    showRubrics={false}
-                    appName={appName}
-                />
-            )}
-        />
+            <Route
+                path="/AboutItems/:itemType?"
+                render={props => (
+                    <AboutTestItemsPage
+                        {...props}
+                        aboutClient={aboutTestItemsClient}
+                        showRubrics={false}
+                        appName={appName}
+                    />
+                )}
+            />
 
-        <Route
-            path="/BrowseItems"
-            render={props => (
-                <ItemsSearchComponent
-                    {...props}
-                    itemsSearchClient={fetchItemCards}
-                    itemsViewModelClient={fetchItemViewModel}
-                    appName={appName}
-                />
-            )}
-        />
+            <Route
+                path="/BrowseItems"
+                render={props => (
+                    <ItemsSearchComponent
+                        {...props}
+                        itemsSearchClient={fetchItemCards}
+                        itemsViewModelClient={fetchItemViewModel}
+                        appName={appName}
+                    />
+                )}
+            />
 
-        <Route
-            path="/Item/:bankKey-:itemKey"
-            render={props => (
-                <ItemViewPage
-                    {...props}
-                    aboutThisClient={aboutThisItemViewModelClient}
-                    itemPageClient={itemPageClient}
-                    itemAccessibilityClient={itemAccessibilityClient}
-                    showRubrics={false}
-                    appName={appName}
-                />
-            )}
-        />
+            <Route
+                path="/Item/:bankKey-:itemKey"
+                render={props => (
+                    <ItemViewPage
+                        {...props}
+                        aboutThisClient={aboutThisItemViewModelClient}
+                        itemPageClient={itemPageClient}
+                        itemAccessibilityClient={itemAccessibilityClient}
+                        showRubrics={false}
+                        appName={appName}
+                    />
+                )}
+            />
+
+            <Route
+                render={props => (
+                    <ErrorPageContainer errorCode={404} />
+                )}
+            />
+        </Switch>
     </Layout>
 );
