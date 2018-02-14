@@ -3,11 +3,8 @@ using Microsoft.Extensions.Logging;
 using SmarterBalanced.SampleItems.Core.Reporting.Models;
 using SmarterBalanced.SampleItems.Dal.Providers;
 using SmarterBalanced.SampleItems.Dal.Providers.Models;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SmarterBalanced.SampleItems.Core.Reporting
 {

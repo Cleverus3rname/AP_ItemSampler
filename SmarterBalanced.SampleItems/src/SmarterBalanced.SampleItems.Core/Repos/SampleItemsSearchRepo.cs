@@ -4,11 +4,7 @@ using SmarterBalanced.SampleItems.Core.Translations;
 using SmarterBalanced.SampleItems.Dal.Providers;
 using SmarterBalanced.SampleItems.Dal.Providers.Models;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
-using System.Threading.Tasks;
-using Gen = SmarterBalanced.SampleItems.Dal.Xml.Models;
-
 
 namespace SmarterBalanced.SampleItems.Core.Repos
 {
@@ -89,6 +85,5 @@ namespace SmarterBalanced.SampleItems.Core.Repos
 
             return items;
         }
-
     }
 }
