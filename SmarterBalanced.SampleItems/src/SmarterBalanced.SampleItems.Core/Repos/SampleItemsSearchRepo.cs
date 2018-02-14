@@ -90,38 +90,5 @@ namespace SmarterBalanced.SampleItems.Core.Repos
             return items;
         }
 
-
-        public List<ExpandoObject> GetItemsAccessibilityWalk(string baseUrl)
-        {
-            var items = context.SampleItems.Select(si => new
-            {
-                item = si,
-                resources = si.AccessibilityResourceGroups
-                    .SelectMany(arg =>
-                        arg.AccessibilityResources
-                            .ToDictionary(ar => ar.Label, ar => !ar.Disabled))
-            }).OrderBy(i => i.item.Subject.Code).ThenBy(i => i.item.Grade.IndividualGradeToNumString()).ThenBy(i => i.item.Claim.ClaimNumber).ToList();
-            var records = new List<ExpandoObject>();
-            foreach (var item in items)
-            {
-
-                var rowItem = new ExpandoObject() as IDictionary<string, object>;
-                rowItem.Add("Item", item.item.ToString());
-                rowItem.Add("Grade", item.item.Grade.ToDisplayString());
-                rowItem.Add("Subject", item.item.Subject.ShortLabel);
-
-                foreach (var key in item.resources)
-                {
-                    rowItem.Add(key.Key, key.Value);
-                };
-
-                rowItem.Add("URL", $"=HYPERLINK(\"http://siw-dev.cass.oregonstate.edu/Item/{item.item.ToString()}\")");
-                records.Add(rowItem as ExpandoObject);
-
-            }
-
-
-            return records;
-        }
     }
 }

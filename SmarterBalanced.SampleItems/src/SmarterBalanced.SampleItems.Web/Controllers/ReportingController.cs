@@ -13,7 +13,6 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
     public class ReportingController : Controller
     {
         private readonly IReportingRepo reportingRepo;
-
         private readonly ILogger logger;
 
         public ReportingController(IReportingRepo repo, ILoggerFactory loggerFactory)
@@ -31,7 +30,5 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             fileStream.FileDownloadName = "Accessibility.csv";
             return fileStream;
         }
-
-
     }
 }

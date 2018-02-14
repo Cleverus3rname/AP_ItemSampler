@@ -13,7 +13,5 @@ namespace SmarterBalanced.SampleItems.Core.Repos
         ItemsSearchViewModel GetItemsSearchViewModel();
         IList<SampleItemViewModel> GetSampleItemViewModels(string baseUrl);
         FilterSearch GetFilterSearch();
-        List<ExpandoObject> GetItemsAccessibilityWalk(string baseUrl);
-
     }
 }
