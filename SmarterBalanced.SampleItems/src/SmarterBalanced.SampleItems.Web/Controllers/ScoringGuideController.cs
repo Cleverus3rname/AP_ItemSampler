@@ -21,6 +21,10 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
 
         }
 
+        /// <summary>
+        /// Instantiates a ScoringGuideViewModel and returns a JSON serialized version of it.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("ScoringGuideViewModel")]
         [EnableCors("AllowAllOrigins")]
         public IActionResult ScoringGuideViewModel()
@@ -29,6 +33,10 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return Json(vm);
         }
 
+
+        /// <summary>
+        /// Returns a JSON serialized array of AboutThisItemViewModels 
+        /// </summary>
         [HttpGet("AboutAllItems")]
         [EnableCors("AllowAllOrigins")]
         public IActionResult AboutAllItems()
@@ -53,6 +61,16 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return Json(aboutThis);
         }
 
+        /// <summary>
+        /// Returns an array of ItemCardViewModels based on a grade level,
+        /// list of subjects, list of techTypes, and a boolean denoting whether
+        /// to return Braille. 
+        /// </summary>
+        /// <param name="gradeLevels"></param>
+        /// <param name="subject"></param>
+        /// <param name="techType"></param>
+        /// <param name="braille"></param>
+        /// <returns></returns>
         [HttpGet("Search")]
         [EnableCors("AllowAllOrigins")]
         public IActionResult Search(GradeLevels gradeLevels, string[] subject, string[] techType, bool braille)

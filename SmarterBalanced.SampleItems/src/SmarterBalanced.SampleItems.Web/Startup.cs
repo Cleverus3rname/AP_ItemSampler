@@ -16,7 +16,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
 using Microsoft.AspNetCore.SpaServices.Webpack;
-
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace SmarterBalanced.SampleItems.Web
 {
@@ -81,6 +81,11 @@ namespace SmarterBalanced.SampleItems.Web
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Item Sampler API", Version = "v1" });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var xmlPath = Path.Combine(basePath, "SmarterBalanced.SampleItems.Web.xml");
+                c.IncludeXmlComments(xmlPath);
             });
 
             services.AddCors(options =>
@@ -90,6 +95,7 @@ namespace SmarterBalanced.SampleItems.Web
                     .AllowAnyOrigin()
                     .AllowAnyMethod());
             });
+
 
             services.AddSingleton(context);
             services.AddSingleton(appSettings);
@@ -153,6 +159,7 @@ namespace SmarterBalanced.SampleItems.Web
 
 
             app.UseSwagger();
+
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ItemSampler");

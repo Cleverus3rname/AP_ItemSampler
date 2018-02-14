@@ -23,6 +23,11 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             logger = loggerFactory.CreateLogger<AboutItemsController>();
         }
 
+        /// <summary>
+        /// Returns an AboutItemsViewModel based on the interactionTypeCode string
+        /// </summary>
+        /// <param name="interactionTypeCode">used to create the AboutItemsViewModel</param>
+        /// <returns></returns>
         [HttpGet("GetItemUrl")]
         public IActionResult GetItemUrl(string interactionTypeCode)
         {

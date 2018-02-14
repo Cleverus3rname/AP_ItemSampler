@@ -19,6 +19,12 @@
     <PackageLicenseUrl>https://github.com/SmarterApp/AP_ItemSampler/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netcoreapp2.0\SmarterBalanced.SampleItems.Web.xml</DocumentationFile>
+    <OutputPath />
+    <NoWarn>1701;1702;1705;1591</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\SmarterBalanced.SampleItems.Core\SmarterBalanced.SampleItems.Core.csproj" />
     <ProjectReference Include="..\SmarterBalanced.SampleItems.Dal\SmarterBalanced.SampleItems.Dal.csproj" />
