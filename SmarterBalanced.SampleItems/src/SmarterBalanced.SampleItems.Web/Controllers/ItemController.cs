@@ -126,7 +126,6 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         /// </summary>
         /// <param name="bankKey"></param>
         /// <param name="itemKey"></param>
-        /// <returns></returns>
         [HttpGet("AboutThisItemViewModel")]
         [EnableCors("AllowAllOrigins")]
         public IActionResult AboutThisItemViewModel(int? bankKey, int? itemKey)
@@ -149,7 +148,6 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         /// <param name="itemKey"></param>
         /// <param name="isaap"></param>
         /// <param name="applyCookie"></param>
-        /// <returns></returns>
         [HttpGet("ItemAccessibility")]
         public IActionResult AccessibilityResourceGroupIsaap(int? bankKey, int? itemKey, string isaap = "", bool applyCookie = true)
         {

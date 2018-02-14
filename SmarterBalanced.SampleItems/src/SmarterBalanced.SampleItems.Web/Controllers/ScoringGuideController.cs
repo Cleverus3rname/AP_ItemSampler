@@ -24,7 +24,6 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         /// <summary>
         /// Instantiates a ScoringGuideViewModel and returns a JSON serialized version of it.
         /// </summary>
-        /// <returns></returns>
         [HttpGet("ScoringGuideViewModel")]
         [EnableCors("AllowAllOrigins")]
         public IActionResult ScoringGuideViewModel()
@@ -70,7 +69,6 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         /// <param name="subject"></param>
         /// <param name="techType"></param>
         /// <param name="braille"></param>
-        /// <returns></returns>
         [HttpGet("Search")]
         [EnableCors("AllowAllOrigins")]
         public IActionResult Search(GradeLevels gradeLevels, string[] subject, string[] techType, bool braille)

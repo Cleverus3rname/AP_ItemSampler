@@ -88,7 +88,6 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         /// <summary>
         /// Creates and returns a .csv file from a list of SampleItemViewModels based on the current url. 
         /// </summary>
-        /// <returns></returns>
         [HttpGet("Export")]
         public IActionResult Export()
         {

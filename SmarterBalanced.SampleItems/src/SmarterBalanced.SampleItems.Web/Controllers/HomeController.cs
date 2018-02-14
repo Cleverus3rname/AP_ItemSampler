@@ -22,7 +22,6 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         /// Checks useragent string for IE11/Browser compatibility
         /// redirects to BrowserWarning and adds cookie if not
         /// </summary>
-        /// <returns></returns>
         public IActionResult Index()
         {
             string cookieName = appsettings.SettingsConfig.BrowserWarningCookie;
