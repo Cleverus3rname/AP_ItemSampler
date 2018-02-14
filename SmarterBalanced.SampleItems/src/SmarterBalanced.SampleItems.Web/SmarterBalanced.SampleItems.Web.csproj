@@ -25,6 +25,17 @@
     <NoWarn>1701;1702;1705;1591</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Debug\netcoreapp2.0\SmarterBalanced.SampleItems.Web.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
+    <ItemGroup>
+      <DocFile Include="bin\$(Configuration)\$(TargetFramework)\*.xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DocFile)" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="false" />
+  </Target>
+
   <ItemGroup>
     <ProjectReference Include="..\SmarterBalanced.SampleItems.Core\SmarterBalanced.SampleItems.Core.csproj" />
     <ProjectReference Include="..\SmarterBalanced.SampleItems.Dal\SmarterBalanced.SampleItems.Dal.csproj" />
