@@ -17,7 +17,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         private readonly ISampleItemsSearchRepo sampleItemsSearchRepo;
         private readonly ILogger logger;
 
-        public BrowseItemsController(ISampleItemsSearchRepo repo, ILoggerFactory loggerFactory )
+        public BrowseItemsController(ISampleItemsSearchRepo repo, ILoggerFactory loggerFactory)
         {
             sampleItemsSearchRepo = repo;
             logger = loggerFactory.CreateLogger<BrowseItemsController>();
@@ -27,7 +27,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         public IActionResult ItemsSearchViewModel()
         {
             var model = sampleItemsSearchRepo.GetItemsSearchViewModel();
-            if(model == null)
+            if (model == null)
             {
                 return BadRequest();
             }
@@ -81,5 +81,6 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
 
             return File(csvStream, "text/csv", "SIWItems.csv");
         }
+
     }
 }

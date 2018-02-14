@@ -1,6 +1,7 @@
 ﻿using SmarterBalanced.SampleItems.Core.Repos.Models;
 using SmarterBalanced.SampleItems.Dal.Providers.Models;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Threading.Tasks;
 
 namespace SmarterBalanced.SampleItems.Core.Repos
@@ -12,5 +13,7 @@ namespace SmarterBalanced.SampleItems.Core.Repos
         ItemsSearchViewModel GetItemsSearchViewModel();
         IList<SampleItemViewModel> GetSampleItemViewModels(string baseUrl);
         FilterSearch GetFilterSearch();
+        List<ExpandoObject> GetItemsAccessibilityWalk(string baseUrl);
+
     }
 }

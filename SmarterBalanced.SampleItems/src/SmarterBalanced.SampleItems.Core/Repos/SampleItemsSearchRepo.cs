@@ -4,6 +4,7 @@ using SmarterBalanced.SampleItems.Core.Translations;
 using SmarterBalanced.SampleItems.Dal.Providers;
 using SmarterBalanced.SampleItems.Dal.Providers.Models;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using Gen = SmarterBalanced.SampleItems.Dal.Xml.Models;
@@ -40,7 +41,7 @@ namespace SmarterBalanced.SampleItems.Core.Repos
             {
                 return query.ToList();
             }
-                
+
             int itemId;
             if (int.TryParse(parms.ItemId, out itemId))
             {
@@ -87,6 +88,40 @@ namespace SmarterBalanced.SampleItems.Core.Repos
             var items = context.SampleItems.Select(s => s.ToSampleItemViewModel(baseUrl)).ToList();
 
             return items;
+        }
+
+
+        public List<ExpandoObject> GetItemsAccessibilityWalk(string baseUrl)
+        {
+            var items = context.SampleItems.Select(si => new
+            {
+                item = si,
+                resources = si.AccessibilityResourceGroups
+                    .SelectMany(arg =>
+                        arg.AccessibilityResources
+                            .ToDictionary(ar => ar.Label, ar => !ar.Disabled))
+            }).OrderBy(i => i.item.Subject.Code).ThenBy(i => i.item.Grade.IndividualGradeToNumString()).ThenBy(i => i.item.Claim.ClaimNumber).ToList();
+            var records = new List<ExpandoObject>();
+            foreach (var item in items)
+            {
+
+                var rowItem = new ExpandoObject() as IDictionary<string, object>;
+                rowItem.Add("Item", item.item.ToString());
+                rowItem.Add("Grade", item.item.Grade.ToDisplayString());
+                rowItem.Add("Subject", item.item.Subject.ShortLabel);
+
+                foreach (var key in item.resources)
+                {
+                    rowItem.Add(key.Key, key.Value);
+                };
+
+                rowItem.Add("URL", $"=HYPERLINK(\"http://siw-dev.cass.oregonstate.edu/Item/{item.item.ToString()}\")");
+                records.Add(rowItem as ExpandoObject);
+
+            }
+
+
+            return records;
         }
     }
 }
