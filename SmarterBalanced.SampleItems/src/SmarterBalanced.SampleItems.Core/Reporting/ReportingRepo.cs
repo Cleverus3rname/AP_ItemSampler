@@ -43,7 +43,6 @@ namespace SmarterBalanced.SampleItems.Core.Reporting
                 .ThenBy(i => i.item.Grade.IndividualGradeToNumString())
                 .ThenBy(i => i.item.Claim.ClaimNumber).ToList();
 
-
             foreach (var item in items)
             {
                 var rowItem = new Dictionary<string, string>();
@@ -56,7 +55,7 @@ namespace SmarterBalanced.SampleItems.Core.Reporting
                     rowItem.Add(key.Key, key.Value.ToString());
                 };
 
-                rowItem.Add("URL", $"=HYPERLINK(\"http://siw-dev.cass.oregonstate.edu/Item/{item.item.ToString()}\")");
+                rowItem.Add("URL", $"=HYPERLINK(\"{baseUrl}/Item/{item.item.ToString()}\")");
                 records.Add(rowItem);
             }
 
