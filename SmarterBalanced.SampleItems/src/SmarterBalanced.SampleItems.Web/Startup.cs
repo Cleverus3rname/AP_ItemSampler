@@ -17,6 +17,7 @@ using System;
 using System.IO;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.PlatformAbstractions;
+using SmarterBalanced.SampleItems.Core.Reporting;
 
 namespace SmarterBalanced.SampleItems.Web
 {
@@ -104,6 +105,7 @@ namespace SmarterBalanced.SampleItems.Web
             services.AddScoped<IAboutItemsRepo, AboutItemsRepo>();
             services.AddScoped<IDiagnosticManager, DiagnosticManager>();
             services.AddScoped<IScoringRepo, ScoringRepo>();
+            services.AddScoped<IReportingRepo, ReportingRepo>();
 
         }
 

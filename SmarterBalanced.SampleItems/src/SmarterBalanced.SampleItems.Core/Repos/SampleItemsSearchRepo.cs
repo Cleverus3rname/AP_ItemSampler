@@ -5,9 +5,6 @@ using SmarterBalanced.SampleItems.Dal.Providers;
 using SmarterBalanced.SampleItems.Dal.Providers.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Gen = SmarterBalanced.SampleItems.Dal.Xml.Models;
-
 
 namespace SmarterBalanced.SampleItems.Core.Repos
 {
@@ -40,7 +37,7 @@ namespace SmarterBalanced.SampleItems.Core.Repos
             {
                 return query.ToList();
             }
-                
+
             int itemId;
             if (int.TryParse(parms.ItemId, out itemId))
             {
