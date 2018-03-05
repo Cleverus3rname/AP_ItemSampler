@@ -66,7 +66,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
 
             var aboutInteractionTypes = LoadAboutInteractionTypes(interactionGroup);
             var claims = GetClaims(subjects);
-            var targets = GetTargets(claims);
+            var targets = GetTargets(claims, itemCards);
 
             var subjectInteractionTypes = LoadSubjectInteractionTypes(interactionGroup, subjects);
             var filterSearch = SearchFilterTranslation.ToSearchFilter(appSettings.SbContent.FilterCategories,
@@ -91,9 +91,11 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             return context;
         }
 
-        private static ImmutableArray<Target> GetTargets(ImmutableArray<Claim> claims)
+        private static ImmutableArray<Target> GetTargets(ImmutableArray<Claim> claims, ImmutableArray<ItemCardViewModel> allItems)
         {
-            var targets = claims.SelectMany(i => i.Targets).ToImmutableArray();
+            var targets = claims.SelectMany(i => i.Targets)
+                .Where(t => allItems.FirstOrDefault(item => t.NameHash == item.TargetHash) != null)
+                .ToImmutableArray();
             return targets;
         }
 
