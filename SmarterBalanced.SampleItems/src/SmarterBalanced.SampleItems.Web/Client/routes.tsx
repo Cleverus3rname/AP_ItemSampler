@@ -39,6 +39,7 @@ export const routes = (
           {...props}
           aboutClient={aboutTestItemsClient}
           showRubrics={false}
+          errorRedirectPath="/error"
         />
       )}
     />
@@ -63,8 +64,16 @@ export const routes = (
           itemPageClient={itemPageClient}
           itemAccessibilityClient={itemAccessibilityClient}
           showRubrics={false}
+          errorRedirectPath="/error"
         />
       )}
+    />
+
+    <Route
+        path="/error"
+        render={props => (
+            <ErrorPageContainer {...props} description="An error occured while processing your request." errorCode={500} />
+        )}
     />
   </Layout>
 );
