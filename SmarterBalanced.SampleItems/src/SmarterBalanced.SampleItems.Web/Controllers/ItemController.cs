@@ -158,11 +158,29 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         /// </summary>
         /// <param name="gradeLevels">required, enum grade level</param>
         /// <param name="subjectCode">required, subject code</param>
-        /// <param name="interactionType">optional</param>
+        /// <param name="interactionType">required, aka item type</param>
+        /// <param name="claimId">optional, claim id</param>
+        /// <param name="isPerformance">optional flag, is item a performance item?</param>
+        /// <param name="aslSupported">optional flag, is american sign language supported?</param>
+        /// <param name="allowCalculator">optional flag, allow calculator</param>
         /// <param name="applyCookie">optional</param>
         [HttpGet("GetAccessibility")]
-        public IActionResult AccessibilityResourceGroupIsaap(GradeLevels gradeLevels, string subjectCode, string interactionType = "", bool applyCookie = true)
+        public IActionResult AccessibilityResourceGroupIsaap(
+            GradeLevels? gradeLevels, 
+            string subjectCode, 
+            string interactionType, 
+            string claimId = "", 
+            bool? isPerformance = null,
+            bool? aslSupported = null,
+            bool? allowCalculator = null,
+            string isaap = null,
+            bool applyCookie = true)
         {
+            if (!gradeLevels.HasValue || String.IsNullOrEmpty(subjectCode) || String.IsNullOrEmpty(interactionType))
+            {
+                return BadRequest();
+            }
+
             var cookieIsaap = new Dictionary<string, string>();
 
             if (applyCookie)
@@ -172,7 +190,18 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
                 cookieIsaap = DecodeCookie(cookieString);
             }
 
-            var accResourceGroup = repo.GetAccessibilityResourceGroup(gradeLevels, subjectCode, interactionType, cookieIsaap);
+            string[] isaapArray = isaap == null ? new string[0] : isaap.Split(';');
+
+            var accResourceGroup = repo.GetAccessibilityResourceGroup(
+                gradeLevels.Value, 
+                subjectCode, 
+                interactionType, 
+                claimId, 
+                isPerformance, 
+                aslSupported, 
+                allowCalculator, 
+                isaapArray,
+                cookieIsaap);
 
             return Json(accResourceGroup);
         }
