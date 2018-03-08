@@ -165,6 +165,7 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         /// <param name="allowCalculator">optional flag, allow calculator</param>
         /// <param name="applyCookie">optional</param>
         [HttpGet("GetAccessibility")]
+        [EnableCors("AllowAllOrigins")]
         public IActionResult AccessibilityResourceGroupIsaap(
             GradeLevels? gradeLevels, 
             string subjectCode, 
