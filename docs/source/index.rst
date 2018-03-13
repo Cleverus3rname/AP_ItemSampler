@@ -9,6 +9,7 @@ Welcome to AP_ItemSampler Docs
 
    dev/dev
    accessibility/accessibility
+   content/content
 
 
 Indices and tables
