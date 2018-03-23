@@ -23,6 +23,9 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             logger = loggerFactory.CreateLogger<BrowseItemsController>();
         }
 
+        /// <summary>
+        /// Instantiates and returns a JSON serialized ItemsSearchViewModel.
+        /// </summary>
         [HttpGet("ItemsSearchViewModel")]
         public IActionResult ItemsSearchViewModel()
         {
@@ -35,6 +38,9 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return Json(model);
         }
 
+        /// <summary>
+        /// Instantiates and returns a JSON serialized FilterSearchModel.
+        /// </summary>
         [HttpGet("FilterSearchModel")]
         public IActionResult FilterSearchModel()
         {
@@ -47,7 +53,16 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return Json(model);
         }
 
-
+        /// <summary>
+        /// Returns a list of ItemCardViewModels based on the function arguments.
+        /// </summary>
+        /// <param name="itemID"></param>
+        /// <param name="gradeLevels"></param>
+        /// <param name="subjects"></param>
+        /// <param name="interactionTypes"></param>
+        /// <param name="claims"></param>
+        /// <param name="performanceOnly"></param>
+        /// <param name="targets"></param>
         [HttpGet("Search")]
         [EnableCors("AllowAllOrigins")]
         public IActionResult Search(string itemID, GradeLevels gradeLevels, string[] subjects, string[] interactionTypes, string[] claims, bool performanceOnly, int[] targets)
@@ -57,6 +72,10 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return Json(items);
         }
 
+        /// <summary>
+        /// Takes the current URL, converts it to a string, and returns a list 
+        /// of JSON serialized SampleItemViewModels.
+        /// </summary>
         [HttpGet("ExportItems")]
         [EnableCors("AllowAllOrigins")]
         public IActionResult ExportItems()
@@ -66,6 +85,9 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return Json(items);
         }
 
+        /// <summary>
+        /// Creates and returns a .csv file from a list of SampleItemViewModels based on the current url. 
+        /// </summary>
         [HttpGet("Export")]
         public IActionResult Export()
         {
