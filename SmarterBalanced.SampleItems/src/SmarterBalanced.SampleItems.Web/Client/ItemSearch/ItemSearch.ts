@@ -32,19 +32,18 @@ export function getBasicFilterCategories(
         GradeLevels.Grade8,
         GradeLevels.High
     ];
-    const grades = {
+    const grades: BasicFilterCategoryModel = {
         ...ItemSearch.filterSearchToCategory(itemSearchFilter.grades, searchAPI),
         optionType: OptionTypeModel.DropDown,
         label: "Grade"
     };
-    const subjects = {
+    const subjects: BasicFilterCategoryModel = {
         ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects, searchAPI),
         optionType: OptionTypeModel.DropDown,
         label: "Subject"
     };
 
-  let basicFilters: BasicFilterCategoryModel[] = [grades, subjects];
-  return basicFilters;
+  return [grades, subjects];
 }
 
 export function getAdvancedFilterCategories(
