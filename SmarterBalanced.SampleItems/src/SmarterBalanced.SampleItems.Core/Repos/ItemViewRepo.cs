@@ -236,20 +236,42 @@ namespace SmarterBalanced.SampleItems.Core.Repos
             GradeLevels gradeLevels,
             string subjectCode,
             string interactionType,
+            string claimId,
+            bool? isPerformance,
+            bool? aslSupported,
+            bool? allowCalculator,
+            string[] isaap,
             Dictionary<string, string> cookiePreferences = default(Dictionary<string, string>))
 
         {
             var accessibility = context.MergedAccessibilityFamilies;
+            Claim claim = context.Claims.FirstOrDefault(c => c.Code == claimId);
+
 
             var resourceGroups = SampleItemTranslation.GetAccessibilityResourceGroups(
                     resourceFamilies: accessibility,
                     grade: gradeLevels,
                     subjectCode: subjectCode,
                     interactionType: interactionType,
-                    settings: context.AppSettings
+                    settings: context.AppSettings,
+                    claim: claim,
+                    isPerformance: isPerformance,
+                    aslSupported: aslSupported,
+                    allowCalculator: allowCalculator
                 );
 
-            return resourceGroups.ApplyCookiePreferences(cookiePreferences);
+            if (isaap.Length > 0)
+            {
+                return resourceGroups.ApplyIsaapPreferences(isaap);
+            }
+            else if (cookiePreferences.Count > 0)
+            {
+                return resourceGroups.ApplyCookiePreferences(cookiePreferences);
+            }
+            else
+            {
+                return resourceGroups;
+            }
         }
 
     }

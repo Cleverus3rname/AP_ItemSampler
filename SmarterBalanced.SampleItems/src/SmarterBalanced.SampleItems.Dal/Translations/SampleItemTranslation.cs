@@ -222,11 +222,14 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
 
         public static ImmutableArray<AccessibilityResourceGroup> GetAccessibilityResourceGroups(
             IList<MergedAccessibilityFamily> resourceFamilies,
+            AppSettings settings,
             GradeLevels grade,
             string subjectCode,
-            AppSettings settings,
-            string interactionType
-            )
+            string interactionType,
+            Claim claim,
+            bool? isPerformance,
+            bool? aslSupported,
+            bool? allowCalculator)
         {
             var family = resourceFamilies.FirstOrDefault(f =>
                f.Grades.Contains(grade) &&
@@ -236,6 +239,10 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
              .Select(r => r.ApplyFlags( 
                  subjectCode: subjectCode,
                  interactionType: interactionType,
+                 claim: claim,
+                 isPerformanceTask: isPerformance,
+                 aslSupported: aslSupported,
+                 allowCalculator: allowCalculator,
                  supportedItemTypes: settings.SbContent.DictionarySupportedItemTypes))
              .ToImmutableArray() ?? ImmutableArray<AccessibilityResource>.Empty;
 
