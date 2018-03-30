@@ -23,6 +23,7 @@ import {
   FilterCategoryModel,
   FilterContainer,
   CombinedFilter,
+  SIWFilter,
   FilterType,
   OptionTypeModel
 } from "@osu-cass/sb-components";
@@ -211,7 +212,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     if (advancedFilter && basicFilter) {
       content = (
           <div>
-              <CombinedFilter
+              <SIWFilter
                   basicFilter={basicFilter}
                   advancedFilter={advancedFilter}
                   searchAPI={searchAPIParams}

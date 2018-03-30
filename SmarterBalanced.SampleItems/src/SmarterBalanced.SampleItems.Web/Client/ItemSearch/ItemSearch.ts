@@ -23,27 +23,58 @@ export function getBasicFilterCategories(
   itemSearchFilter: ItemsSearchFilterModel,
   searchAPI: SearchAPIParamsModel
 ): BasicFilterCategoryModel[] {
-    itemSearchFilter.grades.filterOptions = [
-        GradeLevels.Grade3,
-        GradeLevels.Grade4,
-        GradeLevels.Grade5,
-        GradeLevels.Grade6,
-        GradeLevels.Grade7,
-        GradeLevels.Grade8,
-        GradeLevels.High
-    ];
-    const grades: BasicFilterCategoryModel = {
-        ...ItemSearch.filterSearchToCategory(itemSearchFilter.grades, searchAPI),
-        optionType: OptionTypeModel.DropDown,
-        label: "Grade"
-    };
-    const subjects: BasicFilterCategoryModel = {
-        ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects, searchAPI),
-        optionType: OptionTypeModel.DropDown,
-        label: "Subject"
-    };
+  itemSearchFilter.grades.filterOptions = [
+    GradeLevels.Grade3,
+    GradeLevels.Grade4,
+    GradeLevels.Grade5,
+    GradeLevels.Grade6,
+    GradeLevels.Grade7,
+    GradeLevels.Grade8,
+    GradeLevels.High
+  ];
+  const grades: BasicFilterCategoryModel = {
+    ...ItemSearch.filterSearchToCategory(itemSearchFilter.grades, searchAPI),
+    optionType: OptionTypeModel.DropDown,
+    label: "Grade"
+  };
+  const subjects: BasicFilterCategoryModel = {
+    ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects, searchAPI),
+    optionType: OptionTypeModel.DropDown,
+    label: "Subject"
+  };
 
-  return [grades, subjects];
+  const claims:BasicFilterCategoryModel = {
+    ...ItemSearch.filterSearchToCategory(itemSearchFilter.claims, searchAPI),
+    optionType: OptionTypeModel.AdvFilter,
+    label: "Claims"
+  };
+
+  const interactions:BasicFilterCategoryModel = {
+    ...ItemSearch.filterSearchToCategory(itemSearchFilter.interactionTypes,searchAPI),
+    optionType: OptionTypeModel.AdvFilter,
+    label: "Item Types"
+  };
+
+  const techTypes:BasicFilterCategoryModel = {
+    ...ItemSearch.filterSearchToCategory(itemSearchFilter.technologyTypes,searchAPI),
+    optionType: OptionTypeModel.DropDown,
+    label: "Tech Types"
+  };
+
+  const targets:BasicFilterCategoryModel = {
+    ...ItemSearch.filterSearchToCategory(itemSearchFilter.targets, searchAPI),
+    optionType: OptionTypeModel.AdvFilter,
+    label: "Targets",
+    disabled:true
+  };
+
+  const calculator:BasicFilterCategoryModel = {
+    ...ItemSearch.filterSearchToCategory(itemSearchFilter.calculator,searchAPI),
+    optionType: OptionTypeModel.DropDown,
+    label: "Calculator"
+  };
+
+  return [grades, subjects, claims,interactions,techTypes,targets,calculator];
 }
 
 export function getAdvancedFilterCategories(
