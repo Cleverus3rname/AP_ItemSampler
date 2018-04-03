@@ -79,6 +79,12 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return Json(itemViewModel);
         }
 
+        /// <summary>
+        /// Reads the Braille version of an Item into a stream and returns a .zip file
+        /// </summary>
+        /// <param name="bankKey"></param>
+        /// <param name="itemKey"></param>
+        /// <param name="brailleCode"></param>
         [HttpGet("Braille")]
         public async Task<ActionResult> Braille(int? bankKey, int? itemKey, string brailleCode)
         {
@@ -114,6 +120,12 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// Returns a single instance of an AboutThisItemViewModel based on the bankKey
+        /// and itemKey arguments
+        /// </summary>
+        /// <param name="bankKey"></param>
+        /// <param name="itemKey"></param>
         [HttpGet("AboutThisItemViewModel")]
         [EnableCors("AllowAllOrigins")]
         public IActionResult AboutThisItemViewModel(int? bankKey, int? itemKey)
@@ -128,7 +140,14 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
             return Json(aboutThis);
         }
 
-
+        /// <summary>
+        /// Returns the ItemAccessibility settings for an Item based on bankKey and ItemKey,
+        /// The isaap code specifies which options are enabled.
+        /// </summary>
+        /// <param name="bankKey"></param>
+        /// <param name="itemKey"></param>
+        /// <param name="isaap"></param>
+        /// <param name="applyCookie"></param>
         [HttpGet("ItemAccessibility")]
         public IActionResult AccessibilityResourceGroupIsaap(int? bankKey, int? itemKey, string isaap = "", bool applyCookie = true)
         {
@@ -158,11 +177,30 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
         /// </summary>
         /// <param name="gradeLevels">required, enum grade level</param>
         /// <param name="subjectCode">required, subject code</param>
-        /// <param name="interactionType">optional</param>
+        /// <param name="interactionType">required, aka item type</param>
+        /// <param name="claimId">optional, claim id</param>
+        /// <param name="isPerformance">optional flag, is item a performance item?</param>
+        /// <param name="aslSupported">optional flag, is american sign language supported?</param>
+        /// <param name="allowCalculator">optional flag, allow calculator</param>
         /// <param name="applyCookie">optional</param>
         [HttpGet("GetAccessibility")]
-        public IActionResult AccessibilityResourceGroupIsaap(GradeLevels gradeLevels, string subjectCode, string interactionType = "", bool applyCookie = true)
+        [EnableCors("AllowAllOrigins")]
+        public IActionResult AccessibilityResourceGroupIsaap(
+            GradeLevels? gradeLevels, 
+            string subjectCode, 
+            string interactionType, 
+            string claimId = "", 
+            bool? isPerformance = null,
+            bool? aslSupported = null,
+            bool? allowCalculator = null,
+            string isaap = null,
+            bool applyCookie = true)
         {
+            if (!gradeLevels.HasValue || String.IsNullOrEmpty(subjectCode) || String.IsNullOrEmpty(interactionType))
+            {
+                return BadRequest();
+            }
+
             var cookieIsaap = new Dictionary<string, string>();
 
             if (applyCookie)
@@ -172,7 +210,18 @@ namespace SmarterBalanced.SampleItems.Web.Controllers
                 cookieIsaap = DecodeCookie(cookieString);
             }
 
-            var accResourceGroup = repo.GetAccessibilityResourceGroup(gradeLevels, subjectCode, interactionType, cookieIsaap);
+            string[] isaapArray = isaap == null ? new string[0] : isaap.Split(';');
+
+            var accResourceGroup = repo.GetAccessibilityResourceGroup(
+                gradeLevels.Value, 
+                subjectCode, 
+                interactionType, 
+                claimId, 
+                isPerformance, 
+                aslSupported, 
+                allowCalculator, 
+                isaapArray,
+                cookieIsaap);
 
             return Json(accResourceGroup);
         }

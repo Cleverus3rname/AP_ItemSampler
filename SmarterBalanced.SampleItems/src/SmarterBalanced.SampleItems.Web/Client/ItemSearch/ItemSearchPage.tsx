@@ -31,6 +31,7 @@ import { getAdvancedFilterCategories, getBasicFilterCategories, getItemSearchMod
 export interface Props extends RouteComponentProps<{}> {
   itemsSearchClient: () => Promise<ItemCardModel[]>;
   itemsViewModelClient: () => Promise<ItemsSearchFilterModel>;
+  appName: string;
 }
 
 export interface State {
@@ -60,6 +61,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+      document.title = `Item Details - Smarter Balanced ${this.props.appName}`;
     this.props
       .itemsViewModelClient()
       .then(data => this.onFetchFilterModel(data))
