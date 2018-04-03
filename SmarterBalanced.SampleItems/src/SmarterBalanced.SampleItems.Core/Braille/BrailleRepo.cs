@@ -27,7 +27,7 @@ namespace SmarterBalanced.SampleItems.Core.Braille
 
         private string GetItemRootDirectory(SampleItem item)
         {
-            return $"{context.AppSettings.SbBraille.SmarterBalancedFtpHost}{item.Subject.Code}/{item.Grade.IndividualGradeToNumString()}";
+            return $"{context.AppSettings.SbBraille.FtpBraillePath}/{item.Subject.Code}/{item.Grade.IndividualGradeToNumString()}";
         }
         private string GetItemFtpDirectory(SampleItem item)
         {
