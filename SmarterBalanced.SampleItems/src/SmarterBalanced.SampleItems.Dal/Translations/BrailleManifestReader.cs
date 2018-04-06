@@ -20,7 +20,7 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
         /// <returns></returns>
         public static async Task<ImmutableArray<BrailleFileInfo>> GetBrailleFileInfo(AppSettings settings)
         {
-            string brailleManifest = settings.SbBraille.BrailleFileManifest;
+            string brailleManifest = $"{settings.SbBraille.FtpBraillePath}/{settings.SbBraille.BrailleFileManifest}";
             using (var ftpClient = new FtpClient(new FtpClientConfiguration
             {
                 Host = settings.SbBraille.SmarterBalancedFtpHost,

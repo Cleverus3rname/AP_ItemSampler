@@ -17,7 +17,7 @@ export class Home extends React.Component<HomeProps, {}> {
     renderWelcomeText() {
         return (
             <p> This site provides examples of test questions used on Smarter Balanced assessments in English language
-        arts / literacy and math.Teachers, parents, students, administrators, and policymakers can experience these test items just as students encounter them.</p>
+        arts / literacy and math. Teachers, parents, students, administrators, and policymakers can experience these test items just as students encounter them.</p>
         );
     }
 
