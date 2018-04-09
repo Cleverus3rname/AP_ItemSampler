@@ -57,7 +57,7 @@
     "moment": "^2.21.0"
   },
   "dependencies": {
-    "@osu-cass/sb-components": "^1.5.0-alpha.7",
+    "@osu-cass/sb-components": "^1.5.0-alpha.8",
     "@sbac/sbac-ui-kit": "github:osu-cass/sbac-global-ui-kit#develop",
     "bootstrap": "3.3.7",
     "es6-promise": "4.1.1",
