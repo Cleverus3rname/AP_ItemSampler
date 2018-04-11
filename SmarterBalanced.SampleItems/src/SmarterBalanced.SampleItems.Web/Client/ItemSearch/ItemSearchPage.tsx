@@ -99,7 +99,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
 
   onFetchFilterModel(itemSearchFilter: ItemsSearchFilterModel) {
       let advancedFilters = getAdvancedFilterCategories(itemSearchFilter, this.state.searchAPIParams);
-      let basicFilters = getBasicFilterCategories(itemSearchFilter, this.state.searchAPIParams);
+      const basicFilters = getBasicFilterCategories(itemSearchFilter, this.state.searchAPIParams);
       const searchModel = getItemSearchModel(itemSearchFilter);
       advancedFilters = Filter.getUpdatedSearchFilters(searchModel, advancedFilters, this.state.searchAPIParams);
       advancedFilters = Filter.hideFiltersBasedOnSearchParams(advancedFilters, this.state.searchAPIParams);
@@ -182,7 +182,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
   rowSelect = (item: ItemModel, reset: boolean) => {
     this.setState({ item, redirect: true });
   };
-  itemSelect = (item: ItemCardModel) => {};
+  itemSelect = (item: ItemCardModel) => { return; };
 
   renderResultElement(): JSX.Element {
     const cardState = this.state.searchResults;

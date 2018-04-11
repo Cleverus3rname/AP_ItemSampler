@@ -8,7 +8,8 @@
   getRequest,
   GradeLevels,
   OptionTypeModel,
-  BasicFilterCategoryModel
+  BasicFilterCategoryModel,
+  FilterType
 } from "@osu-cass/sb-components";
 
 export const itemSearchClient = getRequest<ItemCardModel[]>(
@@ -32,49 +33,45 @@ export function getBasicFilterCategories(
     GradeLevels.Grade8,
     GradeLevels.High
   ];
+
   const grades: BasicFilterCategoryModel = {
     ...ItemSearch.filterSearchToCategory(itemSearchFilter.grades, searchAPI),
     optionType: OptionTypeModel.DropDown,
     label: "Grade"
   };
+
   const subjects: BasicFilterCategoryModel = {
     ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects, searchAPI),
-    optionType: OptionTypeModel.DropDown,
+    optionType: OptionTypeModel.AdvFilter,
     label: "Subject"
   };
 
-  const claims:BasicFilterCategoryModel = {
+  const claims: BasicFilterCategoryModel = {
     ...ItemSearch.filterSearchToCategory(itemSearchFilter.claims, searchAPI),
     optionType: OptionTypeModel.AdvFilter,
-    label: "Claims"
+    label: "Claims",
+    emptyOptionsText:"Select a Subject first."
   };
 
-  const interactions:BasicFilterCategoryModel = {
-    ...ItemSearch.filterSearchToCategory(itemSearchFilter.interactionTypes,searchAPI),
-    optionType: OptionTypeModel.AdvFilter,
-    label: "Item Types"
-  };
-
-  const techTypes:BasicFilterCategoryModel = {
-    ...ItemSearch.filterSearchToCategory(itemSearchFilter.technologyTypes,searchAPI),
-    optionType: OptionTypeModel.DropDown,
-    label: "Tech Types"
-  };
-
-  const targets:BasicFilterCategoryModel = {
+  const targets: BasicFilterCategoryModel = {
     ...ItemSearch.filterSearchToCategory(itemSearchFilter.targets, searchAPI),
+    filterOptions: [],
     optionType: OptionTypeModel.AdvFilter,
     label: "Targets",
-    disabled:true
+    emptyOptionsText: "Select a Subject and Claim first."
   };
 
-  const calculator:BasicFilterCategoryModel = {
-    ...ItemSearch.filterSearchToCategory(itemSearchFilter.calculator,searchAPI),
-    optionType: OptionTypeModel.DropDown,
-    label: "Calculator"
+  const searchItem: BasicFilterCategoryModel = {
+    disabled: false,
+    label: "Enter Item ID",
+    filterOptions: [],
+    helpText: "Item id helptext",
+    code: FilterType.SearchItemId,
+    optionType: OptionTypeModel.inputBox,
+    placeholderText: "Item ID \#"
   };
 
-  return [grades, subjects, claims,interactions,techTypes,targets,calculator];
+  return [grades, subjects, claims, targets, searchItem];
 }
 
 export function getAdvancedFilterCategories(
