@@ -55,7 +55,6 @@ export function getBasicFilterCategories(
 
   const targets: BasicFilterCategoryModel = {
     ...ItemSearch.filterSearchToCategory(itemSearchFilter.targets, searchAPI),
-    filterOptions: [],
     optionType: OptionTypeModel.AdvFilter,
     label: "Targets",
     emptyOptionsText: "Select a Subject and Claim first."
