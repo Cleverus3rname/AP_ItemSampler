@@ -23,6 +23,7 @@ import {
   FilterCategoryModel,
   FilterContainer,
   CombinedFilter,
+  SIWFilter,
   FilterType,
   OptionTypeModel
 } from "@osu-cass/sb-components";
@@ -61,7 +62,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-      document.title = `Item Details - Smarter Balanced ${this.props.appName}`;
+      document.title = `Browse Items - Smarter Balanced ${this.props.appName}`;
     this.props
       .itemsViewModelClient()
       .then(data => this.onFetchFilterModel(data))
@@ -102,6 +103,8 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
       const searchModel = getItemSearchModel(itemSearchFilter);
       advancedFilters = Filter.getUpdatedSearchFilters(searchModel, advancedFilters, this.state.searchAPIParams);
       advancedFilters = Filter.hideFiltersBasedOnSearchParams(advancedFilters, this.state.searchAPIParams);
+      basicFilters = Filter.getUpdatedSearchFilters(searchModel, basicFilters, this.state.searchAPIParams);
+      basicFilters = Filter.hideFiltersBasedOnSearchParams(basicFilters, this.state.searchAPIParams);
       this.setState({
           itemSearch: { kind: "success", content: searchModel },
           advancedFilter: advancedFilters,
@@ -181,7 +184,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
   rowSelect = (item: ItemModel, reset: boolean) => {
     this.setState({ item, redirect: true });
   };
-  itemSelect = (item: ItemCardModel) => {};
+  itemSelect = (item: ItemCardModel) => { return; };
 
   renderResultElement(): JSX.Element {
     const cardState = this.state.searchResults;
@@ -211,7 +214,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     if (advancedFilter && basicFilter) {
       content = (
           <div>
-              <CombinedFilter
+              <SIWFilter
                   basicFilter={basicFilter}
                   advancedFilter={advancedFilter}
                   searchAPI={searchAPIParams}
