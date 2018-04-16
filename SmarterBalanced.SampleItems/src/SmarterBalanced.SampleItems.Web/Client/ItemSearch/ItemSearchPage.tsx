@@ -62,7 +62,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-      document.title = `Item Details - Smarter Balanced ${this.props.appName}`;
+      document.title = `Browse Items - Smarter Balanced ${this.props.appName}`;
     this.props
       .itemsViewModelClient()
       .then(data => this.onFetchFilterModel(data))
