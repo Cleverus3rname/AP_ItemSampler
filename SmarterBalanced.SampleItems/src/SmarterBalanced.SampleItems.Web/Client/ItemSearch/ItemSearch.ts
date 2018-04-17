@@ -51,14 +51,16 @@ export function getBasicFilterCategories(
         ...ItemSearch.filterSearchToCategory(itemSearchFilter.claims, searchAPI),
         optionType: OptionTypeModel.AdvFilter,
         label: "Claims",
-        emptyOptionsText: "Select a Subject first."
+        emptyOptionsText: "Select a Subject first.",
+        isMultiSelect: true
     };
 
   const targets: BasicFilterCategoryModel = {
     ...ItemSearch.filterSearchToCategory(itemSearchFilter.targets, searchAPI),
     optionType: OptionTypeModel.AdvFilter,
     label: "Targets",
-    emptyOptionsText: "Select a Subject and Claim first."
+      emptyOptionsText: "Select a Subject and Claim first.",
+      isMultiSelect: true
   };
 
     const searchItem: BasicFilterCategoryModel = {
