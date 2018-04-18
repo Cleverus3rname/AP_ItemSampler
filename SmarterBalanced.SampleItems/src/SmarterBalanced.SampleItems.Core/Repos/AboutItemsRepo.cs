@@ -90,7 +90,7 @@ namespace SmarterBalanced.SampleItems.Core.Repos.Models
             }
 
             string baseUrl = context.AppSettings.SettingsConfig.ItemViewerServiceURL;
-            return $"{baseUrl}/items?ids={sampleItem.ToString()}";
+            return $"{baseUrl}/items?ids={sampleItem.ToString()}&isaap=TDS_T0";
         }
     }
 

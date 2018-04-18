@@ -1,3 +1,8 @@
+require("es6-promise/auto");
+require('array.prototype.find').shim();
+require('string.prototype.endswith');
+require('array.prototype.findindex').shim();
+
 import "./Styles/bundle.less";
 import "typeface-pt-sans-caption/index.css";
 import "typeface-pt-serif/index.css";
@@ -8,7 +13,6 @@ import { AppContainer } from "react-hot-loader";
 import { BrowserRouter } from "react-router-dom";
 import * as RoutesModule from "./routes";
 import * as ReactModal from "react-modal";
-require("es6-promise/auto");
 let routes = RoutesModule.routes;
 
 function renderApp() {

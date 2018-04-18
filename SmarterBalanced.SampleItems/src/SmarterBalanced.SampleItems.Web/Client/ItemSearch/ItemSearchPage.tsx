@@ -93,7 +93,8 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     this.setState({ searchResults: { kind: "success", content: results } });
   }
 
-  onError(err: {}) {
+    onError(err: {}) {
+        console.error(err);
     this.setState({ searchResults: { kind: "failure" } });
   }
 
