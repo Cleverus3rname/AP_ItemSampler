@@ -41,6 +41,7 @@ export interface State {
   advancedFilter: AdvancedFilterCategoryModel[];
   basicFilter: BasicFilterCategoryModel[];
   searchAPIParams: SearchAPIParamsModel;
+  visibleItemCards: ItemCardModel[];
   item: ItemModel | undefined;
   redirect: boolean;
 }
@@ -57,7 +58,8 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
       item: undefined,
       redirect: false,
       advancedFilter: [],
-      basicFilter: []
+      basicFilter: [],
+      visibleItemCards: []
     };
   }
 
@@ -90,7 +92,9 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
   }
 
   onSearch(results: ItemCardModel[]) {
-    this.setState({ searchResults: { kind: "success", content: results } });
+      this.setState({ searchResults: { kind: "success", content: results } }, () =>
+          this.onFilterUpdated(this.state.searchAPIParams, this.state.basicFilter, this.state.advancedFilter)
+      );
   }
 
     onError(err: {}) {
@@ -145,10 +149,22 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
       advanced: AdvancedFilterCategoryModel[]
     ) => {
       this.updateLocationSearch(searchParams);
+      // filter cards by everything but target
+      const cards = getResourceContent(this.state.searchResults);
+      const searchParamsNoTarget = { ...searchParams, targets: undefined }
+      let newCards = ItemSearch.filterItemCards(cards || [], searchParamsNoTarget);
+      // hide irrelevant target options
+      const newBasicFilter = Filter.hideTargetOptions(basic, newCards);
+      // filter by target also
+      if (searchParams.targets && searchParams.targets.length > 0) {
+          newCards = newCards.filter(c => searchParams.targets!.indexOf(c.targetId) !== -1);
+      }
+      
       this.setState({
           basicFilter: basic,
           advancedFilter: advanced,
-          searchAPIParams: searchParams
+          searchAPIParams: searchParams,
+          visibleItemCards: newCards
       });
   }
 
@@ -160,7 +176,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     if (cards) {
       const filteredCards = this.getFilteredItemCards(cards);
 
-      if (filteredCards.length === 0) {
+      if (this.state.visibleItemCards.length === 0) {
         resultsElement = (
           <span className="placeholder-text" role="alert">
             No results found for the given search terms.
@@ -168,7 +184,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         );
       }
 
-      resultsElement = filteredCards.map(digest => (
+      resultsElement = this.state.visibleItemCards.map(digest => (
         <ItemCard {...digest} key={`${digest.bankKey}-${digest.itemKey}`} />
       ));
     } else if (cardState.kind === "failure") {
@@ -188,19 +204,12 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
   itemSelect = (item: ItemCardModel) => { return; };
 
   renderResultElement(): JSX.Element {
-    const cardState = this.state.searchResults;
-    const cards = getResourceContent(cardState);
-    let filteredItemCards;
-    if (cards) {
-      filteredItemCards = this.getFilteredItemCards(cards);
-    }
-
     return (
       <div className="search-results">
         <SearchResultContainer
           onRowSelection={this.rowSelect}
           onItemSelection={this.itemSelect}
-          itemCards={filteredItemCards}
+          itemCards={this.state.visibleItemCards}
           defaultRenderType={SearchResultType.ItemCard}
           isLinkTable={true}
         />
