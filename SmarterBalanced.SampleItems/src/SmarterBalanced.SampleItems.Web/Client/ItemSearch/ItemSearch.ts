@@ -98,8 +98,7 @@ export function getAdvancedFilterCategories(
         ),
         isMultiSelect: false,
         disabled: false,
-        displayAllButton: true
-
+        displayAllButton: false
     };
 
 
