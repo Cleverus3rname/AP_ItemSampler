@@ -23,8 +23,13 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             CoreStandardsXml standardsXml = LoadCoreStandards(contentSettings.CoreStandardsXMLPath);
             var targetCategories = standardsXml.TargetRows
                 .Select(tr => StandardIdentifierTranslation.CoreStandardFromIdentifier(standardsXml, tr.StandardIdentifier).Target)
-                .GroupBy(t => t.Name)
+                .GroupBy(t => new {t.Subject, t.ClaimId, t.Name }) //this was filtering out the same targets. I enabled grouping by subject and claim first. Now we have targets for each claim
                 .Select(g => g.First())
+                .OrderBy(t => {
+                    int i;
+                    Int32.TryParse(t.IdLabel, out i);
+                    return i;
+                })
                 .ToImmutableArray();
 
             var accessibilityResourceFamilies = LoadAccessibility(contentSettings.AccommodationsXMLPath);
@@ -61,7 +66,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
 
             var aboutInteractionTypes = LoadAboutInteractionTypes(interactionGroup);
             var claims = GetClaims(subjects);
-            var targets = GetTargets(claims);
+            var targets = GetTargets(claims, itemCards);
 
             var subjectInteractionTypes = LoadSubjectInteractionTypes(interactionGroup, subjects);
             var filterSearch = SearchFilterTranslation.ToSearchFilter(appSettings.SbContent.FilterCategories,
@@ -86,9 +91,11 @@ namespace SmarterBalanced.SampleItems.Dal.Providers
             return context;
         }
 
-        private static ImmutableArray<Target> GetTargets(ImmutableArray<Claim> claims)
+        private static ImmutableArray<Target> GetTargets(ImmutableArray<Claim> claims, ImmutableArray<ItemCardViewModel> allItems)
         {
-            var targets = claims.SelectMany(i => i.Targets).ToImmutableArray();
+            var targets = claims.SelectMany(i => i.Targets)
+                .Where(t => allItems.FirstOrDefault(item => t.NameHash == item.TargetHash) != null)
+                .ToImmutableArray();
             return targets;
         }
 

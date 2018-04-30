@@ -28,7 +28,7 @@
     @RenderBody()
 
     <environment names="Development">
-        <script>  window.ga = function () { console.log(arguments) } </script>
+        <script>window.ga = function () { console.log(arguments) }</script>
     </environment>
     <environment names="Staging,Production">
         <script>
@@ -38,7 +38,6 @@
         </script>
         <script async src='https://www.google-analytics.com/analytics.js'></script>
     </environment>
-
     <script src="~/dist/vendor.js" asp-append-version="true"></script>
     @RenderSection("scripts", required: false)
 </body>

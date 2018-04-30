@@ -21,14 +21,18 @@ import {
   ItemModel,
   BasicFilterCategoryModel,
   FilterCategoryModel,
-  FilterContainer,
-  FilterType
+  FilterContainer,
+  CombinedFilter,
+  SIWFilter,
+  FilterType,
+  OptionTypeModel
 } from "@osu-cass/sb-components";
 import { getAdvancedFilterCategories, getBasicFilterCategories, getItemSearchModel } from "./ItemSearch";
 
 export interface Props extends RouteComponentProps<{}> {
-  itemsSearchClient: (params: SearchAPIParamsModel) => Promise<ItemCardModel[]>;
+  itemsSearchClient: () => Promise<ItemCardModel[]>;
   itemsViewModelClient: () => Promise<ItemsSearchFilterModel>;
+  appName: string;
 }
 
 export interface State {
@@ -37,6 +41,7 @@ export interface State {
   advancedFilter: AdvancedFilterCategoryModel[];
   basicFilter: BasicFilterCategoryModel[];
   searchAPIParams: SearchAPIParamsModel;
+  visibleItemCards: ItemCardModel[];
   item: ItemModel | undefined;
   redirect: boolean;
 }
@@ -53,18 +58,20 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
       item: undefined,
       redirect: false,
       advancedFilter: [],
-      basicFilter: []
+      basicFilter: [],
+      visibleItemCards: []
     };
   }
 
   componentDidMount() {
+      document.title = `Browse Items - Smarter Balanced ${this.props.appName}`;
     this.props
       .itemsViewModelClient()
       .then(data => this.onFetchFilterModel(data))
       .catch(err => this.onError(err));
 
     this.props
-      .itemsSearchClient({})
+      .itemsSearchClient()
       .then(data => this.onSearch(data))
       .catch(err => this.onError(err));
   }
@@ -85,10 +92,13 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
   }
 
   onSearch(results: ItemCardModel[]) {
-    this.setState({ searchResults: { kind: "success", content: results } });
+      this.setState({ searchResults: { kind: "success", content: results } }, () =>
+          this.onFilterUpdated(this.state.searchAPIParams, this.state.basicFilter, this.state.advancedFilter)
+      );
   }
 
-  onError(err: {}) {
+    onError(err: {}) {
+        console.error(err);
     this.setState({ searchResults: { kind: "failure" } });
   }
 
@@ -97,6 +107,9 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
       let basicFilters = getBasicFilterCategories(itemSearchFilter, this.state.searchAPIParams);
       const searchModel = getItemSearchModel(itemSearchFilter);
       advancedFilters = Filter.getUpdatedSearchFilters(searchModel, advancedFilters, this.state.searchAPIParams);
+      Filter.hideFiltersBasedOnSearchParams(advancedFilters, this.state.searchAPIParams);
+      basicFilters = Filter.getUpdatedSearchFilters(searchModel, basicFilters, this.state.searchAPIParams);
+      Filter.hideFiltersBasedOnSearchParams(basicFilters, this.state.searchAPIParams);
       this.setState({
           itemSearch: { kind: "success", content: searchModel },
           advancedFilter: advancedFilters,
@@ -130,73 +143,29 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     return searchAPI;
   }
 
-  onAdvancedFilterUpdate = (categories?: AdvancedFilterCategoryModel[], changed?: FilterType) => {
-    if (!categories) {
-        return;
-    }
-
-    let searchAPI = this.state.searchAPIParams;
-    const basicFilter = this.state.basicFilter;
-    const searchModel = getResourceContent(this.state.itemSearch);
-
-    if (changed) {
-        const changedBasicFilter = basicFilter.find(f => f.code == changed)
-        if (changedBasicFilter) {
-            changedBasicFilter.filterOptions.forEach(o => o.isSelected = false);
-        }
-
-        const changedAdvancedFilter = categories.find(f => f.code === changed);
-        if (changedAdvancedFilter) {
-            searchAPI = ItemSearch.updateSearchApiModel(changedAdvancedFilter, searchAPI);
-        }
-    }
-    
-    if (searchModel) {
-        searchAPI = ItemSearch.updateDependentSearchParams(searchAPI, searchModel);
-        categories = Filter.getUpdatedSearchFilters(searchModel, categories, searchAPI);
-    }
-
-    this.updateLocationSearch(searchAPI);
-    this.setState({
-        advancedFilter: categories,
-        searchAPIParams: searchAPI,
-        basicFilter
-    });
-  }
-
-  onBasicFilterUpdate = (categories: BasicFilterCategoryModel[], changed: FilterType) => {
-    if (!categories) {
-        return;
-    }
-
-    let searchAPI = this.state.searchAPIParams;
-    const searchModel = getResourceContent(this.state.itemSearch);
-    let advancedFilter = this.state.advancedFilter;
-    
-    const changedBasicFilter = categories.find(f => f.code === changed);
-    if (changedBasicFilter) {
-        searchAPI = ItemSearch.updateSearchApiModel(changedBasicFilter, searchAPI)
-        
-    }
-
-    if (searchModel) {
-        searchAPI = ItemSearch.updateDependentSearchParams(searchAPI, searchModel);
-    }
-    
-    const changedAdvancedFilter = advancedFilter.find(f => f.code === changed);
-    if (changedAdvancedFilter) {
-        changedAdvancedFilter.filterOptions.forEach(o => o.isSelected = false);
-        
-        if (searchModel) {
-            advancedFilter = Filter.getUpdatedSearchFilters(searchModel, advancedFilter, searchAPI);
-        }
-    }
-
-    this.updateLocationSearch(searchAPI);
-    this.setState({
-        basicFilter: categories,
-        searchAPIParams: searchAPI,
-    });
+  onFilterUpdated = (
+      searchParams: SearchAPIParamsModel,
+      basic: BasicFilterCategoryModel[],
+      advanced: AdvancedFilterCategoryModel[]
+    ) => {
+      this.updateLocationSearch(searchParams);
+      // filter cards by everything but target
+      const cards = getResourceContent(this.state.searchResults);
+      const searchParamsNoTarget = { ...searchParams, targets: undefined }
+      let newCards = ItemSearch.filterItemCards(cards || [], searchParamsNoTarget);
+      // hide irrelevant target options
+      const newBasicFilter = Filter.hideTargetOptions(basic, newCards);
+      // filter by target also
+      if (searchParams.targets && searchParams.targets.length > 0) {
+          newCards = newCards.filter(c => searchParams.targets!.indexOf(c.targetId) !== -1);
+      }
+      
+      this.setState({
+          basicFilter: basic,
+          advancedFilter: advanced,
+          searchAPIParams: searchParams,
+          visibleItemCards: newCards
+      });
   }
 
   renderItemCards(): JSX.Element[] | JSX.Element | undefined {
@@ -207,7 +176,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
     if (cards) {
       const filteredCards = this.getFilteredItemCards(cards);
 
-      if (filteredCards.length === 0) {
+      if (this.state.visibleItemCards.length === 0) {
         resultsElement = (
           <span className="placeholder-text" role="alert">
             No results found for the given search terms.
@@ -215,7 +184,7 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
         );
       }
 
-      resultsElement = filteredCards.map(digest => (
+      resultsElement = this.state.visibleItemCards.map(digest => (
         <ItemCard {...digest} key={`${digest.bankKey}-${digest.itemKey}`} />
       ));
     } else if (cardState.kind === "failure") {
@@ -232,22 +201,15 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
   rowSelect = (item: ItemModel, reset: boolean) => {
     this.setState({ item, redirect: true });
   };
-  itemSelect = (item: ItemCardModel) => {};
+  itemSelect = (item: ItemCardModel) => { return; };
 
   renderResultElement(): JSX.Element {
-    const cardState = this.state.searchResults;
-    const cards = getResourceContent(cardState);
-    let filteredItemCards;
-    if (cards) {
-      filteredItemCards = this.getFilteredItemCards(cards);
-    }
-
     return (
       <div className="search-results">
         <SearchResultContainer
           onRowSelection={this.rowSelect}
           onItemSelection={this.itemSelect}
-          itemCards={filteredItemCards}
+          itemCards={this.state.visibleItemCards}
           defaultRenderType={SearchResultType.ItemCard}
           isLinkTable={true}
         />
@@ -256,19 +218,20 @@ export class ItemsSearchComponent extends React.Component<Props, State> {
   }
 
   renderFilters() {
-    let content;
-    const { basicFilter, advancedFilter } = this.state;
-
+      let content;
+      const { basicFilter, advancedFilter, searchAPIParams, itemSearch } = this.state;
+      const searchModel = getResourceContent(itemSearch);
     if (advancedFilter && basicFilter) {
       content = (
-        <div>
-          <FilterContainer
-            filterId="sb-filter-id"
-            advancedFilterCategories={advancedFilter}
-            onUpdateAdvancedFilter={this.onAdvancedFilterUpdate}
-            basicFilterCategories={basicFilter}
-            onUpdateBasicFilter={this.onBasicFilterUpdate}
-          />
+          <div>
+              <SIWFilter
+                  basicFilter={basicFilter}
+                  advancedFilter={advancedFilter}
+                  searchAPI={searchAPIParams}
+                  filterId="sb-filter-id"
+                  onFilterUpdated={this.onFilterUpdated}
+                  searchModel={searchModel}
+              />
         </div>
       );
     }

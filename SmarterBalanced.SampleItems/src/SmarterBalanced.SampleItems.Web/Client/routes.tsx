@@ -1,67 +1,93 @@
 import * as React from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Route, Redirect, Switch } from "react-router-dom";
 import {
-  Layout,
-  SbNavlinkProps,
-  aboutTestItemsClient,
-  aboutThisItemViewModelClient,
-  itemPageClient,
-  itemAccessibilityClient,
-  ItemViewPage,
-  AboutTestItemsPage
+    Layout,
+    SbNavlinkProps,
+    aboutTestItemsClient,
+    aboutThisItemViewModelClient,
+    itemPageClient,
+    itemAccessibilityClient,
+    ItemViewPage,
+    AboutTestItemsPage,
+    ErrorPageContainer
 } from "@osu-cass/sb-components";
-
 import { Home } from "./Home/Home";
 import { ItemsSearchComponent } from "./ItemSearch/ItemSearchPage";
 import { RouteComponentProps } from "react-router";
 import {
-  ItemsSearchClient,
-  ItemsViewModelClient
+    itemSearchClient,
+    itemsSearchFilterClient
 } from "./ItemSearch/ItemSearch";
 
 export const siteLinks: SbNavlinkProps[] = [
-  { name: "Home", url: "/" },
-  { name: "About Test Items", url: "/AboutItems" },
-  { name: "Browse Test Items", url: "/BrowseItems" }
+    { name: "Home", url: "/" },
+    { name: "About Test Items", url: "/AboutItems" },
+    { name: "Browse Test Items", url: "/BrowseItems" }
 ];
 
+const appName = "Sample Items";
+const fetchItemCards = () => itemSearchClient;
+const fetchItemViewModel = () => itemsSearchFilterClient;
+
 export const routes = (
-  <Layout siteName="Sample Items" links={siteLinks}>
-    <Route exact path="/" component={Home} />
+    <Layout siteName="Sample Items" links={siteLinks}>
+        <Switch>
+            <Route exact path="/" render={props => (
+                <Home {...props} appName={appName} />
+            )} />
 
-    <Route
-      path="/AboutItems/:itemType?"
-      render={props => (
-        <AboutTestItemsPage
-          {...props}
-          aboutClient={aboutTestItemsClient}
-          showRubrics={false}
-        />
-      )}
-    />
+            <Route
+                path="/AboutItems/:itemType?"
+                render={props => (
+                    <AboutTestItemsPage
+                        {...props}
+                        aboutClient={aboutTestItemsClient}
+                        showRubrics={false}
+                        appName={appName}
+                        errorRedirectPath="/error/500"
+                    />
+                )}
+            />
 
-    <Route
-      path="/BrowseItems"
-      render={props => (
-        <ItemsSearchComponent
-          {...props}
-          itemsSearchClient={ItemsSearchClient}
-          itemsViewModelClient={ItemsViewModelClient}
-        />
-      )}
-    />
+            <Route
+                path="/BrowseItems"
+                render={props => (
+                    <ItemsSearchComponent
+                        {...props}
+                        itemsSearchClient={fetchItemCards}
+                        itemsViewModelClient={fetchItemViewModel}
+                        appName={appName}
+                    />
+                )}
+            />
 
-    <Route
-      path="/Item/:bankKey-:itemKey"
-      render={props => (
-        <ItemViewPage
-          {...props}
-          aboutThisClient={aboutThisItemViewModelClient}
-          itemPageClient={itemPageClient}
-          itemAccessibilityClient={itemAccessibilityClient}
-          showRubrics={false}
-        />
-      )}
-    />
-  </Layout>
+            <Route
+                path="/Item/:bankKey-:itemKey"
+                render={props => (
+                    <ItemViewPage
+                        {...props}
+                        aboutThisClient={aboutThisItemViewModelClient}
+                        itemPageClient={itemPageClient}
+                        itemAccessibilityClient={itemAccessibilityClient}
+                        showRubrics={false}
+                        appName={appName}
+                        errorRedirectPath="/error/500"
+                    />
+                )}
+            />
+
+            <Route
+                path="/error/500"
+                render={props => (
+                    <ErrorPageContainer {...props} errorCode={500} />
+                )}
+            />
+
+            <Route
+                render={props => (
+                    <ErrorPageContainer {...props} errorCode={404} />
+                )}
+            />
+        </Switch>
+    </Layout>
 );

@@ -442,7 +442,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
 
             Assert.NotNull(coreStandard);
             Assert.Equal(coreStandard.Target.Descripton, "Target description");
-            Assert.Equal(coreStandard.Target.Name, "Short Name");
+            Assert.Equal(coreStandard.Target.Name, "4. Short Name");
             Assert.Equal(coreStandard.Target.Id, "4-6");
             Assert.Equal(coreStandard.Target.IdLabel, "4");
             Assert.Equal(coreStandard.Target.NameHash, coreStandard.Target.GetHashCode());
@@ -466,7 +466,7 @@ namespace SmarterBalanced.SampleItems.Test.DalTests.TranslationsTests
             var newCoreStandard = coreStandard.WithTargetCCSSDescriptions(targetDescription: "NEW NAME: New description");
 
             Assert.Equal(newCoreStandard.Target.Descripton, "New description");
-            Assert.Equal(newCoreStandard.Target.Name, "New Name");
+            Assert.Equal(newCoreStandard.Target.Name, "4. New Name");
             Assert.Equal(newCoreStandard.Target.Id, "4-6");
             Assert.Equal(newCoreStandard.Target.IdLabel, "4");
             Assert.Equal(newCoreStandard.Target.NameHash, newCoreStandard.Target.GetHashCode());

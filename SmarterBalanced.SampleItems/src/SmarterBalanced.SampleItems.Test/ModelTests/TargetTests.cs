@@ -23,7 +23,7 @@ namespace SmarterBalanced.SampleItems.Test.ModelTests
         public void TestTargetCreate()
         {
             Assert.Equal(target.Descripton, "Long description");
-            Assert.Equal(target.Name, "Short Name");
+            Assert.Equal(target.Name, "1. Short Name");
             Assert.Equal(target.Id, "1-2");
             Assert.Equal(target.IdLabel, "1");
             Assert.Equal(target.ClaimId, "1");
@@ -38,7 +38,7 @@ namespace SmarterBalanced.SampleItems.Test.ModelTests
             var newTarget = target.WithDescription("ANOTHER DESC: Blah blah blah!");
 
             Assert.Equal(newTarget.Descripton, "Blah blah blah!");
-            Assert.Equal(newTarget.Name, "Another Desc");
+            Assert.Equal(newTarget.Name, "1. Another Desc");
             Assert.Equal(newTarget.Id, "1-2");
             Assert.Equal(newTarget.IdLabel, "1");
             Assert.Equal(newTarget.ClaimId, "1");

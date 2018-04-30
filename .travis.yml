@@ -43,7 +43,7 @@ after_success:
 deploy:
   - provider: script
     skip_cleanup: true
-    script: ./DeployScripts/app_docker_deploy.sh && ./DeployScripts/code_docker_deploy.sh && ./DeployScripts/nuget_deploy.sh
+    script: ./DeployScripts/code_docker_deploy.sh && ./DeployScripts/nuget_deploy.sh
     on:
         tags: true
   - provider: script
@@ -51,3 +51,8 @@ deploy:
     script: ./DeployScripts/nuget_deploy.sh "alpha-$BUILD_NUMBER" && ./DeployScripts/code_docker_deploy.sh
     on:
       branch: dev
+  - provider: script
+    skip_cleanup: true
+    script: ./DeployScripts/nuget_deploy.sh "pre-$BUILD_NUMBER" && ./DeployScripts/code_docker_deploy.sh
+    on:
+      branch: staging

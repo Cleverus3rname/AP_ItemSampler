@@ -1,21 +1,24 @@
 ﻿import {
-  SearchAPIParamsModel,
-  AdvancedFilterCategoryModel,
-  ItemSearch,
-  ItemsSearchFilterModel,
-  ItemsSearchModel,
-  ItemCardModel,
-  getRequest,
-  GradeLevels,
-  OptionTypeModel,
-  BasicFilterCategoryModel
+    SearchAPIParamsModel,
+    AdvancedFilterCategoryModel,
+    ItemSearch,
+    ItemsSearchFilterModel,
+    ItemsSearchModel,
+    ItemCardModel,
+    getRequest,
+    GradeLevels,
+    OptionTypeModel,
+    BasicFilterCategoryModel,
+    FilterType
 } from "@osu-cass/sb-components";
 
-export const ItemsSearchClient = (params: SearchAPIParamsModel) =>
-  getRequest<ItemCardModel[]>("/BrowseItems/search", params);
+export const itemSearchClient = getRequest<ItemCardModel[]>(
+    "/BrowseItems/search"
+);
 
-export const ItemsViewModelClient = () =>
-  getRequest<ItemsSearchFilterModel>("/BrowseItems/FilterSearchModel");
+export const itemsSearchFilterClient = getRequest<ItemsSearchFilterModel>(
+    "/BrowseItems/FilterSearchModel"
+);
 
 export function getBasicFilterCategories(
     itemSearchFilter: ItemsSearchFilterModel,
@@ -30,107 +33,99 @@ export function getBasicFilterCategories(
         GradeLevels.Grade8,
         GradeLevels.High
     ];
-    const grades = {
+
+    const grades: BasicFilterCategoryModel = {
         ...ItemSearch.filterSearchToCategory(itemSearchFilter.grades, searchAPI),
-        type: OptionTypeModel.DropDown
-    };
-    const subjects = {
-        ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects, searchAPI),
-        type: OptionTypeModel.DropDown
+        optionType: OptionTypeModel.DropDown,
+        label: "Grade"
     };
 
-    let basicFilters: BasicFilterCategoryModel[] = [
-        grades, subjects
-    ];
-    return basicFilters;
+    const subjects: BasicFilterCategoryModel = {
+        ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects, searchAPI),
+        optionType: OptionTypeModel.AdvFilter,
+        label: "Subject",
+        isMultiSelect: true
+    };
+
+    const claims: BasicFilterCategoryModel = {
+        ...ItemSearch.filterSearchToCategory(itemSearchFilter.claims, searchAPI),
+        optionType: OptionTypeModel.AdvFilter,
+        label: "Claims",
+        emptyOptionsText: "Select a Subject first.",
+        isMultiSelect: true
+    };
+
+  const targets: BasicFilterCategoryModel = {
+    ...ItemSearch.filterSearchToCategory(itemSearchFilter.targets, searchAPI),
+    optionType: OptionTypeModel.AdvFilter,
+    label: "Targets",
+      emptyOptionsText: "Select a Subject and Claim first.",
+      isMultiSelect: true
+  };
+
+    const searchItem: BasicFilterCategoryModel = {
+        disabled: false,
+        label: "Enter Item ID",
+        filterOptions: [],
+        code: FilterType.SearchItemId,
+        optionType: OptionTypeModel.inputBox,
+        placeholderText: "Item ID \#"
+    };
+
+    return [grades, subjects, claims, targets, searchItem];
 }
 
 export function getAdvancedFilterCategories(
-  itemSearchFilter: ItemsSearchFilterModel,
-  searchAPI: SearchAPIParamsModel
+    itemSearchFilter: ItemsSearchFilterModel,
+    searchAPI: SearchAPIParamsModel
 ): AdvancedFilterCategoryModel[] {
-    itemSearchFilter.grades.filterOptions = [
-        GradeLevels.Elementary,
-        GradeLevels.Middle,
-        GradeLevels.High
-  ];;
 
-  const claims = {
-    ...ItemSearch.filterSearchToCategory(itemSearchFilter.claims, searchAPI),
-    isMultiSelect: true,
-    disabled: false,
-    displayAllButton: true
-  };
 
-  const subjects = {
-    ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects, searchAPI),
-    isMultiSelect: true,
-    disabled: false,
-    displayAllButton: true
-  };
+    const interactions = {
+        ...ItemSearch.filterSearchToCategory(
+            itemSearchFilter.interactionTypes,
+            searchAPI
+        ),
+        isMultiSelect: true,
+        disabled: false,
+        displayAllButton: true
+    };
 
-  const interactions = {
-    ...ItemSearch.filterSearchToCategory(
-      itemSearchFilter.interactionTypes,
-      searchAPI
-    ),
-    isMultiSelect: true,
-    disabled: false,
-    displayAllButton: true
-  };
+    const techTypes: AdvancedFilterCategoryModel = {
+        ...ItemSearch.filterSearchToCategory(
+            itemSearchFilter.technologyTypes,
+            searchAPI
+        ),
+        isMultiSelect: false,
+        disabled: false,
+        displayAllButton: false
+    };
 
-  const grades = {
-    ...ItemSearch.filterSearchToCategory(itemSearchFilter.grades, searchAPI),
-    isMultiSelect: true,
-    disabled: false,
-    displayAllButton: true
-  };
 
-  const techTypes = {
-    ...ItemSearch.filterSearchToCategory(
-      itemSearchFilter.technologyTypes,
-      searchAPI
-    ),
-    isMultiSelect: false,
-    disabled: false,
-    displayAllButton: true
-  };
+    const calculator: AdvancedFilterCategoryModel = {
+        ...ItemSearch.filterSearchToCategory(
+            itemSearchFilter.calculator,
+            searchAPI
+        ),
+        isMultiSelect: false,
+        disabled: false,
+        displayAllButton: true
+    };
 
-  const targets = {
-    ...ItemSearch.filterSearchToCategory(itemSearchFilter.targets, searchAPI),
-    isMultiSelect: true,
-    disabled: false,
-    displayAllButton: true
-  };
-
-  const calculator = {
-    ...ItemSearch.filterSearchToCategory(
-      itemSearchFilter.calculator,
-      searchAPI
-    ),
-    isMultiSelect: false,
-    disabled: false,
-    displayAllButton: true
-  };
-
-  return [
-    grades,
-    subjects,
-    claims,
-    interactions,
-    techTypes,
-    targets,
-    calculator
-  ];
+    return [
+        interactions,
+        techTypes,
+        calculator
+    ];
 }
 
 export function getItemSearchModel(
-  itemSearchFilter: ItemsSearchFilterModel
+    itemSearchFilter: ItemsSearchFilterModel
 ): ItemsSearchModel {
-  return {
-    claims: itemSearchFilter.claims.filterOptions,
-    subjects: itemSearchFilter.subjects.filterOptions,
-    interactionTypes: itemSearchFilter.interactionTypes.filterOptions,
-    targets: itemSearchFilter.targets.filterOptions
-  };
+    return {
+        claims: itemSearchFilter.claims.filterOptions,
+        subjects: itemSearchFilter.subjects.filterOptions,
+        interactionTypes: itemSearchFilter.interactionTypes.filterOptions,
+        targets: itemSearchFilter.targets.filterOptions
+    };
 }

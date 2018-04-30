@@ -28,20 +28,20 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         [JsonIgnore]
         public ImmutableArray<Target> Targets { get; }
 
-        public ImmutableArray<int> TargetCodes { get; }
+        public ImmutableArray<string> TargetCodes { get; }
 
         public Claim(
             string code,
             string claimNumber,
             string label,
             ImmutableArray<Target> targets,
-            ImmutableArray<int> targetCodes)
+            ImmutableArray<string> targetCodes)
         {
             Code = code;
             ClaimNumber = claimNumber;
             Label = label;
             Targets = targets;
-            TargetCodes = targets.Select(t => t.NameHash).ToImmutableArray();
+            TargetCodes = targetCodes;
         }
 
         public static Claim Create(
@@ -52,7 +52,7 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
         {
 
             targets = targets.IsDefault ? ImmutableArray<Target>.Empty : targets;
-            var targetCodes = targets.Select(t => t.NameHash).ToImmutableArray();
+            var targetCodes = targets.Select(t => t.IdLabel).Distinct().OrderBy(t => t).ToImmutableArray();
 
             return new Claim(
                  code: code,
@@ -64,10 +64,14 @@ namespace SmarterBalanced.SampleItems.Dal.Providers.Models
 
         public static Claim Create(XElement element)
         {
+            string label = (string)element.Element("Label");
+            string claimNumber = (string)element.Element("ClaimNumber");
+            label = $"{claimNumber ?? ""}. {label ?? ""}";
+
             var claim = Create(
                 code: (string)element.Element("Code"),
-                label: (string)element.Element("Label"),
-                claimNumber: (string)element.Element("ClaimNumber"),
+                label: label,
+                claimNumber: claimNumber,
                 targets: ImmutableArray.Create<Target>());
 
             return claim;
