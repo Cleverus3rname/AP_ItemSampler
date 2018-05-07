@@ -57,8 +57,8 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
 
         public static FilterCategory<TechnologyType> TechnologyTypeToFilterCategory(FilterCategorySettings settings)
         {
-            var performance = new TechnologyType { Code = "Performance", Label = "Performance Only" };
-            var cat = new TechnologyType { Code = "CAT", Label = "CAT Only" };
+            var performance = new TechnologyType { Code = "Performance", Label = "Yes" };
+            var cat = new TechnologyType { Code = "CAT", Label = "No" };
             var options = ImmutableArray.Create(performance, cat);
 
             return ToFilterCategory(options, settings);
@@ -66,8 +66,8 @@ namespace SmarterBalanced.SampleItems.Dal.Translations
 
         public static FilterCategory<TechnologyType> CalculatorToFilterCategory(FilterCategorySettings settings)
         {
-            var calc = new TechnologyType { Code = "true", Label = "On" };
-            var calcOff = new TechnologyType { Code = "false", Label = "Off" };
+            var calc = new TechnologyType { Code = "true", Label = "Allowed" };
+            var calcOff = new TechnologyType { Code = "false", Label = "Not Allowed" };
 
             return ToFilterCategory(ImmutableArray.Create(calc, calcOff), settings);
         }
