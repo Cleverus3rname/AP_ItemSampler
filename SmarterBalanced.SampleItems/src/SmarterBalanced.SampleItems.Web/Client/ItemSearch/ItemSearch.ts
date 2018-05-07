@@ -37,8 +37,14 @@ export function getBasicFilterCategories(
     const grades: BasicFilterCategoryModel = {
         ...ItemSearch.filterSearchToCategory(itemSearchFilter.grades, searchAPI),
         optionType: OptionTypeModel.DropDown,
-        label: "Grade"
+        label: "Grade",
+        hideSelectMessage: true
     };
+    grades.filterOptions.splice(0, 0, {
+        label: "All Grades",
+        key: "",
+        isSelected: true
+    });
 
     const subjects: BasicFilterCategoryModel = {
         ...ItemSearch.filterSearchToCategory(itemSearchFilter.subjects, searchAPI),
@@ -79,8 +85,6 @@ export function getAdvancedFilterCategories(
     itemSearchFilter: ItemsSearchFilterModel,
     searchAPI: SearchAPIParamsModel
 ): AdvancedFilterCategoryModel[] {
-
-
     const interactions = {
         ...ItemSearch.filterSearchToCategory(
             itemSearchFilter.interactionTypes,
@@ -98,10 +102,9 @@ export function getAdvancedFilterCategories(
         ),
         isMultiSelect: false,
         disabled: false,
-        displayAllButton: true
+        displayAllButton: false
 
     };
-
 
     const calculator: AdvancedFilterCategoryModel = {
         ...ItemSearch.filterSearchToCategory(
