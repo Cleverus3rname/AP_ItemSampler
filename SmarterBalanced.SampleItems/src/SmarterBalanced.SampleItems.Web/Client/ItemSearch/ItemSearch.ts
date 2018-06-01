@@ -9,7 +9,8 @@
     GradeLevels,
     OptionTypeModel,
     BasicFilterCategoryModel,
-    FilterType
+    FilterType,
+    FilterOptionModel
 } from "@osu-cass/sb-components";
 
 export const itemSearchClient = getRequest<ItemCardModel[]>(
@@ -86,10 +87,24 @@ export function getAdvancedFilterCategories(
             itemSearchFilter.interactionTypes,
             searchAPI
         ),
+        emptyOptionsText: "Select a Subject First.",
         isMultiSelect: true,
         disabled: false,
         displayAllButton: true
     };
+
+    const techTypesOptions: FilterOptionModel[] = [
+        {
+            label: "No",
+            key: "No",
+            isSelected: true
+        },
+        {
+            label: "Yes",
+            key: "Yes",
+            isSelected: false
+        }
+    ];
 
     const techTypes: AdvancedFilterCategoryModel = {
         ...ItemSearch.filterSearchToCategory(
@@ -98,9 +113,9 @@ export function getAdvancedFilterCategories(
         ),
         isMultiSelect: false,
         disabled: false,
-        displayAllButton: false
+        displayAllButton: false,
+        filterOptions: techTypesOptions
     };
-
 
     const calculator: AdvancedFilterCategoryModel = {
         ...ItemSearch.filterSearchToCategory(
