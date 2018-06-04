@@ -25,7 +25,7 @@ before_script:
   - echo $BUILD_NUMBER
 
 script: 
-  - dotnet build 
+  - dotnet build -c Staging
   - cd $TRAVIS_BUILD_DIR/SmarterBalanced.SampleItems/src/SmarterBalanced.SampleItems.Test
   - dotnet test 
   - dotnet publish $TRAVIS_BUILD_DIR/SmarterBalanced.SampleItems/src/SmarterBalanced.SampleItems.Web -o $TRAVIS_BUILD_DIR/publish/
