@@ -8,20 +8,19 @@
     }
   },
   "profiles": {
-    "IIS Express": {
+    "SIW-Stage": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Staging"
       }
     },
-    "SampleItemsWebsite": {
+    "SIW-Dev": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "http://localhost:4855/"
+      }
     }
   }
 }

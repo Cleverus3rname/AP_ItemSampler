@@ -26,24 +26,33 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Staging|Any CPU = Staging|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{E32781E9-8200-4E3E-B0C6-F0C6AF3EBC8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E32781E9-8200-4E3E-B0C6-F0C6AF3EBC8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E32781E9-8200-4E3E-B0C6-F0C6AF3EBC8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E32781E9-8200-4E3E-B0C6-F0C6AF3EBC8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E32781E9-8200-4E3E-B0C6-F0C6AF3EBC8A}.Staging|Any CPU.ActiveCfg = Staging|Any CPU
+		{E32781E9-8200-4E3E-B0C6-F0C6AF3EBC8A}.Staging|Any CPU.Build.0 = Staging|Any CPU
 		{1F3ECA61-B30A-4BE7-8DFD-37D488887BFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1F3ECA61-B30A-4BE7-8DFD-37D488887BFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F3ECA61-B30A-4BE7-8DFD-37D488887BFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F3ECA61-B30A-4BE7-8DFD-37D488887BFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F3ECA61-B30A-4BE7-8DFD-37D488887BFC}.Staging|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F3ECA61-B30A-4BE7-8DFD-37D488887BFC}.Staging|Any CPU.Build.0 = Debug|Any CPU
 		{B245788D-F9DD-4C6F-9ECA-A37674AB4EF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B245788D-F9DD-4C6F-9ECA-A37674AB4EF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B245788D-F9DD-4C6F-9ECA-A37674AB4EF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B245788D-F9DD-4C6F-9ECA-A37674AB4EF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B245788D-F9DD-4C6F-9ECA-A37674AB4EF1}.Staging|Any CPU.ActiveCfg = Debug|Any CPU
+		{B245788D-F9DD-4C6F-9ECA-A37674AB4EF1}.Staging|Any CPU.Build.0 = Debug|Any CPU
 		{958072CA-C25F-4C27-A0AA-0338707C83F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{958072CA-C25F-4C27-A0AA-0338707C83F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{958072CA-C25F-4C27-A0AA-0338707C83F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{958072CA-C25F-4C27-A0AA-0338707C83F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{958072CA-C25F-4C27-A0AA-0338707C83F1}.Staging|Any CPU.ActiveCfg = Debug|Any CPU
+		{958072CA-C25F-4C27-A0AA-0338707C83F1}.Staging|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
