@@ -93,28 +93,15 @@ export function getAdvancedFilterCategories(
         displayAllButton: true
     };
 
-    const techTypesOptions: FilterOptionModel[] = [
-        {
-            label: "No",
-            key: "No",
-            isSelected: true
-        },
-        {
-            label: "Yes",
-            key: "Yes",
-            isSelected: false
-        }
-    ];
-
     const techTypes: AdvancedFilterCategoryModel = {
         ...ItemSearch.filterSearchToCategory(
             itemSearchFilter.technologyTypes,
-            searchAPI
+            searchAPI,
+            ["CAT"]
         ),
         isMultiSelect: false,
         disabled: false,
-        displayAllButton: false,
-        filterOptions: techTypesOptions
+        displayAllButton: false
     };
 
     const calculator: AdvancedFilterCategoryModel = {
