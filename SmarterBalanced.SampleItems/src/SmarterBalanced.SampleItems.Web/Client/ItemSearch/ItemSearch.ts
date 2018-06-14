@@ -96,7 +96,8 @@ export function getAdvancedFilterCategories(
     const techTypes: AdvancedFilterCategoryModel = {
         ...ItemSearch.filterSearchToCategory(
             itemSearchFilter.technologyTypes,
-            searchAPI
+            searchAPI,
+            ["CAT"]
         ),
         isMultiSelect: false,
         disabled: false,
